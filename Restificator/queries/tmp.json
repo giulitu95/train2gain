@@ -1,0 +1,148 @@
+{
+    "id": 1,
+    "athleteId": 1,
+    "startDate": "2018-05-31T22:00:00.000Z",
+    "endDate": "2018-06-30T22:00:00.000Z",
+    "trainerId": 2,
+    "dailyWorkouts": [
+        {
+            "id": 1,
+            "orderNumber": 1,
+            "scheduleId": 1,
+            "scheduleSteps": [
+                {
+                    "id": 1,
+                    "restTime": 60,
+                    "orderNumber": 1,
+                    "scheduleStepTypeId": 1,
+                    "dailyWorkoutId": 1,
+                    "scheduleSets": [
+                        {
+                            "id": 1,
+                            "orderNumber": 1,
+                            "scheduleStepId": 1,
+                            "scheduleItems": [
+                                {
+                                    "id": 1,
+                                    "exerciseId": 1,
+                                    "orderNumber": 1,
+                                    "load": 4,
+                                    "reps": 15,
+                                    "scheduleSetId": 1
+                                }
+                            ]
+                        },
+                        {
+                            "id": 2,
+                            "orderNumber": 2,
+                            "scheduleStepId": 1,
+                            "scheduleItems": [
+                                {
+                                    "id": 2,
+                                    "exerciseId": 1,
+                                    "orderNumber": 1,
+                                    "load": 6,
+                                    "reps": 12,
+                                    "scheduleSetId": 2
+                                }
+                            ]
+                        },
+                        {
+                            "id": 3,
+                            "orderNumber": 3,
+                            "scheduleStepId": 1,
+                            "scheduleItems": [
+                                {
+                                    "id": 3,
+                                    "exerciseId": 1,
+                                    "orderNumber": 1,
+                                    "load": 8,
+                                    "reps": 10,
+                                    "scheduleSetId": 3
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "restTime": 60,
+                    "orderNumber": 2,
+                    "scheduleStepTypeId": 2,
+                    "dailyWorkoutId": 1,
+                    "scheduleSets": [
+                        {
+                            "id": 4,
+                            "orderNumber": 1,
+                            "scheduleStepId": 2,
+                            "scheduleItems": [
+                                {
+                                    "id": 4,
+                                    "exerciseId": 2,
+                                    "orderNumber": 1,
+                                    "load": 8,
+                                    "reps": 10,
+                                    "scheduleSetId": 4
+                                },
+                                {
+                                    "id": 5,
+                                    "exerciseId": 3,
+                                    "orderNumber": 2,
+                                    "load": 8,
+                                    "reps": 10
+                                },
+                                4
+                            ]
+                        },
+                        {
+                            "id": 5,
+                            "orderNumber": 2,
+                            "scheduleStepId": 2,
+                            "scheduleItems": [
+                                {
+                                    "id": 6,
+                                    "exerciseId": 2,
+                                    "orderNumber": 1,
+                                    "load": 8,
+                                    "reps": 10,
+                                    "scheduleSetId": 5
+                                },
+                                {
+                                    "id": 7,
+                                    "exerciseId": 3,
+                                    "orderNumber": 2,
+                                    "load": 8,
+                                    "reps": 10
+                                },
+                                5
+                            ]
+                        },
+                        {
+                            "id": 6,
+                            "orderNumber": 3,
+                            "scheduleStepId": 2,
+                            "scheduleItems": [
+                                {
+                                    "id": 8,
+                                    "exerciseId": 2,
+                                    "orderNumber": 1,
+                                    "load": 8,
+                                    "reps": 10,
+                                    "scheduleSetId": 6
+                                },
+                                {
+                                    "id": 9,
+                                    "exerciseId": 3,
+                                    "orderNumber": 2,
+                                    "load": 8,
+                                    "reps": 10
+                                },
+                                6
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
