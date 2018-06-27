@@ -7,8 +7,10 @@ var NewScheduleHandler = require('./api/handlers/NewSchedule.js');
 var LoadsHandler = require('./api/handlers/Loads.js');
 var NotesHandler = require('./api/handlers/Notes.js');
 var FrequenceHandler = require('./api/handlers/Frequences.js');
-
+var UserProfileHandler = require("./api/handlers/UserProfile.js");
+var AthleteInfoHandler = require("./api/handlers/AthleteInfo.js");
 var LoadHelper = require('./database/helpers/Load.js');
+var TrainerInfoHandler = require('./api/handlers/TrainerInfo.js');
 var fs = require('fs');
 
 var app = express();
@@ -43,6 +45,21 @@ app.get('/api/notes/userId/:userId/scheduleId/:scheduleId/lastUpdate/:lastUpdate
 app.get('/api/trainingFrequencesList/userId/:userId/lastUpdate/:lastUpdate', function(req, res){
     var frequenceHandler = new FrequenceHandler(req);
     frequenceHandler.dispatch(req,res);
+});
+
+app.get('/api/userProfile/userId/:userId', function(req, res){
+    var userProfileHandler = new UserProfileHandler(req);
+    userProfileHandler.dispatch(req, res);
+});
+
+app.get('/api/athleteInfo/userId/:userId', function(req, res){
+    var athleteInfoHandler = new AthleteInfoHandler(req);
+    athleteInfoHandler.dispatch(req, res);
+});
+
+app.get('/api/trainerInfo/userId/:userId', function(req, res){
+    var trainerInfoHandler = new TrainerInfoHandler(req);
+    trainerInfoHandler.dispatch(req, res);
 });
 //listen in a specific port
 app.listen((process.env.PORT || 8080));
