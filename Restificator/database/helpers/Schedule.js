@@ -7,10 +7,13 @@ var ScheduleStepEntity = require("../entities/ScheduleStep.js");
 var HttpStatus = require("../../common/HttpStatus.js");
 var ErrorType = require("../../common/ErrorType");
 var Error = require("../../common/Error.js");
-var ExerciseEntity = require('../entities/Exercise.js')
+var ExerciseEntity = require('../entities/Exercise.js');
+var Loadable = require('./Loadable.js');
 var FileReader = require('fs');
-module.exports = class Schedule{
+
+module.exports = class Schedule extends Loadable{
     constructor(){
+        super('./database/queries/insertSchedule.sql');
     }
     getNewScheduleByQuery(result){
         var schedule = null;
@@ -56,6 +59,7 @@ module.exports = class Schedule{
         //console.log(JSON.stringify(schedule, null, 4));
         return schedule;
     }
+
     getNewScheduleByLastScheduleAndUserId(lastScheduleId, userId){
         var self = this;
         var promiseFunction = function(resolve, reject){
@@ -123,4 +127,5 @@ module.exports = class Schedule{
         }
         return new Promise(promiseFunction);
     }
+
 }

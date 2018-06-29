@@ -1,20 +1,31 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var UpdatesHelper = require('./database/helpers/Updates.js');
+var HttpStatus = require("./common/HttpStatus.js");
+var ErrorType = require("./common/ErrorType");
+var Error = require("./common/Error.js");
 var UpdatesHandler = require('./api/handlers/ScheduleUpdates.js');
-var ScheduleHelper = require('./database/helpers/Schedule.js');
 var NewScheduleHandler = require('./api/handlers/NewSchedule.js');
 var LoadsHandler = require('./api/handlers/Loads.js');
 var NotesHandler = require('./api/handlers/Notes.js');
 var FrequenceHandler = require('./api/handlers/Frequences.js');
 var UserProfileHandler = require("./api/handlers/UserProfile.js");
 var AthleteInfoHandler = require("./api/handlers/AthleteInfo.js");
-var LoadHelper = require('./database/helpers/Load.js');
 var TrainerInfoHandler = require('./api/handlers/TrainerInfo.js');
+var PostSchedulePreprocessor = require('./api/preprocessors/PostSchedule.js');
+var Schedule = require('./database/helpers/Schedule.js');
+var PostScheduleHandler = require('./api/handlers/PostSchedule.js');
+
 var fs = require('fs');
 
 var app = express();
+//catch sintax request error
+
 app.use(bodyParser.json());
+app.use(function(err, req, res, next) {
+    if (err instanceof SyntaxError && err.status === 400) {
+        res.status(err.status).send(ErrorType.SINTAX_REQUEST_ERROR.errorDescription);
+    }   
+});
 /*
  Specifying userId and id of last schedule retrives if exist the last schedule created by trainer, if I pass null in lastScheduleId 
  the api retrives the last schedule
@@ -60,6 +71,16 @@ app.get('/api/athleteInfo/userId/:userId', function(req, res){
 app.get('/api/trainerInfo/userId/:userId', function(req, res){
     var trainerInfoHandler = new TrainerInfoHandler(req);
     trainerInfoHandler.dispatch(req, res);
+});
+
+
+
+/*+++++++++++++++++++++++++++++++++++++ POST METHODS +++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+
+app.post('/api/schedule', function(req, res){
+    var postScheduleHandler = new PostScheduleHandler();
+    postScheduleHandler.dispatch(req, res);
 });
 //listen in a specific port
 app.listen((process.env.PORT || 8080));
