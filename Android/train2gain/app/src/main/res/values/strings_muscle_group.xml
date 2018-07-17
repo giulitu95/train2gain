@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="muscle_group_chest">Petto</string>
+    <string name="muscle_group_triceps">Tricipite</string>
+    <string name="muscle_group_femoral">Femorale</string>
+    <string name="muscle_group_quadriceps">Quadricipite</string>
+    <string name="muscle_group_gluteus">Gluteo</string>
+    <string name="muscle_group_calf">Polpaccio</string>
+    <string name="muscle_group_abdominal">Addominale</string>
+    <string name="muscle_group_forearm">Avambraccio</string>
+    <string name="muscle_group_biceps">Bicipite</string>
+    <string name="muscle_group_posterior_deltoid">Deltoide posteriore</string>
+    <string name="muscle_group_deltoid">Deltoide</string>
+    <string name="muscle_group_dorsal">Dorsale</string>
+    <string name="muscle_group_general">Generale</string>
+    <string name="muscle_group_lumbar">Lombare</string>
+    <string name="muscle_group_trapezius">Trapezio</string>
+</resources>
