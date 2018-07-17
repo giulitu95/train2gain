@@ -28,7 +28,7 @@ import com.google.gson.annotations.SerializedName;
 public class ScheduleSetItem {
 
     // Table and columns name definitions
-    public static final String TABLE_NAME = "schedule_set";
+    public static final String TABLE_NAME = "schedule_set_item";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_REMOTE_ID = "remote_id";
     public static final String COLUMN_ORDER = "order";

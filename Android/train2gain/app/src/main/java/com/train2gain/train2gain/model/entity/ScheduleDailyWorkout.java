@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity(
-    tableName = ScheduleDailyWorkout.COLUMN_ID,
+    tableName = ScheduleDailyWorkout.TABLE_NAME,
     foreignKeys = {
         @ForeignKey(entity = Schedule.class, childColumns = ScheduleDailyWorkout.COLUMN_SCHEDULE_ID,
                 parentColumns = Schedule.COLUMN_ID, onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
