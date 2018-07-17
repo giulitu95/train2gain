@@ -1,5 +1,8 @@
 package com.train2gain.train2gain.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -9,31 +12,58 @@ import com.train2gain.train2gain.model.enums.UserType;
 
 import java.util.Date;
 
+@Entity(
+    tableName = User.TABLE_NAME,
+    primaryKeys = { User.COLUMN_ID },
+    indices = {
+        @Index(value = { User.COLUMN_SYNCED_WITH_SERVER })
+    }
+)
 public class User {
 
+    // Table and columns name definitions
+    public static final String TABLE_NAME = "user";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_TYPE = "type";
+    public static final String COLUMN_DISPLAY_NAME = "display_name";
+    public static final String COLUMN_EMAIL = "email";
+    public static final String COLUMN_PHOTO_URL = "photo_url";
+    public static final String COLUMN_REGISTRATION_DATE = "registration_date";
+    public static final String COLUMN_SYNCED_WITH_SERVER = "synced_with_server";
+
     @NonNull
+    @ColumnInfo(name = COLUMN_ID)
     @Expose @SerializedName("id")
     private long id = 0;
 
     @NonNull
+    @ColumnInfo(name = COLUMN_TYPE)
     @Expose @SerializedName("userType")
     private UserType type;
 
     @NonNull
+    @ColumnInfo(name = COLUMN_DISPLAY_NAME)
     @Expose @SerializedName("displayName")
     private String displayName;
 
     @NonNull
+    @ColumnInfo(name = COLUMN_EMAIL)
     @Expose @SerializedName("email")
     private String email;
 
     @Nullable
+    @ColumnInfo(name = COLUMN_PHOTO_URL)
     @Expose @SerializedName("profileImageUrl")
     private String photoUrl = null;
 
     @NonNull
+    @ColumnInfo(name = COLUMN_REGISTRATION_DATE)
     @Expose @SerializedName("registrationDate")
     private Date registrationDate;
+
+    @NonNull
+    @ColumnInfo(name = COLUMN_SYNCED_WITH_SERVER)
+    private boolean syncedWithServer = false;
 
 
     // GETTERS
@@ -62,6 +92,10 @@ public class User {
         return registrationDate;
     }
 
+    @NonNull public boolean isSyncedWithServer() {
+        return syncedWithServer;
+    }
+
 
     // SETTERS
 
@@ -87,6 +121,10 @@ public class User {
 
     public void setRegistrationDate(@NonNull Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public void setSyncedWithServer(@NonNull boolean syncedWithServer) {
+        this.syncedWithServer = syncedWithServer;
     }
 
 }

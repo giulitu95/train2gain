@@ -1,5 +1,9 @@
 package com.train2gain.train2gain.model.entity;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -8,27 +12,59 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+@Entity(
+    tableName = Athlete.TABLE_NAME,
+    primaryKeys = { Athlete.COLUMN_USER_ID},
+    foreignKeys = {
+        @ForeignKey(entity = Trainer.class, childColumns = Athlete.COLUMN_TRAINER_USER_ID, parentColumns = Trainer.COLUMN_USER_ID,
+                onDelete = ForeignKey.SET_NULL, onUpdate = ForeignKey.CASCADE),
+        @ForeignKey(entity = User.class, childColumns = Athlete.COLUMN_USER_ID, parentColumns = User.COLUMN_ID,
+                onDelete = ForeignKey.NO_ACTION, onUpdate = ForeignKey.CASCADE)
+    },
+    indices = {
+        @Index(value = { Athlete.COLUMN_TRAINER_USER_ID}),
+        @Index(value = { Athlete.COLUMN_SYNCED_WITH_SERVER })
+    }
+)
 public class Athlete {
 
+    // Table and columns name definitions
+    public static final String TABLE_NAME = "athlete";
+    public static final String COLUMN_USER_ID = "user_id";
+    public static final String COLUMN_WEIGHT = "weight";
+    public static final String COLUMN_HEIGHT = "height";
+    public static final String COLUMN_FIRST_WORKOUT_DATE = "first_workout_date";
+    public static final String COLUMN_TRAINER_USER_ID = "trainer_user_id";
+    public static final String COLUMN_SYNCED_WITH_SERVER = "synced_with_server";
+
     @NonNull
+    @ColumnInfo(name = COLUMN_USER_ID)
     @Expose @SerializedName("id")
     private long userId = 0;
 
     @Nullable
+    @ColumnInfo(name = COLUMN_WEIGHT)
     @Expose @SerializedName("weight")
     private int weight = -1;
 
     @Nullable
+    @ColumnInfo(name = COLUMN_HEIGHT)
     @Expose @SerializedName("height")
     private int height = -1;
 
     @Nullable
+    @ColumnInfo(name = COLUMN_FIRST_WORKOUT_DATE)
     @Expose @SerializedName("firstWorkoutDate")
     private Date firstWorkoutDate = null;
 
     @Nullable
+    @ColumnInfo(name = COLUMN_TRAINER_USER_ID)
     @Expose @SerializedName("trainerId")
     private long trainerUserId = -1;
+
+    @NonNull
+    @ColumnInfo(name = COLUMN_SYNCED_WITH_SERVER)
+    private boolean syncedWithServer = false;
 
 
     // GETTERS
@@ -53,6 +89,10 @@ public class Athlete {
         return trainerUserId;
     }
 
+    @NonNull public boolean isSyncedWithServer() {
+        return syncedWithServer;
+    }
+
 
     // SETTERS
 
@@ -74,6 +114,10 @@ public class Athlete {
 
     public void setTrainerUserId(@Nullable long trainerUserId) {
         this.trainerUserId = trainerUserId;
+    }
+
+    public void setSyncedWithServer(@NonNull boolean syncedWithServer) {
+        this.syncedWithServer = syncedWithServer;
     }
 
 }
