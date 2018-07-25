@@ -20,10 +20,10 @@ public class UserTypeConverter implements JsonDeserializer<UserType>, JsonSerial
      * @param jsonElement the JSON element containing the user type as int value
      * @param typeOfJsonElement
      * @param context
-     * @returna an UserType enum that represents the user type value read from JSON element, if no
+     * @returna a UserType enum that represents the user type value read from JSON element, if no
      *          errors has occurred, NULL otherwise
      * @throws JsonParseException Thrown if there was something wrong in the JSON element syntax
-     * @throws IllegalArgumentException Thrown if the user type value was not valid (not an UserType)
+     * @throws IllegalArgumentException Thrown if the user type value was not valid (not a UserType)
      */
     @Override
     public UserType deserialize(@NonNull JsonElement jsonElement, Type typeOfJsonElement,
@@ -38,7 +38,7 @@ public class UserTypeConverter implements JsonDeserializer<UserType>, JsonSerial
     }
 
     /**
-     * Converts an UserType enum into a JSON element representing it as int value
+     * Converts a UserType enum into a JSON element representing it as int value
      * @param userType the UserType enum that we want to convert into the JSON element value
      * @param typeOfUserType
      * @param context

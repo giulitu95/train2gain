@@ -43,7 +43,7 @@ public enum UserType {
     /**
      * Retrieves the UserType enum value corresponding to the given int value
      * @param key an int value representing a possible UserType enum value
-     * @return an UserType enum value if the given int value represents a valid UserType enum value
+     * @return a UserType enum value if the given int value represents a valid UserType enum value
      *         NULL otherwise
      */
     public static UserType getFromKey(int key){
