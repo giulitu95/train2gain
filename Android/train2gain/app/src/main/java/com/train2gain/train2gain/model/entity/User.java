@@ -3,12 +3,14 @@ package com.train2gain.train2gain.model.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.train2gain.train2gain.model.enums.UserType;
+import com.train2gain.train2gain.source.local.converter.UserTypeConverter;
 
 import java.util.Date;
 
@@ -19,6 +21,9 @@ import java.util.Date;
         @Index(value = { User.COLUMN_SYNCED_WITH_SERVER })
     }
 )
+@TypeConverters({
+    UserTypeConverter.class
+})
 public class User {
 
     // Table and columns name definitions

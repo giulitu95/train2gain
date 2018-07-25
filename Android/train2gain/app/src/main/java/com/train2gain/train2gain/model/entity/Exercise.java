@@ -2,17 +2,22 @@ package com.train2gain.train2gain.model.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.train2gain.train2gain.model.enums.MuscleGroup;
+import com.train2gain.train2gain.source.local.converter.MuscleGroupConverter;
 
 @Entity(
     tableName = Exercise.TABLE_NAME,
     primaryKeys = { Exercise.COLUMN_ID }
 )
+@TypeConverters({
+    MuscleGroupConverter.class
+})
 public class Exercise {
 
     // Table and columns name definitions

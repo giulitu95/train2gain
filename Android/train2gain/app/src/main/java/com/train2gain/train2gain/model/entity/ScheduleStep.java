@@ -6,12 +6,14 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.train2gain.train2gain.model.enums.ScheduleStepType;
+import com.train2gain.train2gain.source.local.converter.ScheduleStepTypeConverter;
 
 import java.util.List;
 
@@ -25,6 +27,9 @@ import java.util.List;
         @Index(value = { ScheduleStep.COLUMN_SCHEDULE_DAILY_WORKOUT_ID })
     }
 )
+@TypeConverters({
+    ScheduleStepTypeConverter.class
+})
 public class ScheduleStep {
 
     // Table and columns name definitions
