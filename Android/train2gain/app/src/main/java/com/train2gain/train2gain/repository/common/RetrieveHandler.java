@@ -13,12 +13,12 @@ import com.train2gain.train2gain.source.remote.response.APIResponse;
  * @param <ResultType> the Resource data type (Entity or List) returned to the caller
  * @param <ResponseType> the APIResponse data type returned from the API request
  */
-public abstract class ResourceHandler<ResultType, ResponseType> {
+public abstract class RetrieveHandler<ResultType, ResponseType> {
 
     // Result data from API / database
     private final MediatorLiveData<Resource<ResultType>> result;
 
-    protected ResourceHandler() {
+    protected RetrieveHandler() {
         this.result = new MediatorLiveData<Resource<ResultType>>();
         this.result.setValue(Resource.loading(null));
         LiveData<ResultType> databaseSource = loadFromDatabase();
