@@ -34,6 +34,7 @@ dependencies {
     def lifecycle_version = "1.1.1"
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation "android.arch.core:core-testing:$lifecycle_version"
 
     // Room Persistence Library
