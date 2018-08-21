@@ -44,7 +44,7 @@ public class GymHelper {
      */
     public boolean insertOrUpdateIfExists(Gym gym){
         boolean done = false;
-        if(gym == null){
+        if(gym != null){
             this.localDatabase.beginTransaction();
             long insertedId = this.gymDaoInstance.insert(gym);
             if(insertedId == -1){

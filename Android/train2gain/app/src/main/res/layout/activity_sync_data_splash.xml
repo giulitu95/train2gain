@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme_primary_dark"
+    android:gravity="center">
+
+    <!-- APP logo -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/image_app_logo" />
+
+    <!-- Data update info -->
+    <TextView
+        android:id="@+id/sync_data_splash_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_data_splash_info"
+        android:textAlignment="center"
+        android:textColor="@color/theme_text"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/sync_data_splash_info_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/sync_data_splash_info_2"
+        android:textAlignment="center"
+        android:textColor="@color/theme_text"
+        android:textSize="22sp" />
+
+    <ProgressBar
+        android:id="@+id/sync_data_splash_progress"
+        style="@android:style/Widget.Material.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/theme_progress_bar" />
+
+    <!-- Data update error + re-try button -->
+    <TextView
+        android:id="@+id/sync_data_splash_error"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_data_splash_error"
+        android:textAlignment="center"
+        android:textColor="@color/theme_text"
+        android:textSize="22sp" />
+
+    <Button
+        android:id="@+id/sync_data_splash_btn_try_again"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:minWidth="200dp"
+        android:padding="15dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:text="@string/sync_data_splash_btn_try_again"
+        android:textSize="22sp" />
+
+
+</LinearLayout>

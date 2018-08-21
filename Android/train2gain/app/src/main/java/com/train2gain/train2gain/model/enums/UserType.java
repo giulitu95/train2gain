@@ -5,8 +5,8 @@ import com.train2gain.train2gain.R;
 public enum UserType {
 
     /* Enum values */
-    ATHLETE(1, R.string.user_type_athlete),
-    TRAINER(2, R.string.user_type_trainer),
+    TRAINER(1, R.string.user_type_trainer),
+    ATHLETE(2, R.string.user_type_athlete),
     BOTH(3, R.string.user_type_both);
 
     /* Enum properties */

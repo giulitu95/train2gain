@@ -2,6 +2,7 @@ package com.train2gain.train2gain.model.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
@@ -70,6 +71,19 @@ public class User {
     @ColumnInfo(name = COLUMN_SYNCED_WITH_SERVER)
     private boolean syncedWithServer = false;
 
+
+    public User(){
+
+    }
+
+    @Ignore
+    public User(int id, UserType type, String displayName, String email, Date registrationDate){
+        this.id = id;
+        this.type = type;
+        this.displayName = displayName;
+        this.email = email;
+        this.registrationDate = registrationDate;
+    }
 
     // GETTERS
 

@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App misc -->
     <string name="app_name">Train2Gain</string>
+
+    <!-- Navigation drawer (main activity) -->
+    <string name="menu_home">Home</string>
+    <string name="menu_new_schedule">Crea nuova schedina</string>
+    <string name="menu_daily_workout">Allenamento del giorno</string>
+    <string name="menu_scheduled_trainings">Allenamenti programmati</string>
+    <string name="menu_scheduled_daily_workout">Giorno %1$s</string>
+    <string name="menu_manage_users">Gestisci utenti</string>
+    <string name="menu_settings">Impostazioni</string>
+    <string name="menu_profile">Profilo</string>
+    <string name="menu_logout">Esci</string>
+
+    <!-- Athlete Home -->
+    <string name="home_daily_workout">Passa all\'allenamento di oggi</string>
+
+    <!-- Trainer Home -->
+    <string name="home_new_schedule">Crea un nuovo programma</string>
+    <string name="home_manage_users">Gestisci utenti</string>
+
+    <!-- Sync Data Splash -->
+    <string name="sync_data_splash_info">Aggiornamento dei dati in corso</string>
+    <string name="sync_data_splash_info_2">Attendi qualche istante</string>
+    <string name="sync_data_splash_error">Errore durante l\'aggiornamento dei dati</string>
+    <string name="sync_data_splash_btn_try_again">Riprova</string>
 </resources>

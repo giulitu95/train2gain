@@ -20,7 +20,7 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
 
     protected RetrieveHandler() {
         this.result = new MediatorLiveData<Resource<ResultType>>();
-        this.result.setValue(Resource.loading(null));
+        this.result.postValue(Resource.loading(null));
         LiveData<ResultType> databaseSource = loadFromDatabase();
         result.addSource(databaseSource, data -> {
             result.removeSource(databaseSource);
@@ -28,7 +28,7 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
                 fetchFromAPI(databaseSource);
             }else{
                 result.addSource(databaseSource, newData -> {
-                    result.setValue(Resource.success(newData));
+                    result.postValue(Resource.success(newData));
                 });
             }
         });
@@ -42,7 +42,7 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
     private void fetchFromAPI(final LiveData<ResultType> databaseSource){
         LiveData<APIResponse<ResponseType>> APISource = loadFromAPI();
         result.addSource(databaseSource, data -> {
-            result.setValue(Resource.loading(data));
+            result.postValue(Resource.loading(data));
         });
         result.addSource(APISource, response -> {
             result.removeSource(APISource);
@@ -53,11 +53,11 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
                 onFetchFromAPIFailed();
                 if(response.getStatus() == APIResponse.Status.ERROR){
                     result.addSource(databaseSource, data -> {
-                        result.setValue(Resource.error(data, response.getError().getMessage()));
+                        result.postValue(Resource.error(data, response.getError().getMessage()));
                     });
                 }else if(response.getStatus() == APIResponse.Status.FAILURE){
                     result.addSource(databaseSource, data -> {
-                        result.setValue(Resource.error(data, response.getThrowable().getMessage()));
+                        result.postValue(Resource.error(data, response.getThrowable().getMessage()));
                     });
                 }
             }
@@ -70,17 +70,26 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
      * @param response the response data object returned by the API service
      */
     private void saveAPIResponseAndUpdateDatabase(@NonNull APIResponse<ResponseType> response) {
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
-            protected Void doInBackground(Void... voids) {
-                saveAPIResponse(response.getData());
-                return null;
+            protected Boolean doInBackground(Void... voids) {
+                if(response.getData().getContent() != null){
+                    return saveAPIResponse(response.getData());
+                }
+                return true;
             }
             @Override
-            protected void onPostExecute(Void aVoid) {
-                result.addSource(loadFromDatabase(), newData -> {
-                    result.setValue(Resource.success(newData));
-                });
+            protected void onPostExecute(Boolean inserted) {
+                if(inserted == true){
+                    result.addSource(loadFromDatabase(), newData -> {
+                        result.postValue(Resource.success(newData));
+                    });
+                }else{
+                    result.addSource(loadFromDatabase(), oldData -> {
+                        result.postValue(Resource.error(oldData, "DATABASE INSERT ERROR"));
+                    });
+                }
+
             }
         }.execute();
     }
@@ -102,7 +111,7 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
      * Called to save the result of API response into the database
      * @param responseData data retrieved from network which is stored in the API response
      */
-    protected abstract void saveAPIResponse(@NonNull APIData<ResponseType> responseData);
+    protected abstract Boolean saveAPIResponse(@NonNull APIData<ResponseType> responseData);
 
     /**
      * Called to retrieve / load data from an API endpoint

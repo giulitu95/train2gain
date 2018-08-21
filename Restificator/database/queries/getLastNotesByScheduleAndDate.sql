@@ -2,7 +2,8 @@ SELECT
 note.id AS note_id, 
 note.text AS note_text, 
 note.schedule_step_id AS note_scheduleStepId, 
-note.date AS note_date
+note.date AS note_date,
+note.author_id AS note_authorId
 
 FROM
 schedule INNER JOIN daily_workout ON schedule.id = daily_workout.schedule_id

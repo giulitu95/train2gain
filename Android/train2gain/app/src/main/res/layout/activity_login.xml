@@ -8,7 +8,7 @@
     android:background="#424242"
 
     style="@style/app_theme"
-    tools:context=".ui.LoginActivity">
+    tools:context=".ui.activity.LoginActivity">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="150dp"
