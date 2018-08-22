@@ -164,4 +164,15 @@ public class ScheduleHelper {
         return this.scheduleDaoImpl.getByAthleteAndTrainerUserId(athleteUserId, trainerUserId);
     }
 
+    /**
+     * Retrieves the current schedule (current active schedule) for the given athlete
+     * @param athleteUserId for which athlete user we want to retrieve the schedule
+     * @return the current athlete's schedule, if some results has been returned from the database,
+     *         NULL otherwise
+     */
+    public Schedule getCurrentByAthleteUserId(long athleteUserId){
+        long currentScheduleId = this.scheduleDaoImpl.getCurrentScheduleIdByAthleteUserId(athleteUserId);
+        return getById(currentScheduleId);
+    }
+
 }
