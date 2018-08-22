@@ -7,5 +7,4 @@ FROM
 frequence
 WHERE
 athlete_id = ? AND
-date > ? AND
-date >= DATE_SUB(NOW(), INTERVAL 90	 DAY);
+date > ?

@@ -13,7 +13,7 @@ module.exports = class Note{
         } else{
             var notes = [];
             for(var i = 0; i < result.length; i++){
-                var note = new NoteEntity(result[i].note_id, result[i].note_text, result[i].note_scheduleStepId, new Date(result[i].note_date).getTime(), result[i].note_authorId);
+                var note = new NoteEntity(result[i].note_id, result[i].note_text, result[i].note_scheduleStepId, result[i].note_date);
                 notes.push(note);
             }
             //console.log(JSON.stringify(loads, null, 4));

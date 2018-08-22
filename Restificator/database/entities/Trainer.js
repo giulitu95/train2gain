@@ -1,7 +1,6 @@
 module.exports = class Trainer{
-    constructor(id, gymId, gym){
+    constructor(id, gymName){
         this.id = id;
-        this.gymId = gymId;
-        this.gym = gym;
+        this.gymName = gymName;
     }
 }

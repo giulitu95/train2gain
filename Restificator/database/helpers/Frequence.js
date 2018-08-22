@@ -13,7 +13,7 @@ module.exports = class Frequence{
         } else{
             var frequences = [];
             for(var i = 0; i < result.length; i++){
-                var frequence = new FrequenceEntity(result[i].frequence_id, new Date(result[i].frequence_date).getTime(), result[i].frequence_dailyWorkoutId, result[i].frequence_athleteId);
+                var frequence = new FrequenceEntity(result[i].frequence_id, result[i].frequence_date, result[i].frequence_dailyWorkoutId, result[i].frequence_athleteId);
                 frequences.push(frequence);
             }
             //console.log(JSON.stringify(loads, null, 4));

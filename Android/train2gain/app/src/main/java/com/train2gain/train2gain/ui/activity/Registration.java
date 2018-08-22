@@ -34,6 +34,7 @@ import com.train2gain.train2gain.repository.UserRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -50,10 +51,13 @@ public class Registration extends AppCompatActivity {
     private Button registerButton;
     private EditText tokenText;
     private RequestQueue queue;
-    private int trainerId;
     private FirebaseAuth authManager;
     private Trainer trainer;
     private User trainerUser;
+    private TextView trainerLabel;
+    private UserType userType;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -69,8 +73,10 @@ public class Registration extends AppCompatActivity {
         this.registerButton = findViewById(R.id.registration_register_btn);
         this.tokenText = findViewById(R.id.token_txt);
         this.authManager = FirebaseAuth.getInstance();
-        registerButton.setOnClickListener(new RegistrationButtonListener());
+        this.registerButton.setOnClickListener(new RegistrationButtonListener());
         this.queue = Volley.newRequestQueue(this);
+        this.trainerLabel = findViewById(R.id.registration_trainarName_label);
+        this.userType = null;
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -81,6 +87,8 @@ public class Registration extends AppCompatActivity {
                 }
             }
         });
+
+        //whent the text in token editText change send an api request to the server to check if exist a trainer qwith that token
         tokenText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -94,6 +102,7 @@ public class Registration extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                //if token is empty hide the label
                 if(!tokenText.getText().toString().equals("")){
                     findViewById(R.id.registration_ladingTrainer_container).setVisibility(View.VISIBLE);
                     findViewById(R.id.registration_trainerName_container).setVisibility(View.GONE);
@@ -102,70 +111,7 @@ public class Registration extends AppCompatActivity {
                     findViewById(R.id.registration_trainerName_container).setVisibility(View.GONE);
                 }
                 //For every key pressed start a thread with a timeout, if after the timeout any outher key is pressed the client start the request to the server
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            String before = tokenText.getText().toString();
-                            sleep(800);
-                            if(before.equals(tokenText.getText().toString())){
-                                // Instantiate the RequestQueue.
-                                String url ="https://train2gainrest.herokuapp.com/api/trainer/token/" + tokenText.getText();
-                                // Request a string response from the provided URL.
-                                StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        findViewById(R.id.registration_ladingTrainer_container).setVisibility(View.GONE);
-                                        findViewById(R.id.registration_trainerName_container).setVisibility(View.VISIBLE);
-                                        TextView mTextView = findViewById(R.id.registration_trainarName_label);
-                                        try {
-                                            JSONObject json = new JSONObject(response);
-                                            if(json.get("content") instanceof  JSONObject){
-                                                JSONObject content = (JSONObject) json.get("content");
-                                                mTextView.setTextColor(Color.GREEN);
-                                                mTextView.setText((String)content.get("displayName"));
-                                                trainerId = content.getInt("id");
-                                                Gym gym = new Gym();
-                                                JSONObject trainerJSON = (JSONObject) content.get("trainer");
-                                                JSONObject gymJSON = (JSONObject) trainerJSON.get("gym");
-                                                gym.setId(gymJSON.getInt("id"));
-                                                gym.setLogoUrl(gymJSON.getString("logoUrl"));
-                                                gym.setName(gymJSON.getString("gymName"));
-                                                trainer = new Trainer();
-                                                trainer.setGym(gym);
-                                                trainer.setUserId(trainerJSON.getInt("id"));
-                                                trainer.setGymId(trainerJSON.getInt("gymId"));
-                                                trainerUser = new User();
-                                                trainerUser.setDisplayName(content.getString("displayName"));
-                                                trainerUser.setEmail(content.getString("email"));
-                                                trainerUser.setId(content.getInt("id"));
-                                                trainerUser.setPhotoUrl(content.getString("profileImageUrl"));
-                                                trainerUser.setRegistrationDate(null); //////////////////////////////////////////////////TODO
-                                                trainerUser.setType(UserType.getFromKey(content.getInt("userType")));
-                                            } else {
-                                                mTextView.setTextColor(Color.RED);
-                                                mTextView.setText("non ho trovato trainer con questo nome");
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.d("res", "error");
-                                    }
-                                });
-                                // Add the request to the RequestQueue.
-                                queue.add(stringRequest);
-                            }
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-
+                Thread thread = new TokenTrainerThread();
                 thread.start();
 
             }
@@ -173,6 +119,84 @@ public class Registration extends AppCompatActivity {
 
     }
 
+    class TokenTrainerThread extends Thread{
+        @Override
+        public void run(){
+            try {
+                String beforeToken = tokenText.getText().toString();
+                sleep(800);
+                String updatedToken = tokenText.getText().toString();
+                if(beforeToken.equals(updatedToken)){
+
+                    String url ="https://train2gainrest.herokuapp.com/api/trainer/token/" + tokenText.getText().toString();
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            findViewById(R.id.registration_ladingTrainer_container).setVisibility(View.GONE);
+                            findViewById(R.id.registration_trainerName_container).setVisibility(View.VISIBLE);
+
+                            try {
+                                JSONObject json = new JSONObject(response);
+                                //check if exixt a trainer with this token
+                                if(json.get("content") instanceof  JSONObject){
+                                    JSONObject content = (JSONObject) json.get("content");
+                                    trainerLabel.setTextColor(Color.GREEN);
+                                    trainerLabel.setText((String)content.get("displayName"));
+
+
+                                    //******** Fill java objects with JSON relatives JSON fields +++++++++++++
+                                    // require values from json
+                                    JSONObject trainerJSON = (JSONObject) content.get("trainer");
+                                    JSONObject gymJSON = (JSONObject) trainerJSON.get("gym");
+
+                                    //instantiation of a  gym
+                                    Gym gym = new Gym();
+                                    gym.setId(gymJSON.getInt("id"));
+                                    gym.setLogoUrl(gymJSON.getString("logoUrl"));
+                                    gym.setName(gymJSON.getString("gymName"));
+
+                                    //instantiation of a trainer
+                                    trainer = new Trainer();
+                                    trainer.setGym(gym);
+                                    trainer.setUserId(trainerJSON.getInt("id"));
+                                    trainer.setGymId(trainerJSON.getInt("gymId"));
+
+                                    //instantiation of a user
+                                    trainerUser = new User();
+                                    trainerUser.setDisplayName(content.getString("displayName"));
+                                    trainerUser.setEmail(content.getString("email"));
+                                    trainerUser.setId(content.getInt("id"));
+                                    trainerUser.setPhotoUrl(content.getString("profileImageUrl"));
+                                    trainerUser.setRegistrationDate(new Date(content.getInt("registrationDate")));
+                                    trainerUser.setType(UserType.getFromKey(content.getInt("userType")));
+                                } else {
+                                    trainerLabel.setTextColor(Color.RED);
+                                    trainerLabel.setText("non ho trovato trainer con questo nome");
+                                }
+                            } catch (JSONException e) {
+                                trainerLabel.setTextColor(Color.RED);
+                                trainerLabel.setText("mmh c'è qualcosa che non va");
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            trainerLabel.setTextColor(Color.RED);
+                            trainerLabel.setText("mmh c'è qualcosa che non va");
+                        }
+                    });
+                    // Add the request to the RequestQueue.
+                    queue.add(stringRequest);
+                }
+
+            } catch (InterruptedException e) {
+                trainerLabel.setTextColor(Color.RED);
+                trainerLabel.setText("mmh c'è qualcosa che non va");
+                e.printStackTrace();
+            }
+        }
+    }
 
     class RegistrationButtonListener implements View.OnClickListener{
 
@@ -183,17 +207,16 @@ public class Registration extends AppCompatActivity {
             String name = nameText.getText().toString();
             String lastName = lastNameText.getText().toString();
             String confirmPassword = confirmPasswordText.getText().toString();
-            UserType  userType;
-
             TextView error = findViewById(R.id.registration_error_txt);
+
+            //check userType choice
             if(userTypeRadio.getCheckedRadioButtonId() == R.id.athlete_radio){
                 userType = UserType.ATHLETE;
             } else if(userTypeRadio.getCheckedRadioButtonId() == R.id.coach_radio){
                 userType = UserType.TRAINER;
-            } else{
-                userType = null;
             }
 
+            //check if all field are correctly filled
             if(name.equals("")){
                 error.setText("Inserisci il tuo nome");
             } else if(lastName.equals("")){
@@ -206,30 +229,37 @@ public class Registration extends AppCompatActivity {
                 error.setText("Devi confermare la tua password");
             } else if(!confirmPassword.equals(password)){
                 error.setText("password diverse");
+            } else if(userType == null){
+                error.setText("seleziona la tipologia di utente");
             } else {
+                //show loading container
                 findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
                 TextView loadingLabel =  findViewById(R.id.registration_loadingInfo_label);
                 loadingLabel.setText("Upload delle informazioni");
+
+                //send registration request to firebase
                 authManager.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Registration.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         TextView error = findViewById(R.id.registration_error_txt);
                         if (task.isSuccessful()) {
                             String firebaseUid = authManager.getCurrentUser().getUid();
+                            //convert firebase string id to remoote database int id
                             int databaseUid = firebaseUid.hashCode();
                             Date currentTime = Calendar.getInstance().getTime();
                             User athleteUser = new User(databaseUid, userType, name.concat(" ").concat(lastName), email, currentTime);
+                            //TODO: upload profile image
                             UserRepository userRepository = UserRepository.getInstance(Registration.this);
                             userRepository.uploadUser(athleteUser);
                             userRepository.localSaveUser(trainerUser);
                             TrainerRepository trainerRepository = TrainerRepository.getInstance(Registration.this);
                             trainerRepository.localSaveTrainer(trainer);
                             Intent startActityIntent = new Intent(Registration.this, AddAthleteInfoActivity.class);
-                            startActityIntent.putExtra("trainerId", trainerId);
-                            startActityIntent.putExtra("athleteId", databaseUid);
+                            startActityIntent.putExtra("trainerId", trainerUser.getId());
+                            startActityIntent.putExtra("athleteId", athleteUser.getId());
                             startActivity(startActityIntent);
                         } else {
-                            error.setText("qualcosa è andato storto");
+                            error.setText("oops qualcosa è andato storto");
                         }
                     }
                 });

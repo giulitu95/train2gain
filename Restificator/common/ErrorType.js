@@ -23,12 +23,6 @@ ErrorType.initEnum({
     },
     DATE_ERROR:{
         errorDescription: "Sorry, you must select a valid timestamp date"
-    },
-    SINTAX_REQUEST_ERROR: {
-        errorDescription: "Sorry, this is an invalid sintax request"
-    },
-    JSON_FORMAT_ERROR: {
-        errorDescription: "Sorry, the JSON object contain wrong informations"
     }
 });
 
