@@ -14,19 +14,25 @@
         android:supportsRtl="true"
         android:theme="@style/app_theme">
 
+
         <!-- Activities -->
         <activity android:name=".ui.activity.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>!
         </activity>
         <activity android:name=".ui.activity.LoginActivity" />
-        <activity android:name=".ui.activity.Registration" />
-        <activity android:name=".ui.activity.AddAthleteInfoActivity" />
-        <activity android:name=".ui.activity.SyncDataSplashActivity" />
-        <activity android:name=".ui.activity.MainActivity" />
-    </application>
+        <activity android:name=".ui.activity.Registration"></activity>
+        <activity android:name=".ui.activity.AddAthleteInfoActivity"></activity>
+        <activity android:name=".ui.activity.SyncDataSplashActivity">
+         <!--   <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>!-->
+        </activity>
+        <activity android:name=".ui.activity.MainActivity" />
+        </application>
 </manifest>

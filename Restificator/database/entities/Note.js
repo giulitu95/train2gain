@@ -1,7 +1,6 @@
 module.exports = class Note{
-    constructor(id, text, scheduleStepId, date, authorId){
+    constructor(id, text, scheduleStepId, date){
         this.id = id;
-        this.authorId = authorId,
         this.text = text;
         this.scheduleStepId = scheduleStepId;
         this.date = date;

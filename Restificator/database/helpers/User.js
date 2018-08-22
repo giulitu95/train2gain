@@ -213,7 +213,7 @@ module.exports = class User extends Loadable{
                                     if(result.length === 0){
                                         resolve(null);
                                     } else {
-                                        var user = new UserEntity(result[0].user_id, result[0].user_email, null, result[0].user_displayName, result[0].user_type, result[0].user_registrationDate, result[0].user_profileImageUrl);
+                                        var user = new UserEntity(result[0].user_id, result[0].user_email, null, result[0].user_displayName, result[0].user_type, new Date(result[0].user_registrationDate).getTime(), result[0].user_profileImageUrl);
                                         var trainer = new TrainerEntity(result[0].user_id, result[0].gym_id, new GymEntity(result[0].gym_id, result[0].gym_name, result[0].gym_logoUrl))
                                         user.trainer = trainer;
                                         connection.release();
