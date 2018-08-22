@@ -16,8 +16,6 @@ import java.util.Date;
     tableName = Athlete.TABLE_NAME,
     primaryKeys = { Athlete.COLUMN_USER_ID},
     foreignKeys = {
-       /* @ForeignKey(entity = Trainer.class, childColumns = Athlete.COLUMN_TRAINER_USER_ID, parentColumns = Trainer.COLUMN_USER_ID,
-                onDelete = ForeignKey.SET_NULL, onUpdate = ForeignKey.CASCADE),*/
         @ForeignKey(entity = User.class, childColumns = Athlete.COLUMN_USER_ID, parentColumns = User.COLUMN_ID,
                 onDelete = ForeignKey.NO_ACTION, onUpdate = ForeignKey.CASCADE)
     },
