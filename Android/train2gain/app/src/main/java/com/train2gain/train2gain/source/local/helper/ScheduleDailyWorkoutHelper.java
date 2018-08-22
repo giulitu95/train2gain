@@ -74,7 +74,7 @@ public class ScheduleDailyWorkoutHelper {
                         if(tmpScheduleStepList != null && !tmpScheduleStepList.isEmpty()){
                             for(ScheduleStep scheduleStep : tmpScheduleStepList){
                                 if(scheduleStep != null){
-                                    scheduleStep.setId(scheduleDailyWorkoutIds[i]);
+                                    scheduleStep.setScheduleDailyWorkoutId(scheduleDailyWorkoutIds[i]);
                                     scheduleStepList.add(scheduleStep);
                                 }else{
                                     scheduleStepList = null;
