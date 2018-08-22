@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="150dp"
         android:id="@+id/gym_logo"
-        android:src="@drawable/gym_logo"/>
+        android:src="@drawable/image_app_logo"/>
     <TextView
         android:text="train2gain"
         android:fontFamily="sans-serif"

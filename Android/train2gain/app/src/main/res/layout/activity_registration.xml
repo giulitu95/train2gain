@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="120dp"
         android:id="@+id/gym_logo"
-        android:src="@drawable/gym_logo"/>
+        android:src="@drawable/image_app_logo"/>
     <TextView
         android:text="Crea il tuo profilo..."
         android:gravity="center"
@@ -31,7 +31,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:src="@drawable/add_user"
+            android:src="@drawable/image_registration_add_user_picture"
             android:layout_weight="3"
             android:layout_gravity="center"/>
         <LinearLayout
