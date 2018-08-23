@@ -165,14 +165,13 @@ public class ScheduleHelper {
     }
 
     /**
-     * Retrieves the current schedule (current active schedule) for the given athlete
-     * @param athleteUserId for which athlete user we want to retrieve the schedule
-     * @return the current athlete's schedule, if some results has been returned from the database,
-     *         NULL otherwise
+     * Retrieves the current (active) schedule's ID for the given athlete
+     * @param athleteUserId for which athlete user we want to retrieve the current schedule's ID
+     * @return the current schedule's ID, if some results has been returned from the database,
+     *         -1 otherwise
      */
-    public Schedule getCurrentByAthleteUserId(long athleteUserId){
-        long currentScheduleId = this.scheduleDaoImpl.getCurrentScheduleIdByAthleteUserId(athleteUserId);
-        return getById(currentScheduleId);
+    public long getCurrentScheduleIdByAthleteUserId(long athleteUserId){
+        return this.scheduleDaoImpl.getCurrentScheduleIdByAthleteUserId(athleteUserId);
     }
 
 }
