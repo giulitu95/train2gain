@@ -25,7 +25,7 @@ module.exports = class PostAthlete extends ApplicationHandlerSkeleton{
     processRequest(res, attributes){
         var athleteHelper = new AthleteHelper();
         var self = this;
-        athleteHelper.insert([[attributes.id, attributes.weight, attributes.height, new Date(attributes.first_workout_date), attributes.trainer_id, new Date()]]).then(function(){
+        athleteHelper.insert([[attributes.id, attributes.weight, attributes.height, new Date(attributes.firstWorkoutDate), attributes.trainerId, new Date()]]).then(function(){
             var httpResponse = new Response(new Date().getTime(), null);
             var json = JSON.stringify(httpResponse);
             res.writeHead(200, {'Content-Type': 'application/json', 'Accept': 'application/json'});

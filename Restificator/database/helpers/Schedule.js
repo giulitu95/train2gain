@@ -7,10 +7,13 @@ var ScheduleStepEntity = require("../entities/ScheduleStep.js");
 var HttpStatus = require("../../common/HttpStatus.js");
 var ErrorType = require("../../common/ErrorType");
 var Error = require("../../common/Error.js");
-var ExerciseEntity = require('../entities/Exercise.js')
+var ExerciseEntity = require('../entities/Exercise.js');
+var Loadable = require('./Loadable.js');
 var FileReader = require('fs');
-module.exports = class Schedule{
+
+module.exports = class Schedule extends Loadable{
     constructor(){
+        super('./database/queries/insertSchedule.sql');
     }
     getNewScheduleByQuery(result){
         var schedule = null;
@@ -56,6 +59,7 @@ module.exports = class Schedule{
         //console.log(JSON.stringify(schedule, null, 4));
         return schedule;
     }
+
     getNewScheduleByLastScheduleAndUserId(lastScheduleId, userId){
         var self = this;
         var promiseFunction = function(resolve, reject){
@@ -123,4 +127,49 @@ module.exports = class Schedule{
         }
         return new Promise(promiseFunction);
     }
+
+    getScheduleListByQuery(result){
+        var scheduleList = [];
+        if(result.length == 0){
+            return null;
+        }
+        for(var i = 0; i < result.length; i++){
+            var schedule = new ScheduleEntity(result[i].schedule_id, new Date(result[i].schedule_startDate).getTime(), result[i].schedule_trainerId, result[i].schedule_athleteId);
+            scheduleList.push(schedule);
+        }
+        return scheduleList;
+    }
+    getScheduleListByUserIdAndLastUpdate(userId, lastUpdate){
+        var self = this;
+        var promiseFunction = function(resolve, reject){
+
+            pool.getConnection(function(err, connection){
+                if(err){
+                    var error = new Error(HttpStatus.INTERNAL_SERVER_ERROR, ErrorType.DB_CONNECTION_ERROR);
+                    reject(error);   
+                } else{
+                    //read query sql from file
+                    FileReader.readFile('./database/queries/getScheduleListByUserAndLastUpdate.sql', 'utf8', function(err, sqlQuery){
+                        if(err){
+                            var error = new Error(HttpStatus.INTERNAL_SERVER_ERROR, ErrorType.DB_CONNECTION_ERROR);
+                            reject(error)
+                        } else{
+                            connection.query(sqlQuery, [userId, lastUpdate], function(err, result){
+                                if(err){
+                                    var error = new Error(HttpStatus.INTERNAL_SERVER_ERROR, ErrorType.DB_CONNECTION_ERROR);
+                                    connection.release();
+                                    reject(error)
+                                } else {
+                                    connection.release();
+                                    resolve(self.getScheduleListByQuery(result));
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        return new Promise(promiseFunction);
+    }
+
 }
