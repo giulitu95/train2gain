@@ -18,8 +18,8 @@ import com.train2gain.train2gain.repository.AthleteRepository;
 import java.util.Calendar;
 
 public class AddAthleteInfoActivity extends AppCompatActivity {
-    private int trainerId;
-    private int athleteId;
+    private long trainerId;
+    private long athleteId;
     private EditText weightText;
     private EditText heightText;
     private EditText firstWorkoutDateText;
@@ -28,8 +28,8 @@ public class AddAthleteInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.trainerId =  getIntent().getIntExtra("trainerId", 1);
-        this.athleteId = getIntent().getIntExtra("athleteId", 1);
+        this.trainerId =  getIntent().getLongExtra("trainerId", 1);
+        this.athleteId = getIntent().getLongExtra("athleteId", 1);
         setContentView(R.layout.activity_addathleteinfo);
         weightText = findViewById(R.id.addathleteinfo_weight_text);
         heightText = findViewById(R.id.addathleteinfo_height_text);

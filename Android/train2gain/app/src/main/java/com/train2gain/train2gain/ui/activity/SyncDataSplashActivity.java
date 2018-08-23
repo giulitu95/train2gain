@@ -25,7 +25,7 @@ public class SyncDataSplashActivity extends AppCompatActivity implements SyncDat
 
         // Init user for which we want info
         // TODO fix this, get from parameters
-
+        userId = getIntent().getLongExtra(this.USER_ID_PARAM, 1);
         // Init Sync thread task
         Button tryAgainButton = (Button) findViewById(R.id.sync_data_splash_btn_try_again);
         tryAgainButton.setOnClickListener((View listenerView) -> {
