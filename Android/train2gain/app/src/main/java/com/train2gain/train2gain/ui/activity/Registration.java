@@ -1,7 +1,10 @@
 package com.train2gain.train2gain.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +14,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
+import de.hdodenhof.circleimageview.CircleImageView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.Gym;
 import com.train2gain.train2gain.model.entity.Trainer;
@@ -36,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -56,8 +62,8 @@ public class Registration extends AppCompatActivity {
     private User trainerUser;
     private TextView trainerLabel;
     private UserType userType;
-
-
+    private CircleImageView addProfileImage;
+    static final int ACTIVITY_SELECT_IMAGE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -76,6 +82,7 @@ public class Registration extends AppCompatActivity {
         this.registerButton.setOnClickListener(new RegistrationButtonListener());
         this.queue = Volley.newRequestQueue(this);
         this.trainerLabel = findViewById(R.id.registration_trainarName_label);
+        this.addProfileImage = findViewById(R.id.registration_addProfileImage);
         this.userType = null;
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -85,6 +92,13 @@ public class Registration extends AppCompatActivity {
                 } else {
                     tokenText.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        this.addProfileImage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                openGallery();
             }
         });
 
@@ -118,6 +132,18 @@ public class Registration extends AppCompatActivity {
         });
 
     }
+    private void openGallery(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, this.ACTIVITY_SELECT_IMAGE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        if(requestCode == this.ACTIVITY_SELECT_IMAGE && resultCode == RESULT_OK){
+            Uri selectedImageUri = imageReturnedIntent.getData();
+            addProfileImage.setImageURI(selectedImageUri);
+        }
+    }
+
 
     class TokenTrainerThread extends Thread{
         @Override
