@@ -9,6 +9,7 @@ import com.train2gain.train2gain.source.local.dao.ScheduleDailyWorkoutDao;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class ScheduleDailyWorkoutHelper {
@@ -56,27 +57,31 @@ public class ScheduleDailyWorkoutHelper {
         boolean done = false;
         if(scheduleDailyWorkoutList != null && !scheduleDailyWorkoutList.isEmpty()){
             this.localDatabase.beginTransaction();
-            for(ScheduleDailyWorkout scheduleDailyWorkout : scheduleDailyWorkoutList){
+            for(Iterator<ScheduleDailyWorkout> iterator = scheduleDailyWorkoutList.iterator();
+                iterator.hasNext();){
+                ScheduleDailyWorkout scheduleDailyWorkout = iterator.next();
                 if(scheduleDailyWorkout != null && scheduleDailyWorkout.getRemoteId() != -1){
-                    boolean isPresent = this.scheduleDailyWorkoutDaoInstance.checkByRemoteId(scheduleDailyWorkout.getRemoteId());
+                    boolean isPresent = this.scheduleDailyWorkoutDaoInstance
+                            .checkByRemoteId(scheduleDailyWorkout.getRemoteId());
                     if(isPresent == true){
-                        scheduleDailyWorkoutList.remove(scheduleDailyWorkout);
+                        iterator.remove();
                     }
                 }
             }
             if(!scheduleDailyWorkoutList.isEmpty()){
-                long[] scheduleDailyWorkoutIds = this.scheduleDailyWorkoutDaoInstance.insert(scheduleDailyWorkoutList);
+                long[] scheduleDailyWorkoutIds = this.scheduleDailyWorkoutDaoInstance
+                        .insert(scheduleDailyWorkoutList);
                 List<ScheduleStep> scheduleStepList = new ArrayList<ScheduleStep>();
                 for(int i=0; (i<scheduleDailyWorkoutIds.length) && (scheduleStepList != null); i++){
                     if(scheduleDailyWorkoutIds[i] != -1){
                         ScheduleDailyWorkout scheduleDailyWorkout = scheduleDailyWorkoutList.get(i);
                         List<ScheduleStep> tmpScheduleStepList = scheduleDailyWorkout.getScheduleStepList();
                         if(tmpScheduleStepList != null && !tmpScheduleStepList.isEmpty()){
-                            for(ScheduleStep scheduleStep : tmpScheduleStepList){
-                                if(scheduleStep != null){
-                                    scheduleStep.setId(scheduleDailyWorkoutIds[i]);
+                            for(ScheduleStep scheduleStep : tmpScheduleStepList) {
+                                if (scheduleStep != null) {
+                                    scheduleStep.setScheduleDailyWorkoutId(scheduleDailyWorkoutIds[i]);
                                     scheduleStepList.add(scheduleStep);
-                                }else{
+                                } else {
                                     scheduleStepList = null;
                                     break;
                                 }

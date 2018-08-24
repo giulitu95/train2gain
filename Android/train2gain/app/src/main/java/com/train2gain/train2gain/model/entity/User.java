@@ -77,7 +77,8 @@ public class User {
     }
 
     @Ignore
-    public User(int id, UserType type, String displayName, String email, Date registrationDate){
+    public User(long id, @NonNull UserType type, @NonNull String displayName,
+                @NonNull String email, @NonNull Date registrationDate){
         this.id = id;
         this.type = type;
         this.displayName = displayName;

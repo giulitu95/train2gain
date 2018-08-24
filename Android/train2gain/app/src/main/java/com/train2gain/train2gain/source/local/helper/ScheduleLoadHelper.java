@@ -6,6 +6,7 @@ import com.train2gain.train2gain.model.entity.ScheduleLoad;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.source.local.dao.ScheduleLoadDao;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ScheduleLoadHelper {
@@ -68,15 +69,16 @@ public class ScheduleLoadHelper {
         boolean done = false;
         if(scheduleLoadList != null && !scheduleLoadList.isEmpty()){
             this.localDatabase.beginTransaction();
-            for(ScheduleLoad scheduleLoad : scheduleLoadList){
+            for(Iterator<ScheduleLoad> iterator = scheduleLoadList.iterator(); iterator.hasNext();){
+                ScheduleLoad scheduleLoad = iterator.next();
                 if(scheduleLoad != null){
                     boolean exists = this.scheduleLoadDaoInstance
                             .checkByRemoteId(scheduleLoad.getRemoteId());
                     if(exists == true){
-                        scheduleLoadList.remove(scheduleLoad);
+                        iterator.remove();
                     }else{
                         long scheduleSetItemId = this.scheduleSetItemHelperInstance
-                                .getIdByRemoteId(scheduleLoad.getRemoteId());
+                                .getIdByRemoteId(scheduleLoad.getRemoteScheduleSetItemId());
                         if(scheduleSetItemId != -1){
                             scheduleLoad.setScheduleSetItemId(scheduleSetItemId);
                         }else{
@@ -111,7 +113,13 @@ public class ScheduleLoadHelper {
     }
 
     /**
-     * TODO: to insert / implement database Helper GETTERS methods
+     * Retrieves the list of ScheduleLoads related to a particular Schedule
+     * @param scheduleId for which Schedule we want to retrieve the list of ScheduleLoads
+     * @return the list of ScheduleLoads, if some results has been returned from the database,
+     *         otherwise NULL
      */
+    public List<ScheduleLoad> getScheduleLoadListByScheduleId(long scheduleId){
+        return this.scheduleLoadDaoInstance.getScheduleLoadListByScheduleId(scheduleId);
+    }
 
 }

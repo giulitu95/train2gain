@@ -7,6 +7,7 @@ import com.train2gain.train2gain.model.entity.ScheduleDailyWorkout;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.source.local.dao.ScheduleDao;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ScheduleHelper {
@@ -98,11 +99,12 @@ public class ScheduleHelper {
         boolean done = false;
         if(scheduleList != null && !scheduleList.isEmpty()){
             this.localDatabase.beginTransaction();
-            for(Schedule schedule : scheduleList){
+            for(Iterator<Schedule> iterator = scheduleList.iterator(); iterator.hasNext();){
+                Schedule schedule = iterator.next();
                 if(schedule != null){
                     boolean exists = this.scheduleDaoImpl.checkByRemoteId(schedule.getRemoteId());
                     if(exists == true){
-                        scheduleList.remove(schedule);
+                        iterator.remove();
                     }
                 }
             }
@@ -162,6 +164,16 @@ public class ScheduleHelper {
      */
     public List<Schedule> getByAthleteAndTrainerUserIdMinimal(long athleteUserId, long trainerUserId){
         return this.scheduleDaoImpl.getByAthleteAndTrainerUserId(athleteUserId, trainerUserId);
+    }
+
+    /**
+     * Retrieves the current (active) schedule's ID for the given athlete
+     * @param athleteUserId for which athlete user we want to retrieve the current schedule's ID
+     * @return the current schedule's ID, if some results has been returned from the database,
+     *         -1 otherwise
+     */
+    public long getCurrentScheduleIdByAthleteUserId(long athleteUserId){
+        return this.scheduleDaoImpl.getCurrentScheduleIdByAthleteUserId(athleteUserId);
     }
 
 }

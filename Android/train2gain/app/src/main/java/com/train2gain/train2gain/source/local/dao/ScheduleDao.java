@@ -60,4 +60,19 @@ public abstract class ScheduleDao {
            "WHERE " + Schedule.COLUMN_REMOTE_ID + " = :scheduleRemoteId")
     public abstract long getIdByRemoteId(long scheduleRemoteId);
 
+    /**
+     * Retrieves the current (active) schedule's ID for the given athlete
+     * @param athleteUserId for which athlete user we want to retrieve the current schedule ID
+     * @return the current schedule's ID, if the query has returned some results
+     *         -1 otherwise
+     */
+    @Query("SELECT " + Schedule.COLUMN_ID + " " +
+           "FROM " +  Schedule.TABLE_NAME + " " +
+           "WHERE " + Schedule.COLUMN_ATHLETE_USER_ID + " = :athleteUserId " +
+           "AND " + Schedule.COLUMN_START_DATE + " <= date('now') " +
+           "ORDER BY " + Schedule.COLUMN_START_DATE + " DESC " +
+           "LIMIT 1"
+    )
+    public abstract long getCurrentScheduleIdByAthleteUserId(long athleteUserId);
+
 }
