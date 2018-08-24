@@ -6,6 +6,7 @@ import com.train2gain.train2gain.model.entity.TrainingHistory;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.source.local.dao.TrainingHistoryDao;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class TrainingHistoryHelper {
@@ -69,12 +70,13 @@ public class TrainingHistoryHelper {
         boolean done = false;
         if(trainingHistoryList != null && !trainingHistoryList.isEmpty()){
             this.localDatabase.beginTransaction();
-            for(TrainingHistory trainingHistory : trainingHistoryList){
+            for(Iterator<TrainingHistory> iterator = trainingHistoryList.iterator(); iterator.hasNext();){
+                TrainingHistory trainingHistory = iterator.next();
                 if(trainingHistory != null){
                     boolean exists = this.trainingHistoryDaoInstance
                             .checkByRemoteId(trainingHistory.getRemoteId());
                     if(exists == true){
-                        trainingHistoryList.remove(trainingHistory);
+                        iterator.remove();
                     }else{
                         long scheduleDailyWorkoutId = this.scheduleDailyWorkoutHelperInstance
                                 .getIdByRemoteId(trainingHistory.getRemoteDailyWorkoutId());
