@@ -6,6 +6,7 @@ import com.train2gain.train2gain.model.entity.ScheduleNote;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.source.local.dao.ScheduleNoteDao;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ScheduleNoteHelper {
@@ -68,12 +69,13 @@ public class ScheduleNoteHelper {
         boolean done = false;
         if(scheduleNoteList != null && !scheduleNoteList.isEmpty()){
             this.localDatabase.beginTransaction();
-            for(ScheduleNote scheduleNote : scheduleNoteList){
+            for(Iterator<ScheduleNote> iterator = scheduleNoteList.iterator(); iterator.hasNext();){
+                ScheduleNote scheduleNote = iterator.next();
                 if(scheduleNote != null){
                     boolean exists = this.scheduleNoteDaoInstance
                             .checkByRemoteId(scheduleNote.getRemoteId());
                     if(exists == true){
-                        scheduleNoteList.remove(scheduleNote);
+                       iterator.remove();
                     }else {
                         long scheduleStepId = this.scheduleStepHelperInstance
                                 .getIdByRemoteId(scheduleNote.getRemoteScheduleStepId());
@@ -118,6 +120,16 @@ public class ScheduleNoteHelper {
      */
     public List<ScheduleNote> getScheduleNoteListByScheduleStepId(long scheduleStepId){
         return this.scheduleNoteDaoInstance.getScheduleNoteListByScheduleStepId(scheduleStepId);
+    }
+
+    /**
+     * Retrieves the list of ScheduleNotes related to a particular Schedule
+     * @param scheduleId for which Schedule we want to retrieve the list of ScheduleNotes
+     * @return the list of ScheduleNotes, if some results has been returned from the database,
+     *         otherwise NULL
+     */
+    public List<ScheduleNote> getScheduleNoteListByScheduleId(long scheduleId){
+       return this.scheduleNoteDaoInstance.getScheduleNoteListByScheduleId(scheduleId);
     }
 
 }
