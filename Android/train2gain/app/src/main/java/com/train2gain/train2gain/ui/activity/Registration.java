@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.Gym;
 import com.train2gain.train2gain.model.entity.Trainer;
@@ -39,8 +39,9 @@ import com.train2gain.train2gain.repository.UserRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +65,7 @@ public class Registration extends AppCompatActivity {
     private UserType userType;
     private CircleImageView addProfileImage;
     static final int ACTIVITY_SELECT_IMAGE = 1;
+    private Bitmap profileImage;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -141,10 +143,27 @@ public class Registration extends AppCompatActivity {
         if(requestCode == this.ACTIVITY_SELECT_IMAGE && resultCode == RESULT_OK){
             Uri selectedImageUri = imageReturnedIntent.getData();
             addProfileImage.setImageURI(selectedImageUri);
+            try {
+                profileImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
+    private String getEncodedProfileImage(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        profileImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte byteArray[] = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        Multipa
+    }
+
+    /*
+    *   Thread in wich for every key of keyboard touched I require a Trainer with that token.
+    *   The requests have a delay after the key pressed
+     */
     class TokenTrainerThread extends Thread{
         @Override
         public void run(){
@@ -224,6 +243,10 @@ public class Registration extends AppCompatActivity {
         }
     }
 
+
+    /*
+    *   Listener of Button Registration in which I send all needed requests
+     */
     class RegistrationButtonListener implements View.OnClickListener{
 
         @Override
