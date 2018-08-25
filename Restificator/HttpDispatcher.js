@@ -142,30 +142,6 @@ app.get('/api/trainer/token/:token', function(req, res){
     trainerByToken.dispatch(req, res);
 })
 
-app.post('/api/profileImage', function(req, res){
-    upload(req,res, function(err){
-        if(err){
-            var json = JSON.stringify(
-                {
-                    'errorCode': 400,
-                    'errorMessage': "invalid file"
-                }
-            );
-            res.set({'Content-Type': 'application/json', 'Accept': 'application/json'});
-            res.status(400);
-            res.send(json);
-        } else{
-            var json = JSON.stringify(
-                {
-                    'imagePath': req.file.filename 
-                }
-            );
-            res.set({'Content-Type': 'application/json', 'Accept': 'application/json'});
-            res.status(200);
-            res.send(json);
-        }
-    });
-})
 
 //listen in a specific port 
 app.listen((process.env.PORT || 8080));

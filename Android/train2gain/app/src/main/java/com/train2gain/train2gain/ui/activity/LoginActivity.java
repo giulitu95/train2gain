@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 Log.d("LOGIN_ACTIVITY", "LOGIN FATTO");
                                 long userId = authManager.getCurrentUser().getUid().hashCode();
-                                Intent startMainActityIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                Intent startMainActityIntent = new Intent(LoginActivity.this, SyncDataSplashActivity.class);
                                 startMainActityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, userId);
                                 startActivity(startMainActityIntent);
                             }else{

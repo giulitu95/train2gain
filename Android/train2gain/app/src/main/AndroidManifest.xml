@@ -34,5 +34,9 @@
             </intent-filter>!-->
         </activity>
         <activity android:name=".ui.activity.MainActivity" />
-        </application>
+
+        <meta-data
+            android:name="CLOUDINARY_URL"
+            android:value="cloudinary://441194572561215:5ow_3BSvjWSLuAvDGFz8NpM2cDc@dmec6o2py"/>
+    </application>
 </manifest>
