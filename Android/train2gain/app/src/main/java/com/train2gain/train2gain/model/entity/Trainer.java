@@ -6,6 +6,7 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -37,7 +38,7 @@ public class Trainer {
     @Expose @SerializedName("id")
     private long userId = 0;
 
-    @NonNull
+    @Nullable
     @ColumnInfo(name = COLUMN_GYM_ID)
     @Expose @SerializedName("gymId")
     private long gymId = 0;
@@ -46,7 +47,7 @@ public class Trainer {
     @ColumnInfo(name = COLUMN_SYNCED_WITH_SERVER)
     private boolean syncedWithServer = false;
 
-    @NonNull @Ignore
+    @Nullable @Ignore
     @Expose @SerializedName("gym")
     private Gym gym;
 

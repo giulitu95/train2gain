@@ -18,7 +18,7 @@ import com.train2gain.train2gain.R;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth;
+    private FirebaseAuth authManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.login_button);
         Button registrationButton = findViewById(R.id.registration_button);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        authManager = FirebaseAuth.getInstance();
 
         registrationButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -47,18 +47,15 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
                 if(!email.equals("") || !password.equals("")){
-                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    authManager.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
                                 Log.d("LOGIN_ACTIVITY", "LOGIN FATTO");
-                                /*
-                                *
-                                *
-                                * -----> REDIRECT TO HOME ACTIVITY
-                                *
-                                *
-                                 */
+                                long userId = authManager.getCurrentUser().getUid().hashCode();
+                                Intent startMainActityIntent = new Intent(LoginActivity.this, SyncDataSplashActivity.class);
+                                startMainActityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, userId);
+                                startActivity(startMainActityIntent);
                             }else{
                                 Log.d("LOGIN_ACTIVITY", "LOGIN ERRATO");
                                 TextView loginError = findViewById(R.id.login_error);

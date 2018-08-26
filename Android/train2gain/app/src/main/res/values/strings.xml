@@ -26,4 +26,20 @@
     <string name="sync_data_splash_info_2">Attendi qualche istante</string>
     <string name="sync_data_splash_error">Errore durante l\'aggiornamento dei dati</string>
     <string name="sync_data_splash_btn_try_again">Riprova</string>
+    
+    <!-- Registration -->
+    <string name="registration_no_trainer_token">Non ho trovato trainer con questo token</string>
+    <string name="registration_trainer_token_error">Ups c\'è stato qualche errore</string>
+    <string name="registration_emptyName_error">Non hai inserito il tuo nome</string>
+    <string name="registration_emptyLastName_error">Non hai inserito il cognome</string>
+    <string name="registration_emptyEmail_error">Non hai inserito la tua email</string>
+    <string name="registration_emptyPassword_error">Devi inserire una password</string>
+    <string name="registration_emptyConfirmPassword_error">Devi confermare la password</string>
+    <string name="registration_confirmPassword_error">Le password inseritesono diverse</string>
+    <string name="registration_emptyUserType">Non hai selezionato la tipologia di utente</string>
+    <string name="registration_dbUploading">Sto elaborando le tue informazioni</string>
+    <string name="registration_dbUploading_error">Ups, c\'è stato qualche errore</string>
+    <string name="registration_start_image_upload">Sto elaborando l\'immagine</string>
+    <string name="registration_upload_image">Sto caricando l\'immagine</string>
+    <string name="registration_invalid_token">Inserisci un token valido</string>
 </resources>

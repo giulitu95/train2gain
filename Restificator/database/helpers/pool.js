@@ -8,8 +8,8 @@ var pool = mysql.createPool({
             user: "giulianoturri",
             password: "Giu95Tur*180063",
             database: "giulianoturri",
-            ssl      : true 
-            */
+            ssl      : true */
+            
             host: "localhost",
             user: "root",
             password: "password",

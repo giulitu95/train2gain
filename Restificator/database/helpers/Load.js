@@ -13,7 +13,7 @@ module.exports = class Loads{
         } else{
             var loads = [];
             for(var i = 0; i < result.length; i++){
-                var load = new LoadEntity(result[i].weight_id, result[i].weight_weight, result[i].weight_scheduleItemId, result[i].weight_date);
+                var load = new LoadEntity(result[i].weight_id, result[i].weight_weight, result[i].weight_scheduleItemId, new Date(result[i].weight_date).getTime());
                 loads.push(load);
             }
             //console.log(JSON.stringify(loads, null, 4));
