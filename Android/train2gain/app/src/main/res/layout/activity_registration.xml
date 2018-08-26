@@ -97,40 +97,43 @@
                 android:text="Atleta"/>
         </RadioGroup>
         <LinearLayout
-            android:id="@+id/registration_trainerName_container"
+            android:id="@+id/registration_insertToken_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/registration_trainarName_label"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/registration_ladingTrainer_container">
-            <ProgressBar
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:layout_gravity="center"/>
-            <TextView
+                android:visibility="gone"
+                android:id="@+id/registration_trainerName_label"/>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingLeft="10dp"
-                android:text="Sto cercando personal trainer con questo token"/>
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:id="@+id/registration_loadingTrainer_container">
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:layout_gravity="center"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="10dp"
+                    android:text="Sto cercando personal trainer con questo token"/>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/token_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Token"/>
         </LinearLayout>
-        <EditText
-            android:id="@+id/token_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Token"
-            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/registration_loadingInfo_container"
             android:layout_width="match_parent"

@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -26,6 +28,9 @@ import com.cloudinary.android.callback.UploadCallback;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.Gym;
 import com.train2gain.train2gain.model.entity.Trainer;
@@ -61,6 +66,7 @@ public class Registration extends AppCompatActivity {
     private UserType userType = null;
     private CircleImageView addProfileImage;
     private Uri selectedImageUri = null;
+    private LinearLayout tokenContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -77,9 +83,9 @@ public class Registration extends AppCompatActivity {
         this.cancelButton = findViewById(R.id.registration_cancel_btn);
         this.registerButton = findViewById(R.id.registration_register_btn);
         this.tokenText = findViewById(R.id.token_txt);
-        this.trainerLabel = findViewById(R.id.registration_trainarName_label);
+        this.trainerLabel = findViewById(R.id.registration_trainerName_label);
         this.addProfileImage = findViewById(R.id.registration_addProfileImage);
-
+        this.tokenContainer = findViewById(R.id.registration_insertToken_container);
         //initialize firebase authentication
         this.authManager = FirebaseAuth.getInstance();
 
@@ -90,12 +96,11 @@ public class Registration extends AppCompatActivity {
         this.registerButton.setOnClickListener(new RegistrationButtonListener());
         userTypeRadio.setOnCheckedChangeListener((RadioGroup group, int checkedId) -> {
                 if(checkedId == R.id.athlete_radio){
-                    tokenText.setVisibility(View.VISIBLE);
+                    tokenContainer.setVisibility(View.VISIBLE);
                     userType = UserType.ATHLETE;
                 } else {
                     userType = UserType.TRAINER;
-                    tokenText.setVisibility(View.GONE);
-                    trainerLabel.setVisibility(View.GONE);
+                    tokenContainer.setVisibility(View.GONE);
                 }
             }
         );
@@ -119,11 +124,11 @@ public class Registration extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 //if token is empty hide the label
                 if(!tokenText.getText().toString().equals("")){
-                    findViewById(R.id.registration_ladingTrainer_container).setVisibility(View.VISIBLE);
-                    findViewById(R.id.registration_trainerName_container).setVisibility(View.GONE);
+                    findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.VISIBLE);
+                    findViewById(R.id.registration_trainerName_label).setVisibility(View.GONE);
                 } else{
-                    findViewById(R.id.registration_ladingTrainer_container).setVisibility(View.GONE);
-                    findViewById(R.id.registration_trainerName_container).setVisibility(View.GONE);
+                    findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
+                    findViewById(R.id.registration_trainerName_label).setVisibility(View.GONE);
                 }
                 //For every key pressed start a thread with a timeout, if after the timeout any outher key is pressed the client start the request to the server
                 Thread thread = new TokenTrainerThread();
@@ -162,8 +167,6 @@ public class Registration extends AppCompatActivity {
 
                     String url ="https://train2gainrest.herokuapp.com/api/trainer/token/" + tokenText.getText().toString();
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, (String response) -> {
-                            findViewById(R.id.registration_ladingTrainer_container).setVisibility(View.GONE);
-                            findViewById(R.id.registration_trainerName_container).setVisibility(View.VISIBLE);
 
                             try {
                                 JSONObject json = new JSONObject(response);
@@ -172,6 +175,8 @@ public class Registration extends AppCompatActivity {
                                     JSONObject content = (JSONObject) json.get("content");
                                     trainerLabel.setTextColor(Color.GREEN);
                                     trainerLabel.setText((String)content.get("displayName"));
+                                    findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
+                                    trainerLabel.setVisibility(View.VISIBLE);
 
 
                                     //******** Fill java objects with JSON relatives JSON fields +++++++++++++
@@ -204,15 +209,21 @@ public class Registration extends AppCompatActivity {
                                     trainerUser = null;
                                     trainerLabel.setTextColor(Color.RED);
                                     trainerLabel.setText(R.string.registration_no_trainer_token);
+                                    findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
+                                    trainerLabel.setVisibility(View.VISIBLE);
                                 }
                             } catch (JSONException e) {
                                 trainerLabel.setTextColor(Color.RED);
                                 trainerLabel.setText(R.string.registration_trainer_token_error);
+                                findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
+                                trainerLabel.setVisibility(View.VISIBLE);
                                 e.printStackTrace();
                             }
                         }, (VolleyError error) -> {
                             trainerLabel.setTextColor(Color.RED);
                             trainerLabel.setText(R.string.registration_trainer_token_error);
+                            findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
+                            trainerLabel.setVisibility(View.VISIBLE);
                         }
                     );
                     // Add the request to the RequestQueue.
@@ -222,6 +233,8 @@ public class Registration extends AppCompatActivity {
             } catch (InterruptedException e) {
                 trainerLabel.setTextColor(Color.RED);
                 trainerLabel.setText(R.string.registration_trainer_token_error);
+                findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
+                trainerLabel.setVisibility(View.VISIBLE);
                 e.printStackTrace();
             }
         }
@@ -293,7 +306,19 @@ public class Registration extends AppCompatActivity {
                         startActivity(startActityIntent);
 
                     } else {
-                        error.setText(R.string.registration_dbUploading_error);
+
+                        findViewById(R.id.registration_loadingInfo_container).setVisibility(View.GONE);
+                        try {
+                            throw task.getException();
+                        } catch(FirebaseAuthWeakPasswordException e) {
+                            error.setText("password debole");
+                        } catch(FirebaseAuthInvalidCredentialsException e) {
+                            error.setText("email non valida");
+                        } catch(FirebaseAuthUserCollisionException e) {
+                            error.setText("utente esiste guà");
+                        } catch(Exception e) {
+                            Log.e("asdf", e.getMessage());
+                        }
                     }
                 });
         }
