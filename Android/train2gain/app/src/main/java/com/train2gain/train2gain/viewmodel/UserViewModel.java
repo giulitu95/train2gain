@@ -1,4 +1,4 @@
-    package com.train2gain.train2gain.viewmodel;
+package com.train2gain.train2gain.viewmodel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
