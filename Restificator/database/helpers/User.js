@@ -24,7 +24,10 @@ module.exports = class User extends Loadable{
         if(result.length == 0){
             return null;
         } else {
-            var gym = new GymEntity(result[0].gym_id, result[0].gym_name, result[0].gym_logoUrl);
+            var gym = null;
+            if(result[0].gym_id != null){
+                gym = new GymEntity(result[0].gym_id, result[0].gym_name, result[0].gym_logoUrl);
+            } 
             var trainer = new TrainerEntity(result[0].trainer_id, result[0].trainer_gymId, gym);
             return trainer;
         }
