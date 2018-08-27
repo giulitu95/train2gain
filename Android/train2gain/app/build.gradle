@@ -78,7 +78,8 @@ dependencies {
     //cloudinary
     implementation group: 'com.cloudinary', name: 'cloudinary-android', version: '1.24.0'
 
-
+    //google authentication
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
 
 }
 

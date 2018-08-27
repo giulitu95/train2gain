@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -73,6 +75,7 @@ public class Registration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        MediaManager.init(Registration.this);
         // Import View element from res
         this.emailText = findViewById(R.id.registration_email_txt);
         this.passwordText = findViewById(R.id.registration_password_txt);
@@ -96,9 +99,11 @@ public class Registration extends AppCompatActivity {
         this.registerButton.setOnClickListener(new RegistrationButtonListener());
         userTypeRadio.setOnCheckedChangeListener((RadioGroup group, int checkedId) -> {
                 if(checkedId == R.id.athlete_radio){
+                    registerButton.setEnabled(false);
                     tokenContainer.setVisibility(View.VISIBLE);
                     userType = UserType.ATHLETE;
                 } else {
+                    registerButton.setEnabled(true);
                     userType = UserType.TRAINER;
                     tokenContainer.setVisibility(View.GONE);
                 }
@@ -122,13 +127,13 @@ public class Registration extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                findViewById(R.id.registration_trainerName_label).setVisibility(View.GONE);
+                registerButton.setEnabled(false);
                 //if token is empty hide the label
                 if(!tokenText.getText().toString().equals("")){
                     findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.VISIBLE);
-                    findViewById(R.id.registration_trainerName_label).setVisibility(View.GONE);
                 } else{
                     findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
-                    findViewById(R.id.registration_trainerName_label).setVisibility(View.GONE);
                 }
                 //For every key pressed start a thread with a timeout, if after the timeout any outher key is pressed the client start the request to the server
                 Thread thread = new TokenTrainerThread();
@@ -204,6 +209,8 @@ public class Registration extends AppCompatActivity {
                                     trainerUser.setPhotoUrl(content.getString("profileImageUrl"));
                                     trainerUser.setRegistrationDate(new Date(content.getInt("registrationDate")));
                                     trainerUser.setType(UserType.getFromKey(content.getInt("userType")));
+
+                                    registerButton.setEnabled(true);
                                 } else {
                                     trainer = null;
                                     trainerUser = null;
@@ -211,8 +218,11 @@ public class Registration extends AppCompatActivity {
                                     trainerLabel.setText(R.string.registration_no_trainer_token);
                                     findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
                                     trainerLabel.setVisibility(View.VISIBLE);
+
+                                    registerButton.setEnabled(false);
                                 }
                             } catch (JSONException e) {
+                                registerButton.setEnabled(false);
                                 trainerLabel.setTextColor(Color.RED);
                                 trainerLabel.setText(R.string.registration_trainer_token_error);
                                 findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
@@ -220,6 +230,7 @@ public class Registration extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }, (VolleyError error) -> {
+                            registerButton.setEnabled(false);
                             trainerLabel.setTextColor(Color.RED);
                             trainerLabel.setText(R.string.registration_trainer_token_error);
                             findViewById(R.id.registration_loadingTrainer_container).setVisibility(View.GONE);
@@ -240,90 +251,61 @@ public class Registration extends AppCompatActivity {
         }
     }
 
-    private void sendUserInfo(String profileImageUrl){
-        String email = emailText.getText().toString();
-        String password = passwordText.getText().toString();
-        String name = nameText.getText().toString();
-        String lastName = lastNameText.getText().toString();
-        String confirmPassword = confirmPasswordText.getText().toString();
-        TextView error = findViewById(R.id.registration_error_txt);
+    private void authenticate(String email, String password, String name, String lastName, String profileImageUrl){
+        authManager.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Registration.this, (@NonNull Task<AuthResult> task) -> {
+            if (task.isSuccessful()) {
+                String firebaseUid = authManager.getCurrentUser().getUid();
+                //convert firebase string id to remoote database int id
+                int databaseUid = firebaseUid.hashCode();
 
-        //check if all field are correctly filled
-        if(name.equals("")){
-            error.setText(R.string.registration_emptyName_error);
-        } else if(lastName.equals("")){
-            error.setText(R.string.registration_emptyLastName_error);
-        } else if(email.equals("")){
-            error.setText(R.string.registration_emptyLastName_error);
-        } else if(password.equals("")){
-            error.setText(R.string.registration_emptyPassword_error);
-        } else if(confirmPassword.equals("")){
-            error.setText(R.string.registration_emptyConfirmPassword_error);
-        } else if(!confirmPassword.equals(password)){
-            error.setText(R.string.registration_confirmPassword_error);
-        } else if(userType == null){
-            error.setText(R.string.registration_emptyUserType);
-        } else if(userType == UserType.ATHLETE && (trainer == null || trainerUser == null)){
-            error.setText(R.string.registration_invalid_token);
-        } else {
+                //prepare user
+                Date currentTime = Calendar.getInstance().getTime();
+                User user = new User(databaseUid, userType, name.concat(" ").concat(lastName), email, currentTime);
+                if(profileImageUrl != null){
+                    user.setPhotoUrl(profileImageUrl);
+                }
+                //send and save user
+                UserRepository userRepository = UserRepository.getInstance(Registration.this);
+                userRepository.uploadUser(user);
 
-            //show loading container
-            findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
-            TextView loadingLabel =  findViewById(R.id.registration_loadingInfo_label);
-            loadingLabel.setText(R.string.registration_dbUploading);
+                Intent startActityIntent = null;
 
-            //send registration request to firebase
-            authManager.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Registration.this, (@NonNull Task<AuthResult> task) -> {
-                    if (task.isSuccessful()) {
-                        String firebaseUid = authManager.getCurrentUser().getUid();
-                        //convert firebase string id to remoote database int id
-                        int databaseUid = firebaseUid.hashCode();
+                findViewById(R.id.registration_loadingInfo_container).setVisibility(View.GONE);
+                if(userType == UserType.ATHLETE) {
+                    userRepository.localSaveUser(trainerUser);
+                    TrainerRepository trainerRepository = TrainerRepository.getInstance(Registration.this);
+                    trainerRepository.localSaveTrainer(trainer);
+                    startActityIntent = new Intent(Registration.this, AddAthleteInfoActivity.class);
+                    startActityIntent.putExtra("trainerId", trainerUser.getId());
+                    startActityIntent.putExtra("athleteId", user.getId());
+                } else {
+                    startActityIntent = new Intent(Registration.this, SyncDataSplashActivity.class);
+                    startActityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, user.getId());
+                }
+                startActivity(startActityIntent);
 
-                        //prepare user
-                        Date currentTime = Calendar.getInstance().getTime();
-                        User user = new User(databaseUid, userType, name.concat(" ").concat(lastName), email, currentTime);
-                        if(profileImageUrl != null){
-                            user.setPhotoUrl(profileImageUrl);
-                        }
-                        //send and save user
-                        UserRepository userRepository = UserRepository.getInstance(Registration.this);
-                        userRepository.uploadUser(user);
-
-                        Intent startActityIntent = null;
-
-                        findViewById(R.id.registration_loadingInfo_container).setVisibility(View.GONE);
-                        if(userType == UserType.ATHLETE) {
-                            userRepository.localSaveUser(trainerUser);
-                            TrainerRepository trainerRepository = TrainerRepository.getInstance(Registration.this);
-                            trainerRepository.localSaveTrainer(trainer);
-                            startActityIntent = new Intent(Registration.this, AddAthleteInfoActivity.class);
-                            startActityIntent.putExtra("trainerId", trainerUser.getId());
-                            startActityIntent.putExtra("athleteId", user.getId());
-                        } else {
-                            startActityIntent = new Intent(Registration.this, SyncDataSplashActivity.class);
-                            startActityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, user.getId());
-                        }
-                        startActivity(startActityIntent);
-
-                    } else {
-
-                        findViewById(R.id.registration_loadingInfo_container).setVisibility(View.GONE);
-                        try {
-                            throw task.getException();
-                        } catch(FirebaseAuthWeakPasswordException e) {
-                            error.setText("password debole");
-                        } catch(FirebaseAuthInvalidCredentialsException e) {
-                            error.setText("email non valida");
-                        } catch(FirebaseAuthUserCollisionException e) {
-                            error.setText("utente esiste guà");
-                        } catch(Exception e) {
-                            Log.e("asdf", e.getMessage());
-                        }
-                    }
-                });
-        }
+            } else {
+                Toast err;
+                findViewById(R.id.registration_loadingInfo_container).setVisibility(View.GONE);
+                registerButton.setEnabled(true);
+                try {
+                    throw task.getException();
+                } catch(FirebaseAuthWeakPasswordException e) {
+                    err = Toast.makeText(getApplicationContext(), "password troppo corta", Toast.LENGTH_SHORT);
+                    err.show();
+                } catch(FirebaseAuthInvalidCredentialsException e) {
+                    err = Toast.makeText(getApplicationContext(), "email non valida", Toast.LENGTH_SHORT);
+                    err.show();
+                } catch(FirebaseAuthUserCollisionException e) {
+                    err = Toast.makeText(getApplicationContext(), "utente già registrato", Toast.LENGTH_SHORT);
+                    err.show();
+                } catch(Exception e) {
+                    err = Toast.makeText(getApplicationContext(), "errore di connessione", Toast.LENGTH_SHORT);
+                    err.show();
+                }
+            }
+        });
     }
-
     /*
     *   Listener of Button Registration in which I send all needed requests
      */
@@ -331,41 +313,91 @@ public class Registration extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(selectedImageUri == null){
-                sendUserInfo(null);
+
+            String email = emailText.getText().toString();
+            String password = passwordText.getText().toString();
+            String name = nameText.getText().toString();
+            String lastName = lastNameText.getText().toString();
+            String confirmPassword = confirmPasswordText.getText().toString();
+            Toast toastError;
+            //check if all field are correctly filled
+            if(name.equals("")){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_emptyName_error, Toast.LENGTH_SHORT);
+                toastError.show();;
+                registerButton.setEnabled(true);
+            } else if(lastName.equals("")){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_emptyLastName_error, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
+            } else if(email.equals("")){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_emptyLastName_error, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
+            } else if(password.equals("")){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_emptyPassword_error, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
+            } else if(confirmPassword.equals("")){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_emptyConfirmPassword_error, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
+            } else if(!confirmPassword.equals(password)){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_confirmPassword_error, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
+            } else if(userType == null){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_emptyUserType, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
+            } else if(userType == UserType.ATHLETE && (trainer == null || trainerUser == null)){
+                toastError = Toast.makeText(getApplicationContext(), R.string.registration_invalid_token, Toast.LENGTH_SHORT);
+                toastError.show();
+                registerButton.setEnabled(true);
             } else {
-                MediaManager.init(Registration.this);
-                MediaManager.get().upload(selectedImageUri).option("folder", "profileImages").callback(new UploadCallback() {
-                    @Override
-                    public void onStart(String requestId) {
-                        findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
-                        TextView loadingLabel = findViewById(R.id.registration_loadingInfo_label);
-                        loadingLabel.setText(R.string.registration_start_image_upload);
-                    }
 
-                    @Override
-                    public void onProgress(String requestId, long bytes, long totalBytes) {
-                        findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
-                        TextView loadingLabel = findViewById(R.id.registration_loadingInfo_label);
-                        loadingLabel.setText(R.string.registration_upload_image);
-                    }
+                //show loading container
+                findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
+                TextView loadingLabel =  findViewById(R.id.registration_loadingInfo_label);
+                loadingLabel.setText(R.string.registration_dbUploading);
+                registerButton.setEnabled(false);
+                if(selectedImageUri == null){
+                    authenticate(email, password, name, lastName, null);
+                } else {
+                    MediaManager.get().upload(selectedImageUri).option("folder", "profileImages").callback(new UploadCallback() {
+                        @Override
+                        public void onStart(String requestId) {
+                            findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
+                            TextView loadingLabel = findViewById(R.id.registration_loadingInfo_label);
+                            loadingLabel.setText(R.string.registration_start_image_upload);
+                            registerButton.setEnabled(false);
+                        }
 
-                    @Override
-                    public void onSuccess(String requestId, Map resultData) {
-                        String profileImageUrl = (String) resultData.get("url");
-                        sendUserInfo(profileImageUrl);
-                    }
+                        @Override
+                        public void onProgress(String requestId, long bytes, long totalBytes) {
+                            findViewById(R.id.registration_loadingInfo_container).setVisibility(View.VISIBLE);
+                            TextView loadingLabel = findViewById(R.id.registration_loadingInfo_label);
+                            loadingLabel.setText(R.string.registration_upload_image);
+                        }
 
-                    @Override
-                    public void onError(String requestId, ErrorInfo error) {
-                        // your code here
-                    }
+                        @Override
+                        public void onSuccess(String requestId, Map resultData) {
+                            String profileImageUrl = (String) resultData.get("url");
+                            authenticate(email, password, name, lastName, profileImageUrl);
+                        }
 
-                    @Override
-                    public void onReschedule(String requestId, ErrorInfo error) {
-                        // your code here
-                    }
-                }).dispatch();
+                        @Override
+                        public void onError(String requestId, ErrorInfo error) {
+                            registerButton.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onReschedule(String requestId, ErrorInfo error) {
+                            // your code here
+                        }
+                    }).dispatch();
+                }
+                //send registration request to firebase
+
             }
         }
     }

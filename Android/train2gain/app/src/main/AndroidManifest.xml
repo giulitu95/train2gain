@@ -23,9 +23,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>!
         </activity>
-        <activity android:name=".ui.activity.LoginActivity" />
-        <activity android:name=".ui.activity.Registration"></activity>
-        <activity android:name=".ui.activity.AddAthleteInfoActivity"></activity>
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:theme="@style/app_theme_dark"/>
+        <activity
+            android:name=".ui.activity.Registration"
+            android:theme="@style/app_theme_dark"></activity>
+        <activity
+            android:name=".ui.activity.AddAthleteInfoActivity"
+            android:theme="@style/app_theme_dark"></activity>
         <activity android:name=".ui.activity.SyncDataSplashActivity">
          <!--   <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
