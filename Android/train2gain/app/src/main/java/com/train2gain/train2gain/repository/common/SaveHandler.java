@@ -2,10 +2,13 @@ package com.train2gain.train2gain.repository.common;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.train2gain.train2gain.source.remote.response.APIData;
 import com.train2gain.train2gain.source.remote.response.APIResponse;
 
 /**
@@ -15,10 +18,13 @@ import com.train2gain.train2gain.source.remote.response.APIResponse;
  */
 public abstract class SaveHandler<SaveType, ResponseType> {
 
-    protected SaveHandler(SaveType objectToSave){
-        saveDataToDatabase(objectToSave);
+    // Logcat TAG key for debugging purpose
+    private final static String LOGCAT_TAG = "SAVE_HANDLER";
+
+    protected SaveHandler(SaveType object){
+        saveDataToDatabase(object);
         if(shouldUploadToAPI()){
-            uploadDataToNetwork(objectToSave);
+            uploadDataToNetwork(object);
         }
     }
 
@@ -35,7 +41,7 @@ public abstract class SaveHandler<SaveType, ResponseType> {
             public void onChanged(@Nullable APIResponse<ResponseType> responseData) {
                 if(responseData != null && responseData.getStatus() == APIResponse.Status.SUCCESS){
                     if(shouldSaveAPIResponse()){
-                        saveDataToDatabase((SaveType) responseData.getData().getContent());
+                        saveDataToDatabase(responseData);
                     }
                 }else{
                     onAPIUploadFailed();
@@ -48,14 +54,49 @@ public abstract class SaveHandler<SaveType, ResponseType> {
 
     /**
      * Saves the given object into the database
-     * @param objectToSave the data object we want to save into the database
+     * @param object the data object we want to save into the database
      */
-    private void saveDataToDatabase(SaveType objectToSave){
+    private void saveDataToDatabase(SaveType object){
         new AsyncTask<Void, Void, Boolean>(){
             @Override
             protected Boolean doInBackground(Void... voids) {
-                return saveToDatabase(objectToSave);
+                try{
+                    return saveDataObjectToDatabase(object);
+                }catch(SQLiteConstraintException ex){
+                    Log.e(LOGCAT_TAG, ex.getLocalizedMessage());
+                    return false;
+                }
             }
+
+            @Override
+            protected void onPostExecute(Boolean insertedOrUpdated) {
+                if(!insertedOrUpdated){
+                    onDatabaseSaveFailed();
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * Saves the response data returned by the API service into the database.
+     * @param response he response data object returned by the API service
+     */
+    private void saveDataToDatabase(@NonNull APIResponse<ResponseType> response){
+        new AsyncTask<Void, Void, Boolean>(){
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                if(response.getData().getContent() != null){
+                    try{
+                        return saveResponseDataToDatabase(response.getData());
+                    }catch(SQLiteConstraintException ex){
+                        Log.e(LOGCAT_TAG, ex.getLocalizedMessage());
+                        return false;
+                    }
+                }else{
+                    return false;
+                }
+            }
+
             @Override
             protected void onPostExecute(Boolean insertedOrUpdated) {
                 if(!insertedOrUpdated){
@@ -86,7 +127,15 @@ public abstract class SaveHandler<SaveType, ResponseType> {
      * @return true if no errors occurred during insertion operations
      *         false otherwise
      */
-    protected abstract boolean saveToDatabase(@NonNull SaveType objectToSave);
+    protected abstract boolean saveDataObjectToDatabase(@NonNull SaveType objectToSave);
+
+    /**
+     * Called to save the result of API response into the database
+     * @param responseData data retrieved from network which is stored in the API response
+     * @return true if no errors occurred during insertion operations
+     *         false otherwise
+     */
+    protected abstract boolean saveResponseDataToDatabase(@NonNull APIData<ResponseType> responseData);
 
     /**
      * Called to upload to the API server (network) the given object.
