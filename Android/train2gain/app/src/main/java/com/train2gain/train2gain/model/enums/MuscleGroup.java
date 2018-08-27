@@ -1,5 +1,6 @@
 package com.train2gain.train2gain.model.enums;
 
+import com.train2gain.train2gain.App;
 import com.train2gain.train2gain.R;
 
 public enum MuscleGroup {
@@ -65,6 +66,11 @@ public enum MuscleGroup {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return App.getContext().getResources().getString(this.resourceId);
     }
 
 }
