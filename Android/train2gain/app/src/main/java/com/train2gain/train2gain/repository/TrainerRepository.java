@@ -17,8 +17,10 @@ import com.train2gain.train2gain.source.remote.endpoint.TrainerAPI;
 import com.train2gain.train2gain.source.remote.response.APIData;
 import com.train2gain.train2gain.source.remote.response.APIResponse;
 import com.train2gain.train2gain.source.remote.util.APIUtils;
+import com.train2gain.train2gain.util.NetworkUtil;
 
 public class TrainerRepository {
+
     private final TrainerHelper trainerHelperInstance;
     private final TrainerAPI trainerAPIInstance;
     private static TrainerRepository instance = null;
@@ -38,6 +40,7 @@ public class TrainerRepository {
         }
         return instance;
     }
+
     public LiveData<Resource<Trainer>> getTrainer(final long trainerId){
         return new RetrieveHandler<Trainer, Trainer>() {
             @NonNull @Override
@@ -51,11 +54,11 @@ public class TrainerRepository {
 
             @Override
             protected boolean shouldFetchFromAPI() {
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
-            protected Boolean saveAPIResponse(@NonNull APIData<Trainer> responseData) {
+            protected boolean saveAPIResponse(@NonNull APIData<Trainer> responseData) {
                 return trainerHelperInstance.insertOrUpdateIfExists(responseData.getContent());
             }
 
@@ -66,10 +69,11 @@ public class TrainerRepository {
 
             @Override
             protected void onFetchFromAPIFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         }.getAsLiveData();
     }
+
     public void localSaveTrainer(final Trainer trainer){
         new SaveHandler<Trainer, Trainer>(trainer) {
             @Override
@@ -83,26 +87,32 @@ public class TrainerRepository {
             }
 
             @Override
-            protected boolean saveToDatabase(@NonNull Trainer dataToSave) {
-                return trainerHelperInstance.insertOrUpdateIfExists(dataToSave);
+            protected boolean saveDataObjectToDatabase(@NonNull Trainer objectToSave) {
+                return trainerHelperInstance.insertOrUpdateIfExists(objectToSave);
+            }
+
+            @Override
+            protected boolean saveResponseDataToDatabase(@NonNull APIData<Trainer> responseData) {
+                return true;
             }
 
             @Override
             protected LiveData<APIResponse<Trainer>> uploadToAPI(@NonNull Trainer dataToUpload) {
-                return null;
+                return new MutableLiveData<APIResponse<Trainer>>();
             }
 
             @Override
             protected void onAPIUploadFailed() {
-                // TODO implement something..
+                // Nothing to do
             }
 
             @Override
             protected void onDatabaseSaveFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         };
     }
+
     public LiveData<Resource<Trainer>> getUpdatedTrainer(final long trainerUserId){
         return new RetrieveHandler<Trainer, Trainer>() {
             @NonNull @Override
@@ -116,12 +126,11 @@ public class TrainerRepository {
 
             @Override
             protected boolean shouldFetchFromAPI() {
-                // TODO add network conditions..
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
-            protected Boolean saveAPIResponse(@NonNull APIData<Trainer> responseData) {
+            protected boolean saveAPIResponse(@NonNull APIData<Trainer> responseData) {
                 return trainerHelperInstance.insertOrUpdateIfExists(responseData.getContent());
             }
 
