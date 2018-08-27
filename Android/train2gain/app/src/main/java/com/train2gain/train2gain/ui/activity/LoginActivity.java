@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,18 +22,25 @@ import com.train2gain.train2gain.R;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth authManager;
-
+    //private GoogleSignInClient mGoogleSignInClient;
+    //public static final int RC_SIGN_IN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+       // GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        // Build a GoogleSignInClient with the options specified by gso.
+       // mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         EditText emailText = findViewById(R.id.email_text);
         EditText passwordText = findViewById(R.id.password_text);
 
         Button loginButton = findViewById(R.id.login_button);
         Button registrationButton = findViewById(R.id.registration_button);
+        //Button googleSignIn = findViewById(R.id.google_sign_in_button);
 
         authManager = FirebaseAuth.getInstance();
 
@@ -41,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(startRegistrationActivityIntent);
             }
         });
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,13 +62,11 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                Log.d("LOGIN_ACTIVITY", "LOGIN FATTO");
                                 long userId = authManager.getCurrentUser().getUid().hashCode();
                                 Intent startMainActityIntent = new Intent(LoginActivity.this, SyncDataSplashActivity.class);
                                 startMainActityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, userId);
                                 startActivity(startMainActityIntent);
                             }else{
-                                Log.d("LOGIN_ACTIVITY", "LOGIN ERRATO");
                                 TextView loginError = findViewById(R.id.login_error);
                                 loginError.setText("Incorrect email or password");
                             }
@@ -68,7 +77,21 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+        /*
+        googleSignIn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                googleSignIn();
+            }
+        });*/
+
 
     }
+    /*
+    private void googleSignIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    */
 
 }

@@ -83,9 +83,21 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
+<<<<<<< HEAD
+=======
+    // Volley
+    implementation 'com.android.volley:volley:1.1.1'
+
+    //cirledImages
+    implementation 'de.hdodenhof:circleimageview:1.2.1'
+
+    //cloudinary
+    implementation group: 'com.cloudinary', name: 'cloudinary-android', version: '1.24.0'
+
     //google authentication
     implementation 'com.google.android.gms:play-services-auth:16.0.0'
 
+>>>>>>> registration-fix
 }
 
 apply plugin: 'com.google.gms.google-services'
