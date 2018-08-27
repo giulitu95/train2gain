@@ -59,6 +59,8 @@ public class GymHelper {
                 this.localDatabase.setTransactionSuccessful();
             }
             this.localDatabase.endTransaction();
+        }else{
+            done = true;
         }
         return done;
     }
