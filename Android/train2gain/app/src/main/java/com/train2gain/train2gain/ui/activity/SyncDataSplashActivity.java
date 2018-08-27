@@ -16,7 +16,7 @@ import com.train2gain.train2gain.service.SyncDataTask;
 public class SyncDataSplashActivity extends AppCompatActivity implements SyncDataTask.CallbackInterface {
 
     public static final String USER_ID_PARAM = "USER_ID_PARAM";
-    private long userId = 6;
+    private long userId = -1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,8 +24,11 @@ public class SyncDataSplashActivity extends AppCompatActivity implements SyncDat
         setContentView(R.layout.activity_sync_data_splash);
 
         // Init user for which we want info
-        // TODO fix this, get from parameters
-        userId = getIntent().getLongExtra(this.USER_ID_PARAM, 1);
+        Bundle activityParams = getIntent().getExtras();
+        if(activityParams != null && activityParams.containsKey(SyncDataSplashActivity.USER_ID_PARAM)){
+            userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
+        }
+
         // Init Sync thread task
         Button tryAgainButton = (Button) findViewById(R.id.sync_data_splash_btn_try_again);
         tryAgainButton.setOnClickListener((View listenerView) -> {
@@ -50,7 +53,7 @@ public class SyncDataSplashActivity extends AppCompatActivity implements SyncDat
         startMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startMainActivityIntent.putExtra(USER_ID_PARAM, this.userId);
+        startMainActivityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, this.userId);
         startActivity(startMainActivityIntent);
     }
 
