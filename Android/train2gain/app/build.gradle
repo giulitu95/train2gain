@@ -76,15 +76,16 @@ dependencies {
     def cloudinary_api_version = "1.25.0"
     implementation "com.cloudinary:cloudinary-android:$cloudinary_api_version"
 
+    // Google Authentication API
+    def google_authentication_api_version = "16.0.0"
+    implementation "com.google.android.gms:play-services-auth:$google_authentication_api_version"
+
     // Others
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-
-    //google authentication
-    implementation 'com.google.android.gms:play-services-auth:16.0.0'
 
 }
 
