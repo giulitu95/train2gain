@@ -17,10 +17,9 @@ import com.train2gain.train2gain.source.remote.endpoint.UserAPI;
 import com.train2gain.train2gain.source.remote.response.APIData;
 import com.train2gain.train2gain.source.remote.response.APIResponse;
 import com.train2gain.train2gain.source.remote.util.APIUtils;
+import com.train2gain.train2gain.util.NetworkUtil;
 
-// --- REPOSITORY CLASS ---
-
-public class    UserRepository {
+public class UserRepository {
 
     private final UserHelper userHelperInstance;
     private final UserAPI userAPIInstance;
@@ -55,11 +54,11 @@ public class    UserRepository {
 
             @Override
             protected boolean shouldFetchFromAPI() {
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
-            protected Boolean saveAPIResponse(@NonNull APIData<User> responseData) {
+            protected boolean saveAPIResponse(@NonNull APIData<User> responseData) {
                 return userHelperInstance.insertOrUpdateIfExists(responseData.getContent());
             }
 
@@ -70,7 +69,7 @@ public class    UserRepository {
 
             @Override
             protected void onFetchFromAPIFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         }.getAsLiveData();
     }
@@ -79,7 +78,7 @@ public class    UserRepository {
         new SaveHandler<User, User>(user) {
             @Override
             protected boolean shouldUploadToAPI() {
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
@@ -88,8 +87,13 @@ public class    UserRepository {
             }
 
             @Override
-            protected boolean saveToDatabase(@NonNull User dataToSave) {
-                return userHelperInstance.insertOrUpdateIfExists(dataToSave);
+            protected boolean saveDataObjectToDatabase(@NonNull User objectToSave) {
+                return userHelperInstance.insertOrUpdateIfExists(objectToSave);
+            }
+
+            @Override
+            protected boolean saveResponseDataToDatabase(@NonNull APIData<User> responseData) {
+                return true;
             }
 
             @Override
@@ -99,15 +103,16 @@ public class    UserRepository {
 
             @Override
             protected void onAPIUploadFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
 
             @Override
             protected void onDatabaseSaveFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         };
     }
+
     public void localSaveUser(final User user){
         new SaveHandler<User, User>(user) {
             @Override
@@ -121,26 +126,32 @@ public class    UserRepository {
             }
 
             @Override
-            protected boolean saveToDatabase(@NonNull User dataToSave) {
-                return userHelperInstance.insertOrUpdateIfExists(dataToSave);
+            protected boolean saveDataObjectToDatabase(@NonNull User objectToSave) {
+                return userHelperInstance.insertOrUpdateIfExists(objectToSave);
+            }
+
+            @Override
+            protected boolean saveResponseDataToDatabase(@NonNull APIData<User> responseData) {
+                return true;
             }
 
             @Override
             protected LiveData<APIResponse<User>> uploadToAPI(@NonNull User dataToUpload) {
-                return null;
+                return new MutableLiveData<APIResponse<User>>();
             }
 
             @Override
             protected void onAPIUploadFailed() {
-                // TODO implement something..
+                // Nothing to do
             }
 
             @Override
             protected void onDatabaseSaveFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         };
     }
+
     public LiveData<Resource<User>> getUpdatedUser(final long userId){
         return new RetrieveHandler<User, User>() {
             @NonNull @Override
@@ -154,12 +165,11 @@ public class    UserRepository {
 
             @Override
             protected boolean shouldFetchFromAPI() {
-                // TODO add network conditions..
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
-            protected Boolean saveAPIResponse(@NonNull APIData<User> responseData) {
+            protected boolean saveAPIResponse(@NonNull APIData<User> responseData) {
                 return userHelperInstance.insertOrUpdateIfExists(responseData.getContent());
             }
 

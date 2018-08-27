@@ -2,8 +2,10 @@ package com.train2gain.train2gain.repository.common;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.train2gain.train2gain.source.remote.response.APIData;
 import com.train2gain.train2gain.source.remote.response.APIResponse;
@@ -14,6 +16,9 @@ import com.train2gain.train2gain.source.remote.response.APIResponse;
  * @param <ResponseType> the APIResponse data type returned from the API request
  */
 public abstract class RetrieveHandler<ResultType, ResponseType> {
+
+    // Logcat TAG key for debugging purpose
+    private final static String LOGCAT_TAG = "RETRIEVE_HANDLER";
 
     // Result data from API / database
     private final MediatorLiveData<Resource<ResultType>> result;
@@ -74,10 +79,16 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 if(response.getData().getContent() != null){
-                    return saveAPIResponse(response.getData());
+                    try{
+                        return saveAPIResponse(response.getData());
+                    }catch(SQLiteConstraintException ex){
+                        Log.e(LOGCAT_TAG, ex.getLocalizedMessage());
+                        return false;
+                    }
                 }
                 return true;
             }
+
             @Override
             protected void onPostExecute(Boolean inserted) {
                 if(inserted == true){
@@ -89,7 +100,6 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
                         result.postValue(Resource.error(oldData, "DATABASE INSERT ERROR"));
                     });
                 }
-
             }
         }.execute();
     }
@@ -110,8 +120,10 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
     /**
      * Called to save the result of API response into the database
      * @param responseData data retrieved from network which is stored in the API response
+     * @return true if no errors occurred during insertion operations
+     *         false otherwise
      */
-    protected abstract Boolean saveAPIResponse(@NonNull APIData<ResponseType> responseData);
+    protected abstract boolean saveAPIResponse(@NonNull APIData<ResponseType> responseData);
 
     /**
      * Called to retrieve / load data from an API endpoint

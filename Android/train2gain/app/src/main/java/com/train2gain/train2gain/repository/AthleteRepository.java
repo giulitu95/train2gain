@@ -17,8 +17,10 @@ import com.train2gain.train2gain.source.remote.endpoint.AthleteAPI;
 import com.train2gain.train2gain.source.remote.response.APIData;
 import com.train2gain.train2gain.source.remote.response.APIResponse;
 import com.train2gain.train2gain.source.remote.util.APIUtils;
+import com.train2gain.train2gain.util.NetworkUtil;
 
 public class AthleteRepository {
+
     private final AthleteHelper athleteHelperInstance;
     private final AthleteAPI athleteAPIInstance;
     private static AthleteRepository instance = null;
@@ -38,12 +40,13 @@ public class AthleteRepository {
         }
         return instance;
     }
+
     public LiveData<Resource<Athlete>> getAthlete(final long athleteId){
         return new RetrieveHandler<Athlete, Athlete>() {
             @NonNull @Override
             protected LiveData<Athlete> loadFromDatabase() {
                 MutableLiveData<Athlete> athleteLiveData = new MutableLiveData<Athlete>();
-                    AsyncTask.execute(() -> {
+                AsyncTask.execute(() -> {
                     athleteLiveData.postValue(athleteHelperInstance.getById(athleteId));
                 });
                 return athleteLiveData;
@@ -51,11 +54,11 @@ public class AthleteRepository {
 
             @Override
             protected boolean shouldFetchFromAPI() {
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
-            protected Boolean saveAPIResponse(@NonNull APIData<Athlete> responseData) {
+            protected boolean saveAPIResponse(@NonNull APIData<Athlete> responseData) {
                 return athleteHelperInstance.insertOrUpdateIfExists(responseData.getContent());
             }
 
@@ -66,15 +69,16 @@ public class AthleteRepository {
 
             @Override
             protected void onFetchFromAPIFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         }.getAsLiveData();
     }
+
     public void uploadAthlete(final Athlete athlete){
         new SaveHandler<Athlete, Athlete>(athlete) {
             @Override
             protected boolean shouldUploadToAPI() {
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
@@ -83,8 +87,13 @@ public class AthleteRepository {
             }
 
             @Override
-            protected boolean saveToDatabase(@NonNull Athlete dataToSave) {
-                return athleteHelperInstance.insertOrUpdateIfExists(dataToSave);
+            protected boolean saveDataObjectToDatabase(@NonNull Athlete objectToSave) {
+                return athleteHelperInstance.insertOrUpdateIfExists(objectToSave);
+            }
+
+            @Override
+            protected boolean saveResponseDataToDatabase(@NonNull APIData<Athlete> responseData) {
+                return true;
             }
 
             @Override
@@ -94,15 +103,16 @@ public class AthleteRepository {
 
             @Override
             protected void onAPIUploadFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
 
             @Override
             protected void onDatabaseSaveFailed() {
-                // TODO implement something..
+                // TODO what to do here ? Will we show a message ?
             }
         };
     }
+
     public LiveData<Resource<Athlete>> getUpdatedAthlete(final long athleteUserId){
         return new RetrieveHandler<Athlete, Athlete>() {
             @NonNull @Override
@@ -116,12 +126,11 @@ public class AthleteRepository {
 
             @Override
             protected boolean shouldFetchFromAPI() {
-                // TODO add network conditions..
-                return true;
+                return NetworkUtil.isConnected();
             }
 
             @Override
-            protected Boolean saveAPIResponse(@NonNull APIData<Athlete> responseData) {
+            protected boolean saveAPIResponse(@NonNull APIData<Athlete> responseData) {
                 return athleteHelperInstance.insertOrUpdateIfExists(responseData.getContent());
             }
 
@@ -140,4 +149,5 @@ public class AthleteRepository {
     public LiveData<Resource<Athlete>> updateAthlete(final long athleteUserId){
         return getUpdatedAthlete(athleteUserId);
     }
+
 }
