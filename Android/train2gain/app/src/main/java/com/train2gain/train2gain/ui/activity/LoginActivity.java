@@ -22,8 +22,8 @@ import com.train2gain.train2gain.R;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth authManager;
-    private GoogleSignInClient mGoogleSignInClient;
-    public static final int RC_SIGN_IN = 2;
+    //private GoogleSignInClient mGoogleSignInClient;
+    //public static final int RC_SIGN_IN = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -31,16 +31,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+       // GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         // Build a GoogleSignInClient with the options specified by gso.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+       // mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         EditText emailText = findViewById(R.id.email_text);
         EditText passwordText = findViewById(R.id.password_text);
 
         Button loginButton = findViewById(R.id.login_button);
         Button registrationButton = findViewById(R.id.registration_button);
-        Button googleSignIn = findViewById(R.id.google_sign_in_button);
+        //Button googleSignIn = findViewById(R.id.google_sign_in_button);
 
         authManager = FirebaseAuth.getInstance();
 
@@ -77,18 +77,21 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+        /*
         googleSignIn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 googleSignIn();
             }
-        });
+        });*/
 
 
     }
+    /*
     private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+    */
 
 }
