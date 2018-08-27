@@ -20,17 +20,23 @@ import com.train2gain.train2gain.repository.UserRepository;
 import com.train2gain.train2gain.repository.common.Resource;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class SyncDataTask extends AsyncTask<Long, Void, Boolean> {
+public class SyncDataTask extends AsyncTask<Long, Void, Map<String, Object>> {
 
     /**
      * Sync data callbacks called base on synchronization result
      */
     public interface CallbackInterface {
         void onSyncDataFailed();
-        void onSyncDataSuccessful();
+        void onSyncDataSuccessful(@NonNull User userObject);
     }
+
+    // Thread Map Keys
+    private static final String IS_UPDATED_KEY = "IS_UPDATED_KEY";
+    private static final String USER_OBJECT_KEY = "USER_OBJECT_KEY";
 
     // Repo
     private final UserRepository userRepository;
@@ -40,6 +46,7 @@ public class SyncDataTask extends AsyncTask<Long, Void, Boolean> {
     private final ScheduleLoadRepository scheduleLoadRepository;
     private final ScheduleNoteRepository scheduleNoteRepository;
 
+    // Callback instance
     private final CallbackInterface callbackImpl;
 
     public SyncDataTask(@NonNull Context context, CallbackInterface interfaceImpl) {
@@ -53,11 +60,17 @@ public class SyncDataTask extends AsyncTask<Long, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Long... ids) {
+    protected Map<String, Object> doInBackground(Long... ids) {
+        // Init map
+        Map<String, Object> returnObjectMap = new HashMap<String, Object>();
+        returnObjectMap.put(SyncDataTask.IS_UPDATED_KEY, false);
+        returnObjectMap.put(SyncDataTask.USER_OBJECT_KEY, null);
+
         // Sync user data
         LiveData<Resource<User>> userLiveDataResource = this.userRepository.updateUser(ids[0]);
         if(!genericDataSync(userLiveDataResource)){
-            return false;
+            returnObjectMap.put(SyncDataTask.IS_UPDATED_KEY, true);
+            return returnObjectMap;
         }
 
         // Update base on userType
@@ -77,13 +90,19 @@ public class SyncDataTask extends AsyncTask<Long, Void, Boolean> {
                 break;
         }
 
-        return update;
+        // Set map properties
+        returnObjectMap.put(SyncDataTask.IS_UPDATED_KEY, update);
+        returnObjectMap.put(SyncDataTask.USER_OBJECT_KEY, userObject);
+
+        return returnObjectMap;
     }
 
     @Override
-    protected void onPostExecute(Boolean updatedInserted) {
+    protected void onPostExecute(Map<String, Object> argumentMap) {
+        Boolean updatedInserted = (Boolean) argumentMap.get(SyncDataTask.IS_UPDATED_KEY);
         if(updatedInserted){
-            callbackImpl.onSyncDataSuccessful();
+            User userObject = (User) argumentMap.get(SyncDataTask.USER_OBJECT_KEY);
+            callbackImpl.onSyncDataSuccessful(userObject);
         }else{
             callbackImpl.onSyncDataFailed();
         }

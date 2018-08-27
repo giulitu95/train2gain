@@ -3,6 +3,7 @@ package com.train2gain.train2gain.ui.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,12 +12,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.train2gain.train2gain.R;
+import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.service.SyncDataTask;
 
 public class SyncDataSplashActivity extends AppCompatActivity implements SyncDataTask.CallbackInterface {
 
     public static final String USER_ID_PARAM = "USER_ID_PARAM";
-    private long userId = -1;
+    public static final String USER_TYPE_PARAM = "USER_TYPE_PARAM";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,9 +26,10 @@ public class SyncDataSplashActivity extends AppCompatActivity implements SyncDat
         setContentView(R.layout.activity_sync_data_splash);
 
         // Init user for which we want info
+        final long[] userId = new long[1];
         Bundle activityParams = getIntent().getExtras();
         if(activityParams != null && activityParams.containsKey(SyncDataSplashActivity.USER_ID_PARAM)){
-            userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
+            userId[0] = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
         }
 
         // Init Sync thread task
@@ -34,12 +37,12 @@ public class SyncDataSplashActivity extends AppCompatActivity implements SyncDat
         tryAgainButton.setOnClickListener((View listenerView) -> {
             showSyncDataProgressInfo();
             SyncDataTask syncDataTask = new SyncDataTask(SyncDataSplashActivity.this, SyncDataSplashActivity.this);
-            syncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userId);
+            syncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userId[0]);
         });
 
         // Execute first update
         SyncDataTask syncDataTask = new SyncDataTask(SyncDataSplashActivity.this, SyncDataSplashActivity.this);
-        syncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userId);
+        syncDataTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, userId[0]);
     }
 
     @Override
@@ -48,12 +51,13 @@ public class SyncDataSplashActivity extends AppCompatActivity implements SyncDat
     }
 
     @Override
-    public void onSyncDataSuccessful(){
+    public void onSyncDataSuccessful(@NonNull User userObject){
         Intent startMainActivityIntent = new Intent(this, MainActivity.class);
         startMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startMainActivityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, this.userId);
+        startMainActivityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, userObject.getId());
+        startMainActivityIntent.putExtra(SyncDataSplashActivity.USER_TYPE_PARAM, userObject.getType());
         startActivity(startMainActivityIntent);
     }
 
