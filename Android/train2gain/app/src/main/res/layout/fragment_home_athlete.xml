@@ -24,7 +24,6 @@
             android:drawableEnd="@drawable/image_home_arrow_right"
             android:backgroundTint="@android:color/darker_gray"
             android:backgroundTintMode="multiply"
-            android:scaleType="centerCrop"
             android:text="@string/home_daily_workout"
             android:textColor="@color/theme_text"
             android:textAllCaps="false"
