@@ -1,9 +1,13 @@
 package com.train2gain.train2gain.service;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.train2gain.train2gain.model.entity.Athlete;
 import com.train2gain.train2gain.model.entity.Schedule;
@@ -69,7 +73,7 @@ public class SyncDataTask extends AsyncTask<Long, Void, Map<String, Object>> {
         // Sync user data
         LiveData<Resource<User>> userLiveDataResource = this.userRepository.updateUser(ids[0]);
         if(!genericDataSync(userLiveDataResource)){
-            returnObjectMap.put(SyncDataTask.IS_UPDATED_KEY, true);
+            returnObjectMap.put(SyncDataTask.IS_UPDATED_KEY, false);
             return returnObjectMap;
         }
 
@@ -189,10 +193,25 @@ public class SyncDataTask extends AsyncTask<Long, Void, Map<String, Object>> {
      * @return true, if sync has been handled correctly
      *         false otherwise
      */
-    private<DataType> boolean genericDataSync(LiveData<Resource<DataType>> resourceLiveData){
-        resourceLiveData.observeForever(dataTypeResource -> {});
-        while(resourceLiveData.getValue() == null || resourceLiveData.getValue().getStatus() == Resource.Status.LOADING);
-        if(resourceLiveData.getValue().getData() != null){
+    private<DataType> boolean genericDataSync(@NonNull final LiveData<Resource<DataType>> resourceLiveData){
+        // Observe data
+        Observer<Resource<DataType>> observer = new Observer<Resource<DataType>>() {
+            @Override
+            public void onChanged(@Nullable Resource<DataType> dataTypeResource) {
+                final Observer<Resource<DataType>> observer = this;
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if(dataTypeResource != null && dataTypeResource.getStatus() != Resource.Status.LOADING){
+                        resourceLiveData.removeObserver(observer);
+                    }
+                });
+            }
+        };
+        resourceLiveData.observeForever(observer);
+        while(resourceLiveData.hasObservers());
+
+        // Take action base on live data resource status
+        Resource<DataType> dataTypeResource = resourceLiveData.getValue();
+        if(dataTypeResource.getStatus() == Resource.Status.SUCCESS && dataTypeResource.getData() != null){
             return true;
         }else{
             return false;
