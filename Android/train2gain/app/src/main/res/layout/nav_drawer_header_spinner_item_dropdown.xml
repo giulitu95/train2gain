@@ -6,4 +6,4 @@
     android:padding="5dp"
     android:textColor="@color/theme_text_dark"
     android:background="@color/theme_background"
-    android:textSize="20sp" />
+    android:textSize="16sp" />

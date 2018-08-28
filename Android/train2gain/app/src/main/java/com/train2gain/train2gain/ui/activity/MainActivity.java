@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -14,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -23,17 +23,24 @@ import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.ui.fragment.HomeAthleteFragment;
+import com.train2gain.train2gain.ui.fragment.HomeTrainerFragment;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private View navDrawerHeaderView = null;
+    // UI elements
     private DrawerLayout drawerLayout = null;
     private NavigationView navigationDrawerView = null;
+    private View navDrawerHeaderView = null;
+    private Fragment fragmentToInsert = null;
+
+    // Activity User details
+    private UserType currentSelectedUserType = null;
     private UserViewModel profileViewModel = null;
 
     @Override
@@ -41,15 +48,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get activity param like UserId
-        Bundle activityParams = getIntent().getExtras();
+        // User details (minimal)
         long userId = -1;
-        if(activityParams != null){
+        UserType userType = null;
+
+        // Get activity param like userId and userType
+        Bundle activityParams = getIntent().getExtras();
+        if(activityParams != null && activityParams.containsKey(SyncDataSplashActivity.USER_ID_PARAM) && activityParams.containsKey(SyncDataSplashActivity.USER_TYPE_PARAM)){
             userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
+            userType = (UserType) activityParams.getSerializable(SyncDataSplashActivity.USER_TYPE_PARAM);
+        }else{
+            return;
         }
 
-        // Init activity drawer
-        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // Init current user type
+        if(userType != null){
+            if(userType == UserType.ATHLETE || userType == UserType.BOTH){
+                this.currentSelectedUserType = UserType.ATHLETE;
+            }else{
+                this.currentSelectedUserType = UserType.TRAINER;
+            }
+        }else{
+            return;
+        }
 
         // Init activity top bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.frame_toolbar);
@@ -57,35 +78,69 @@ public class MainActivity extends AppCompatActivity {
 
         // Sets menu open button on toolbar
         ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        if(actionbar != null){
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
+
+        // Init activity drawer and listener
+        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        this.drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                if(MainActivity.this.fragmentToInsert != null){
+                    replaceContentFrame(MainActivity.this.fragmentToInsert);
+                    MainActivity.this.fragmentToInsert = null;
+                }
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
 
         // Init navigation drawer
         this.navigationDrawerView = (NavigationView) findViewById(R.id.nav_view);
         this.navigationDrawerView.setNavigationItemSelectedListener(menuItem -> {
             menuItem.setChecked(true);
-            drawerLayout.closeDrawers();
-            // TODO add method to change activity frame
+            onNavigationDrawerItemSelected(menuItem, MainActivity.this.currentSelectedUserType);
+            this.drawerLayout.closeDrawer(Gravity.START);
             return true;
         });
 
-        // Init profile view objects
+        // Init navigation drawer header
         this.navDrawerHeaderView = (View) this.navigationDrawerView.getHeaderView(0);
 
-        // Set menuHeaderSpinner onClick
         Spinner menuHeaderSpinner = (Spinner) this.navDrawerHeaderView.findViewById(R.id.header_user_type);
         menuHeaderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String userType = (String) parent.getItemAtPosition(pos);
+                UserType userType = (UserType) parent.getItemAtPosition(pos);
+                MainActivity.this.currentSelectedUserType = userType;
+                MainActivity.this.fragmentToInsert = new HomeAthleteFragment();
+                if(userType == UserType.TRAINER) MainActivity.this.fragmentToInsert = new HomeTrainerFragment();
+                drawerLayout.closeDrawer(Gravity.START);
                 updateNavDrawerMenu(userType);
-                // TODO add method to change activity frame
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
-        // Init view model
+        // Init view models
         this.profileViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         this.profileViewModel.init(this, userId);
         this.profileViewModel.getUser().observe(this, userResource -> {
@@ -94,28 +149,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // View fragment TODO to fix these lines
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, new HomeAthleteFragment());
-        ft.commit();
+        // Init fragment and menu
+        if(this.currentSelectedUserType == UserType.TRAINER){
+            replaceContentFrame(new HomeTrainerFragment());
+            updateNavDrawerMenu(UserType.TRAINER);
+        }else{
+            replaceContentFrame(new HomeAthleteFragment());
+            updateNavDrawerMenu(UserType.ATHLETE);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                this.drawerLayout.openDrawer(Gravity.START);
-                return true;
+        if(this.drawerLayout != null && item.getItemId() == android.R.id.home){
+            this.drawerLayout.openDrawer(Gravity.START);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if(this.drawerLayout.isDrawerOpen(Gravity.START)){
+        if(this.drawerLayout != null && this.drawerLayout.isDrawerOpen(Gravity.START)){
             this.drawerLayout.closeDrawer(Gravity.START);
         }else{
             super.onBackPressed();
+        }
+    }
+
+    /**
+     * Called when an item in the Navigation Menu Drawer is tapped
+     * @param menuItem the menu entry of the navigation drawer that has been tapped
+     * @param currentUserType the current selected user type in the navigation drawer
+     */
+    private void onNavigationDrawerItemSelected(MenuItem menuItem, UserType currentUserType){
+        // TODO add code to change 'fragmentToInsert' base on selected menu item
+    }
+
+    /**
+     * Replaces the main activity content frame with a new fragment, given as input object
+     * @param fragmentToBeInserted the fragment that will be inserted in the main activity frame
+     */
+    private void replaceContentFrame(@NonNull final Fragment fragmentToBeInserted){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragmentToBeInserted);
+        fragmentTransaction.commit();
+    }
+
+    /**
+     * Updates navigation drawer menu's items
+     * @param currentUserType the current selected user type in the navigation drawer
+     */
+    private void updateNavDrawerMenu(@NonNull UserType currentUserType){
+        this.navigationDrawerView.getMenu().clear();
+        switch(currentUserType){
+            case ATHLETE:
+                navigationDrawerView.inflateMenu(R.menu.activity_main_menu_athlete);
+                break;
+            case TRAINER:
+                navigationDrawerView.inflateMenu(R.menu.activity_main_menu_trainer);
+                break;
         }
     }
 
@@ -124,32 +217,33 @@ public class MainActivity extends AppCompatActivity {
      * @param user the user object that contains the info we want to display
      */
     private void updateNavDrawerHeaderInfo(@NonNull User user){
-        ImageView userImage = (ImageView) this.navDrawerHeaderView.findViewById(R.id.header_user_profile_image);
+        CircleImageView userImage = (CircleImageView) this.navDrawerHeaderView.findViewById(R.id.header_user_profile_image);
         TextView userName = (TextView) this.navDrawerHeaderView.findViewById(R.id.header_user_name);
         Spinner userType = (Spinner) this.navDrawerHeaderView.findViewById(R.id.header_user_type);
 
         // Prepare user types
-        String[] userTypes = getString(user.getType().getResourceId()).replaceAll("\\s", "").split(",");
-        List<String> userTypesList = new ArrayList<String>(Arrays.asList(userTypes));
+        List<UserType> userTypesList = new ArrayList<>();
+        if(user.getType() == UserType.BOTH){
+            userTypesList.add(UserType.ATHLETE);
+            userTypesList.add(UserType.TRAINER);
+        }else{
+            userTypesList.add(user.getType());
+        }
+
+        // Prepare spinner Adapter
+        ArrayAdapter<UserType> spinnerArrayAdapter = new ArrayAdapter<UserType>(this, R.layout.nav_drawer_header_spinner_item, userTypesList);
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.nav_drawer_header_spinner_item_dropdown);
+        userType.setAdapter(spinnerArrayAdapter);
 
         // Set user info..
         userName.setText(user.getDisplayName());
         Picasso.get().load(user.getPhotoUrl()).into(userImage);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, R.layout.nav_drawer_header_spinner_item, userTypesList);
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.nav_drawer_header_spinner_item_dropdown);
         userType.setAdapter(spinnerArrayAdapter);
-    }
 
-    /**
-     * Updates the Navigation drawer menu items
-     * @param userType the type of user (athlete or trainer) that uses the app
-     */
-    private void updateNavDrawerMenu(String userType){
-        navigationDrawerView.getMenu().clear();
-        if(userType.equals(getString(UserType.TRAINER.getResourceId()))){
-            navigationDrawerView.inflateMenu(R.menu.activity_main_menu_trainer);
-        }else{
-            navigationDrawerView.inflateMenu(R.menu.activity_main_menu_athlete);
+        // If user type is only one, spinner become a TextView
+        if(userTypesList.size() == 1){
+            userType.setEnabled(false);
+            userType.setBackground(null);
         }
     }
 

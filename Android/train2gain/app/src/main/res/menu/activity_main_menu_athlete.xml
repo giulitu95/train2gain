@@ -13,10 +13,9 @@
             android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home"
             android:checked="true" />
-        <item
-            android:id="@+id/menu_daily_workout"
-            android:icon="@drawable/ic_menu_daily_workout"
-            android:title="@string/menu_daily_workout"/>
+        <!--
+            Here there will be the "daily" daily workout
+        -->
     </group>
 
     <!-- Menu center section -->
@@ -27,7 +26,7 @@
                 android:checkableBehavior="single" >
 
                 <!--
-                    Here there will be all the "day" daily workout
+                    Here there will be all the daily workouts
                 -->
             </group>
         </menu>

@@ -3,4 +3,5 @@
     android:id="@+id/spinner_item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textColor="@color/theme_text" />
+    android:textColor="@color/theme_text"
+    android:textSize="16sp" />
