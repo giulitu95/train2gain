@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4b403ecbae70bc5ab4a2bf35fcf00f76",
+    "identityHash": "528f1d428c81ee09b36e34e081be3227",
     "entities": [
       {
         "tableName": "athlete",
@@ -763,7 +763,7 @@
       },
       {
         "tableName": "trainer",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `gym_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, PRIMARY KEY(`user_id`), FOREIGN KEY(`gym_id`) REFERENCES `gym`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION , FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `gym_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, PRIMARY KEY(`user_id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -809,17 +809,6 @@
           }
         ],
         "foreignKeys": [
-          {
-            "table": "gym",
-            "onDelete": "NO ACTION",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "gym_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          },
           {
             "table": "user",
             "onDelete": "NO ACTION",
@@ -1005,7 +994,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4b403ecbae70bc5ab4a2bf35fcf00f76\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"528f1d428c81ee09b36e34e081be3227\")"
     ]
   }
 }
