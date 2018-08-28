@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -28,14 +30,16 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
         this.result.postValue(Resource.loading(null));
         LiveData<ResultType> databaseSource = loadFromDatabase();
         result.addSource(databaseSource, data -> {
-            result.removeSource(databaseSource);
-            if(shouldFetchFromAPI()){
-                fetchFromAPI(databaseSource);
-            }else{
-                result.addSource(databaseSource, newData -> {
-                    result.postValue(Resource.success(newData));
-                });
-            }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                result.removeSource(databaseSource);
+                if(shouldFetchFromAPI()){
+                    fetchFromAPI(databaseSource);
+                }else{
+                    result.addSource(databaseSource, newData -> {
+                        result.postValue(Resource.success(newData));
+                    });
+                }
+            });
         });
     }
 
@@ -50,22 +54,24 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
             result.postValue(Resource.loading(data));
         });
         result.addSource(APISource, response -> {
-            result.removeSource(APISource);
-            result.removeSource(databaseSource);
-            if(response.getStatus() == APIResponse.Status.SUCCESS){
-                saveAPIResponseAndUpdateDatabase(response);
-            }else {
-                onFetchFromAPIFailed();
-                if(response.getStatus() == APIResponse.Status.ERROR){
-                    result.addSource(databaseSource, data -> {
-                        result.postValue(Resource.error(data, response.getError().getMessage()));
-                    });
-                }else if(response.getStatus() == APIResponse.Status.FAILURE){
-                    result.addSource(databaseSource, data -> {
-                        result.postValue(Resource.error(data, response.getThrowable().getMessage()));
-                    });
+            new Handler(Looper.getMainLooper()).post(() -> {
+                result.removeSource(APISource);
+                result.removeSource(databaseSource);
+                if(response.getStatus() == APIResponse.Status.SUCCESS){
+                    saveAPIResponseAndUpdateDatabase(response);
+                }else {
+                    onFetchFromAPIFailed();
+                    if(response.getStatus() == APIResponse.Status.ERROR){
+                        result.addSource(databaseSource, data -> {
+                            result.postValue(Resource.error(data, response.getError().getMessage()));
+                        });
+                    }else if(response.getStatus() == APIResponse.Status.FAILURE){
+                        result.addSource(databaseSource, data -> {
+                            result.postValue(Resource.error(data, response.getThrowable().getMessage()));
+                        });
+                    }
                 }
-            }
+            });
         });
     }
 
@@ -82,7 +88,7 @@ public abstract class RetrieveHandler<ResultType, ResponseType> {
                     try{
                         return saveAPIResponse(response.getData());
                     }catch(SQLiteConstraintException ex){
-                        Log.e(LOGCAT_TAG, ex.getLocalizedMessage());
+                        Log.e(LOGCAT_TAG, Log.getStackTraceString(ex));
                         return false;
                     }
                 }

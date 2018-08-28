@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -35,18 +37,21 @@ public abstract class SaveHandler<SaveType, ResponseType> {
      * @param objectToUpload the data object we want to upload to the API server
      */
     private void uploadDataToNetwork(SaveType objectToUpload){
-        LiveData<APIResponse<ResponseType>> responseLiveData = uploadToAPI(objectToUpload);
+        final LiveData<APIResponse<ResponseType>> responseLiveData = uploadToAPI(objectToUpload);
         Observer<APIResponse<ResponseType>> observer = new Observer<APIResponse<ResponseType>>() {
             @Override
             public void onChanged(@Nullable APIResponse<ResponseType> responseData) {
-                if(responseData != null && responseData.getStatus() == APIResponse.Status.SUCCESS){
-                    if(shouldSaveAPIResponse()){
-                        saveDataToDatabase(responseData);
+                final Observer<APIResponse<ResponseType>> observer = this;
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    responseLiveData.removeObserver(observer);
+                    if(responseData != null && responseData.getStatus() == APIResponse.Status.SUCCESS){
+                        if(shouldSaveAPIResponse()){
+                            saveDataToDatabase(responseData);
+                        }
+                    }else{
+                        onAPIUploadFailed();
                     }
-                }else{
-                    onAPIUploadFailed();
-                }
-                responseLiveData.removeObserver(this);
+                });
             }
         };
         responseLiveData.observeForever(observer);
@@ -63,7 +68,7 @@ public abstract class SaveHandler<SaveType, ResponseType> {
                 try{
                     return saveDataObjectToDatabase(object);
                 }catch(SQLiteConstraintException ex){
-                    Log.e(LOGCAT_TAG, ex.getLocalizedMessage());
+                    Log.e(LOGCAT_TAG, Log.getStackTraceString(ex));
                     return false;
                 }
             }
@@ -89,7 +94,7 @@ public abstract class SaveHandler<SaveType, ResponseType> {
                     try{
                         return saveResponseDataToDatabase(response.getData());
                     }catch(SQLiteConstraintException ex){
-                        Log.e(LOGCAT_TAG, ex.getLocalizedMessage());
+                        Log.e(LOGCAT_TAG, Log.getStackTraceString(ex));
                         return false;
                     }
                 }else{
