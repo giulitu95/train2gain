@@ -9,13 +9,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Splash extends AppCompatActivity {
 
+    FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
+        user = auth.getCurrentUser();
 
         checkUser(user);
 
@@ -28,6 +29,10 @@ public class Splash extends AppCompatActivity {
             Intent startActityIntent = new Intent(this, LoginActivity.class);
             startActivity(startActityIntent);
         }else{
+            Intent startActivityIntent = new Intent(this, SyncDataSplashActivity.class);
+            long userId = user.getUid().hashCode();
+            startActivityIntent.putExtra(SyncDataSplashActivity.USER_ID_PARAM, userId);
+            startActivity(startActivityIntent);
         }
     }
 
