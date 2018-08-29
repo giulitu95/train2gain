@@ -31,7 +31,7 @@ module.exports = class NewSchedule{
         var promiseFunction = function(resolve, reject){
             var lastScheduleId = req.params.lastScheduleId;
             var userId = req.params.userId;
-            var reg = /^\d+$/;
+            var reg = /^[+\-]?\d+$/;
             if(lastScheduleId.toString() === 'null'){
                 var lastScheduleIdAttribute = null;
                 var userIdAttribute = parseInt(userId);

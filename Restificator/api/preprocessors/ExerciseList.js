@@ -24,7 +24,7 @@ module.exports = class ExerciseList{
     parseAndValidate(req){
         var promiseFunction = function(resolve, reject){
             var lastUpdate = req.params.lastUpdate;
-            var reg = /^\d+$/;
+            var reg = /^[+\-]?\d+$/;
             if(!reg.test(lastUpdate)){
                 reject(new Error(HttpStatus.BAD_REQUEST, ErrorType.DATE_ERROR));
             } else{

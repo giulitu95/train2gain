@@ -23,7 +23,7 @@ module.exports = class NewSchedule{
     parseAndValidate(req){
         var promiseFunction = function(resolve, reject){
             var userId = req.params.userId;
-            var reg = /^\d+$/;
+            var reg = /^[+\-]?\d+$/;
             if(!reg.test(userId)){
                 reject(new Error(HttpStatus.BAD_REQUEST, ErrorType.SCHEDULE_ID_ERROR));
             } else{

@@ -40,7 +40,7 @@ module.exports = class ScheduleUpdates{
             var scheduleId = req.params.scheduleId;
             var lastUpdate = req.params.lastUpdate;
             var userId = req.params.userId;
-            var reg = /^\d+$/;
+            var reg =/^[+\-]?\d+$/;
             if(!reg.test(lastUpdate)){
                 reject(new Error(HttpStatus.BAD_REQUEST, ErrorType.DATE_ERROR));
             } else if(!reg.test(scheduleId)){

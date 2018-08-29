@@ -32,7 +32,7 @@ module.exports = class UserProfileList{
         var promiseFunction = function(resolve, reject){
             var lastUpdate = req.params.lastUpdate;
             var trainerId = req.params.trainerId;
-            var reg = /^\d+$/;
+            var reg = /^[+\-]?\d+$/;
             if(!reg.test(lastUpdate)){
                 reject(new Error(HttpStatus.BAD_REQUEST, ErrorType.DATE_ERROR));
             } else if(!reg.test(trainerId)){
