@@ -37,7 +37,7 @@
             android:name=".ui.activity.Registration"
             android:theme="@style/app_theme_dark" />
         <activity
-            android:name=".ui.activity.AddAthleteInfoActivity"
+            android:name=".ui.activity.athlete.AddAthleteInfoActivity"
             android:theme="@style/app_theme_dark" />
         <activity android:name=".ui.activity.MainActivity" />
 

@@ -1,4 +1,4 @@
-package com.train2gain.train2gain.ui.activity;
+package com.train2gain.train2gain.ui.activity.athlete;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.Athlete;
 import com.train2gain.train2gain.repository.AthleteRepository;
+import com.train2gain.train2gain.ui.activity.SyncDataSplashActivity;
 
 import java.util.Calendar;
 

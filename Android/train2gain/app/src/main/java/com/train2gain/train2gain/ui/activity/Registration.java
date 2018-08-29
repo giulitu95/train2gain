@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +39,7 @@ import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.repository.TrainerRepository;
 import com.train2gain.train2gain.repository.UserRepository;
+import com.train2gain.train2gain.ui.activity.athlete.AddAthleteInfoActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

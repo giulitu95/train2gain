@@ -22,8 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
-import com.train2gain.train2gain.ui.fragment.HomeAthleteFragment;
-import com.train2gain.train2gain.ui.fragment.HomeTrainerFragment;
+import com.train2gain.train2gain.ui.fragment.trainer.HomeFragment;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 import com.train2gain.train2gain.viewmodel.factory.UserViewModelFactory;
 
@@ -130,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 UserType userType = (UserType) parent.getItemAtPosition(pos);
                 MainActivity.this.currentSelectedUserType = userType;
-                MainActivity.this.fragmentToInsert = new HomeAthleteFragment();
-                if(userType == UserType.TRAINER) MainActivity.this.fragmentToInsert = new HomeTrainerFragment();
+                MainActivity.this.fragmentToInsert = new com.train2gain.train2gain.ui.fragment.athlete.HomeFragment();
+                if(userType == UserType.TRAINER) MainActivity.this.fragmentToInsert = new HomeFragment();
                 drawerLayout.closeDrawer(Gravity.START);
                 updateNavDrawerMenu(userType);
             }
@@ -153,9 +152,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Init specific things base on userType
         if(this.currentSelectedUserType == UserType.TRAINER){
-            replaceContentFrame(new HomeTrainerFragment());
+            replaceContentFrame(new HomeFragment());
         }else{
-            replaceContentFrame(new HomeAthleteFragment());
+            replaceContentFrame(new com.train2gain.train2gain.ui.fragment.athlete.HomeFragment());
 
         }
         updateNavDrawerMenu(this.currentSelectedUserType);
