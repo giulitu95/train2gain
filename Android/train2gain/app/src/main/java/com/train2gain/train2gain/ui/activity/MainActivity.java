@@ -25,6 +25,7 @@ import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.ui.fragment.HomeAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.HomeTrainerFragment;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
+import com.train2gain.train2gain.viewmodel.factory.UserViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         // Init navigation drawer header
         this.navDrawerHeaderView = (View) this.navigationDrawerView.getHeaderView(0);
 
+        // Init spinner (user type chooser)
         Spinner menuHeaderSpinner = (Spinner) this.navDrawerHeaderView.findViewById(R.id.header_user_type);
         menuHeaderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -136,27 +138,27 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                // Nothing to do
             }
         });
 
         // Init view models
-        this.profileViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        this.profileViewModel.init(this, userId);
+        UserViewModelFactory userViewModelFactory = new UserViewModelFactory(this, userId);
+        this.profileViewModel = ViewModelProviders.of(this, userViewModelFactory).get(UserViewModel.class);
         this.profileViewModel.getUser().observe(this, userResource -> {
             if(userResource != null && userResource.getData() != null){
                 updateNavDrawerHeaderInfo(userResource.getData());
             }
         });
 
-        // Init fragment and menu
+        // Init specific things base on userType
         if(this.currentSelectedUserType == UserType.TRAINER){
             replaceContentFrame(new HomeTrainerFragment());
-            updateNavDrawerMenu(UserType.TRAINER);
         }else{
             replaceContentFrame(new HomeAthleteFragment());
-            updateNavDrawerMenu(UserType.ATHLETE);
+
         }
+        updateNavDrawerMenu(this.currentSelectedUserType);
     }
 
     @Override
@@ -237,8 +239,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Set user info..
         userName.setText(user.getDisplayName());
-        Picasso.get().load(user.getPhotoUrl()).into(userImage);
         userType.setAdapter(spinnerArrayAdapter);
+        Picasso.get()
+               .load(user.getPhotoUrl())
+               .placeholder(R.drawable.image_default_profile_picture)
+               .error(R.drawable.image_default_profile_picture)
+               .into(userImage);
 
         // If user type is only one, spinner become a TextView
         if(userTypesList.size() == 1){

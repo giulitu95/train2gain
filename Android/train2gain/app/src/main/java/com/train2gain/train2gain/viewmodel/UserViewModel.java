@@ -11,10 +11,10 @@ import com.train2gain.train2gain.repository.common.Resource;
 
 public class UserViewModel extends ViewModel {
 
-    private LiveData<Resource<User>> userLiveData = null;
-    private UserRepository userRepository = null;
+    private final LiveData<Resource<User>> userLiveData;
+    private final UserRepository userRepository;
 
-    public void init(@NonNull Context context, final long userId){
+    public UserViewModel(@NonNull Context context, final long userId){
         this.userRepository = UserRepository.getInstance(context);
         this.userLiveData = this.userRepository.getUser(userId);
     }
