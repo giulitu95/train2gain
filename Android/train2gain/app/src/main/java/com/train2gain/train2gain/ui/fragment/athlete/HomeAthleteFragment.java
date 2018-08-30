@@ -1,12 +1,18 @@
 package com.train2gain.train2gain.ui.fragment.athlete;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.train2gain.train2gain.R;
+import com.train2gain.train2gain.repository.common.Resource;
+import com.train2gain.train2gain.viewmodel.ScheduleDailyWorkoutViewModel;
 
 public class HomeAthleteFragment extends Fragment {
 
@@ -38,6 +44,17 @@ public class HomeAthleteFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        ScheduleDailyWorkoutViewModel scheduleDailyWorkoutViewModel = ViewModelProviders.of(getActivity()).get(ScheduleDailyWorkoutViewModel.class);
+        scheduleDailyWorkoutViewModel.getScheduleDailyWorkoutOfTheDay(this.athleteUserId).observe(this, scheduleDailyWorkoutResource -> {
+            if(scheduleDailyWorkoutResource != null && scheduleDailyWorkoutResource.getStatus() == Resource.Status.SUCCESS && scheduleDailyWorkoutResource.getData() != null){
+                showAthleteHomeAvailableScheduleLayout();
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         getActivity().setTitle(getString(R.string.home_title));
@@ -45,6 +62,24 @@ public class HomeAthleteFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // TODO do things here..
+        // Nothing to do
+    }
+
+    private void showAthleteHomeAvailableScheduleLayout(){
+        // Hide "no schedule available"
+        LinearLayout noScheduleLayout = getView().findViewById(R.id.home_athlete_no_schedule_layout);
+        noScheduleLayout.setVisibility(View.GONE);
+
+        // Show "go to daily workout and set listener"
+        CardView goToScheduleDailyWorkoutCardView = getView().findViewById(R.id.home_athlete_btn_daily_workout_layout);
+        goToScheduleDailyWorkoutCardView.setVisibility(View.VISIBLE);
+        Button goToScheduleDailyWorkoutButton = getView().findViewById(R.id.home_athlete_btn_daily_workout);
+        goToScheduleDailyWorkoutButton.setOnClickListener((onClickView) -> {
+            onGoToScheduleDailyWorkoutButtonClick();
+        });
+    }
+
+    private void onGoToScheduleDailyWorkoutButtonClick(){
+        // TODO go to "Daily dailyworkout" fragment / activity
     }
 }
