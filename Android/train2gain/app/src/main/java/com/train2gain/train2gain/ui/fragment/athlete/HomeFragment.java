@@ -16,6 +16,12 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(getString(R.string.home_title));
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // TODO do things here..
     }
