@@ -24,8 +24,6 @@ import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.ui.fragment.trainer.HomeFragment;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
-import com.train2gain.train2gain.viewmodel.factory.UserViewModelFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,9 +140,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Init view models
-        UserViewModelFactory userViewModelFactory = new UserViewModelFactory(this, userId);
-        this.profileViewModel = ViewModelProviders.of(this, userViewModelFactory).get(UserViewModel.class);
-        this.profileViewModel.getUser().observe(this, userResource -> {
+        this.profileViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        this.profileViewModel.getUser(userId).observe(this, userResource -> {
             if(userResource != null && userResource.getData() != null){
                 updateNavDrawerHeaderInfo(userResource.getData());
             }
