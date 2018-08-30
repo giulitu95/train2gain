@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.train2gain.train2gain.R;
 
-public class HomeFragment extends Fragment {
+public class HomeTrainerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {

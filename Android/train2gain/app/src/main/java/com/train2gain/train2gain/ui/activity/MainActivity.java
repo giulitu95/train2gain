@@ -22,8 +22,10 @@ import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
-import com.train2gain.train2gain.ui.fragment.trainer.HomeFragment;
+import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
+import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,8 +129,14 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 UserType userType = (UserType) parent.getItemAtPosition(pos);
                 MainActivity.this.currentSelectedUserType = userType;
-                MainActivity.this.fragmentToInsert = new com.train2gain.train2gain.ui.fragment.athlete.HomeFragment();
-                if(userType == UserType.TRAINER) MainActivity.this.fragmentToInsert = new HomeFragment();
+                switch(userType){
+                    case ATHLETE:
+                        MainActivity.this.fragmentToInsert = new HomeAthleteFragment();
+                        break;
+                    case TRAINER:
+                        MainActivity.this.fragmentToInsert = new HomeTrainerFragment();
+                        break;
+                }
                 drawerLayout.closeDrawer(Gravity.START);
                 updateNavDrawerMenu(userType);
             }
@@ -148,11 +156,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Init specific things base on userType
-        if(this.currentSelectedUserType == UserType.TRAINER){
-            replaceContentFrame(new HomeFragment());
-        }else{
-            replaceContentFrame(new com.train2gain.train2gain.ui.fragment.athlete.HomeFragment());
-
+        switch(this.currentSelectedUserType){
+            case ATHLETE:
+                replaceContentFrame(new HomeAthleteFragment());
+                break;
+            case TRAINER:
+                replaceContentFrame(new HomeTrainerFragment());
+                break;
         }
         updateNavDrawerMenu(this.currentSelectedUserType);
     }
@@ -181,7 +191,19 @@ public class MainActivity extends AppCompatActivity {
      * @param currentUserType the current selected user type in the navigation drawer
      */
     private void onNavigationDrawerItemSelected(MenuItem menuItem, UserType currentUserType){
-        // TODO add code to change 'fragmentToInsert' base on selected menu item
+        switch(menuItem.getItemId()){
+            case R.id.menu_home:
+                switch(currentUserType){
+                    case ATHLETE:
+                        this.fragmentToInsert = new HomeAthleteFragment();
+                        break;
+                    case TRAINER:
+                        this.fragmentToInsert = new HomeTrainerFragment();
+                        break;
+                }
+                break;
+            // TODO add other code to change 'fragmentToInsert' base on selected menu item
+        }
     }
 
     /**
