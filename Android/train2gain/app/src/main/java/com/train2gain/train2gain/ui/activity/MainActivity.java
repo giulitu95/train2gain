@@ -22,8 +22,10 @@ import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
-import com.train2gain.train2gain.ui.fragment.trainer.HomeFragment;
+import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
+import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     // Activity User details
     private UserType currentSelectedUserType = null;
     private UserViewModel profileViewModel = null;
+    private long userId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +50,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // User details (minimal)
-        long userId = -1;
         UserType userType = null;
 
         // Get activity param like userId and userType
         Bundle activityParams = getIntent().getExtras();
         if(activityParams != null && activityParams.containsKey(SyncDataSplashActivity.USER_ID_PARAM) && activityParams.containsKey(SyncDataSplashActivity.USER_TYPE_PARAM)){
-            userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
+            this.userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
             userType = (UserType) activityParams.getSerializable(SyncDataSplashActivity.USER_TYPE_PARAM);
         }else{
             return;
@@ -127,8 +129,14 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 UserType userType = (UserType) parent.getItemAtPosition(pos);
                 MainActivity.this.currentSelectedUserType = userType;
-                MainActivity.this.fragmentToInsert = new com.train2gain.train2gain.ui.fragment.athlete.HomeFragment();
-                if(userType == UserType.TRAINER) MainActivity.this.fragmentToInsert = new HomeFragment();
+                switch(userType){
+                    case ATHLETE:
+                        MainActivity.this.fragmentToInsert = HomeAthleteFragment.newInstance(MainActivity.this.userId);
+                        break;
+                    case TRAINER:
+                        MainActivity.this.fragmentToInsert = HomeTrainerFragment.newInstance(MainActivity.this.userId);
+                        break;
+                }
                 drawerLayout.closeDrawer(Gravity.START);
                 updateNavDrawerMenu(userType);
             }
@@ -148,11 +156,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Init specific things base on userType
-        if(this.currentSelectedUserType == UserType.TRAINER){
-            replaceContentFrame(new HomeFragment());
-        }else{
-            replaceContentFrame(new com.train2gain.train2gain.ui.fragment.athlete.HomeFragment());
-
+        switch(this.currentSelectedUserType){
+            case ATHLETE:
+                replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
+                break;
+            case TRAINER:
+                replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
+                break;
         }
         updateNavDrawerMenu(this.currentSelectedUserType);
     }
@@ -181,7 +191,19 @@ public class MainActivity extends AppCompatActivity {
      * @param currentUserType the current selected user type in the navigation drawer
      */
     private void onNavigationDrawerItemSelected(MenuItem menuItem, UserType currentUserType){
-        // TODO add code to change 'fragmentToInsert' base on selected menu item
+        switch(menuItem.getItemId()){
+            case R.id.menu_home:
+                switch(currentUserType){
+                    case ATHLETE:
+                        this.fragmentToInsert = HomeAthleteFragment.newInstance(this.userId);
+                        break;
+                    case TRAINER:
+                        this.fragmentToInsert = HomeTrainerFragment.newInstance(this.userId);
+                        break;
+                }
+                break;
+            // TODO add other code to change 'fragmentToInsert' base on selected menu item
+        }
     }
 
     /**
