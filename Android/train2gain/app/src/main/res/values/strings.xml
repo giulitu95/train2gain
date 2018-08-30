@@ -19,6 +19,8 @@
     <string name="home_daily_workout">Passa all\'allenamento di oggi</string>
     <string name="home_new_schedule">Crea un nuovo programma</string>
     <string name="home_manage_users">Gestisci utenti</string>
+    <string name="home_no_schedule_info">Al momento non sono presenti schedine.</string>
+    <string name="home_no_schedule_info_2">Per averne una, rivolgiti al tuo allenatore.</string>
 
     <!-- Sync Data Splash -->
     <string name="sync_data_splash_info">Aggiornamento dei dati in corso</string>
