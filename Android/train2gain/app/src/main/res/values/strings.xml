@@ -14,10 +14,9 @@
     <string name="menu_profile">Profilo</string>
     <string name="menu_logout">Esci</string>
 
-    <!-- Athlete Home -->
+    <!-- Home -->
+    <string name="home_title">Home</string>
     <string name="home_daily_workout">Passa all\'allenamento di oggi</string>
-
-    <!-- Trainer Home -->
     <string name="home_new_schedule">Crea un nuovo programma</string>
     <string name="home_manage_users">Gestisci utenti</string>
 
