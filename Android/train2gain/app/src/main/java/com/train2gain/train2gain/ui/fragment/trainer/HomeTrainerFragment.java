@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.train2gain.train2gain.R;
 
@@ -23,7 +24,15 @@ public class HomeTrainerFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // TODO do things here..
+        // Set listener
+        Button goToCreateNewScheduleButton = (Button) view.findViewById(R.id.home_trainer_btn_new_schedule);
+        goToCreateNewScheduleButton.setOnClickListener(onClickView -> {
+            // TODO open / switch to 'CreateNewSchedule' activity here
+        });
+        Button goToManageUserButton = (Button) view.findViewById(R.id.home_trainer_btn_manage_users);
+        goToManageUserButton.setOnClickListener(onClickView -> {
+            // TODO open / switch to 'ManageUsers' activity here
+        });
     }
 
 }
