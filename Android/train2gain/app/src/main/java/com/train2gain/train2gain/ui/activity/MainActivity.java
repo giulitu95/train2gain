@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     // Activity User details
     private UserType currentSelectedUserType = null;
     private UserViewModel profileViewModel = null;
+    private long userId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +50,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // User details (minimal)
-        long userId = -1;
         UserType userType = null;
 
         // Get activity param like userId and userType
         Bundle activityParams = getIntent().getExtras();
         if(activityParams != null && activityParams.containsKey(SyncDataSplashActivity.USER_ID_PARAM) && activityParams.containsKey(SyncDataSplashActivity.USER_TYPE_PARAM)){
-            userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
+            this.userId = activityParams.getLong(SyncDataSplashActivity.USER_ID_PARAM);
             userType = (UserType) activityParams.getSerializable(SyncDataSplashActivity.USER_TYPE_PARAM);
         }else{
             return;
@@ -131,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.currentSelectedUserType = userType;
                 switch(userType){
                     case ATHLETE:
-                        MainActivity.this.fragmentToInsert = new HomeAthleteFragment();
+                        MainActivity.this.fragmentToInsert = HomeAthleteFragment.newInstance(MainActivity.this.userId);
                         break;
                     case TRAINER:
-                        MainActivity.this.fragmentToInsert = new HomeTrainerFragment();
+                        MainActivity.this.fragmentToInsert = HomeTrainerFragment.newInstance(MainActivity.this.userId);
                         break;
                 }
                 drawerLayout.closeDrawer(Gravity.START);
@@ -158,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
         // Init specific things base on userType
         switch(this.currentSelectedUserType){
             case ATHLETE:
-                replaceContentFrame(new HomeAthleteFragment());
+                replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
                 break;
             case TRAINER:
-                replaceContentFrame(new HomeTrainerFragment());
+                replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
                 break;
         }
         updateNavDrawerMenu(this.currentSelectedUserType);
@@ -195,10 +195,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_home:
                 switch(currentUserType){
                     case ATHLETE:
-                        this.fragmentToInsert = new HomeAthleteFragment();
+                        this.fragmentToInsert = HomeAthleteFragment.newInstance(this.userId);
                         break;
                     case TRAINER:
-                        this.fragmentToInsert = new HomeTrainerFragment();
+                        this.fragmentToInsert = HomeTrainerFragment.newInstance(this.userId);
                         break;
                 }
                 break;
