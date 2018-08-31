@@ -34,7 +34,7 @@ public class DailyWorkoutFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.recycler_view_daily_workout_item_section, parent, false);
+        return inflater.inflate(R.layout.fragment_daily_workout_athlete, parent, false);
     }
 
     @Override
