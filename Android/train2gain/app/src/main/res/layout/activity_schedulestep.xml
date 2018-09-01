@@ -94,7 +94,8 @@
                     android:layout_width="0dp"
                     android:layout_height="80dp"
                     android:layout_weight="2.5"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
+                    android:background="#ffff"
                     android:src="@drawable/image_home_trainer_new_schedule"
                     tools:ignore="ContentDescription" />
 
