@@ -50,5 +50,7 @@
     <!-- Schedule step item (RecyclerView) -->
     <string name="schedule_step_set_label">Serie:</string>
     <string name="schedule_step_set_rest_time">Recupero:</string>
+    <string name="schedule_step_set_reps_format_string">%dx</string>
+    <string name="schedule_step_rest_time_format_string">%dsec</string>
 
 </resources>
