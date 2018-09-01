@@ -15,7 +15,8 @@
         android:layout_weight="2.5"
         android:layout_width="0dp"
         android:layout_height="80dp"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
+        android:background="@color/theme_background_exercise_image"
         android:src="@drawable/image_recycler_view_daily_workout_default" />
 
     <!-- Schedule step & Exercise info -->

@@ -6,5 +6,6 @@
     <color name="theme_text">#FFFFFF</color>
     <color name="theme_text_dark">#000000</color>
     <color name="theme_background">#E1E2E1</color>
+    <color name="theme_background_exercise_image">#FFFFFF</color>
     <color name="theme_progress_bar">#E1E2E1</color>
 </resources>
