@@ -22,6 +22,7 @@ import com.train2gain.train2gain.model.entity.Exercise;
 import com.train2gain.train2gain.model.entity.ScheduleSet;
 import com.train2gain.train2gain.model.entity.ScheduleSetItem;
 import com.train2gain.train2gain.model.entity.ScheduleStep;
+import com.train2gain.train2gain.model.enums.ScheduleStepType;
 import com.train2gain.train2gain.viewmodel.ExerciseViewModel;
 
 import java.lang.reflect.Array;
@@ -52,6 +53,7 @@ public class ScheduleStepActivity extends AppCompatActivity{
         ImageView clearScheduleStep = findViewById(R.id.schedule_step_clear_button);
         ImageView addSetButton = (ImageView)findViewById(R.id.addexercise_addset_button);
         ImageView confirmButton = (ImageView)findViewById(R.id.schedule_step_confirm);
+        ImageView cancelButton = (ImageView)findViewById(R.id.schedule_step_cancel);
         //add listener to elemnts
         ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
         exercisevm.getExercises(true).observe(this, exerciseListResource ->{
@@ -95,6 +97,12 @@ public class ScheduleStepActivity extends AppCompatActivity{
                     setResult(RESULT_OK, intent);
                     finish();
                 }
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -156,6 +164,7 @@ public class ScheduleStepActivity extends AppCompatActivity{
 
         }
         scheduleStep.setScheduleSetList(scheduleSetList);
+        scheduleStep.setType(ScheduleStepType.STANDARD_SET);
         scheduleStep.setRestTime(60);
         return scheduleStep;
     }

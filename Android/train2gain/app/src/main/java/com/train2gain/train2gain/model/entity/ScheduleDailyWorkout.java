@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
         @Index(value = { ScheduleDailyWorkout.COLUMN_SCHEDULE_ID })
     }
 )
-public class ScheduleDailyWorkout {
+public class ScheduleDailyWorkout implements Serializable{
 
     // Table and columns name definitions
     public static final String TABLE_NAME = "schedule_daily_workout";

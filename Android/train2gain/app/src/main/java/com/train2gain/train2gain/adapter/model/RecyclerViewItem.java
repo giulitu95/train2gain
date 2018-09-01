@@ -6,7 +6,8 @@ public class RecyclerViewItem<ObjectType> {
 
     public enum ItemType {
         HEADER,
-        STANDARD_SET
+        STANDARD_SET,
+        CREATION_STANDARD_SET
     }
 
     @NonNull private final ItemType type;

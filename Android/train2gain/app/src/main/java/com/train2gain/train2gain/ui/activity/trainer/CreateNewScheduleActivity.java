@@ -7,32 +7,47 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.train2gain.train2gain.R;
+import com.train2gain.train2gain.adapter.ScheduleRecyclerViewAdapter;
+import com.train2gain.train2gain.model.entity.Schedule;
+import com.train2gain.train2gain.model.entity.ScheduleDailyWorkout;
 import com.train2gain.train2gain.model.entity.User;
+import com.train2gain.train2gain.repository.ScheduleRepository;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CreateNewScheduleActivity extends AppCompatActivity{
     public static final String USER_PARAM_ID = "USER_PARAM_ID";
+    public static final int WORKOUT_ACTIVITY_REQUEST_CODE = 1;
     private long trainerId;
     private User selectedAthlete = null;
     private List<User> userList;
+    private ArrayList<ScheduleDailyWorkout> dailyWorkoutArrayList;
+    private Schedule currentSchedule;
+    private ScheduleRecyclerViewAdapter scheduleRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_createschedule);
         trainerId = getIntent().getLongExtra(USER_PARAM_ID, 1);
-
+        currentSchedule = new Schedule();
+        dailyWorkoutArrayList = new ArrayList<ScheduleDailyWorkout>();
         //get list of athletes of trainer
         UserViewModel uservm = ViewModelProviders.of(this).get(UserViewModel.class);
         uservm.getTrainerUserList(trainerId, 0).observe(this, userListResource ->{
@@ -59,10 +74,49 @@ public class CreateNewScheduleActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent start = new Intent(CreateNewScheduleActivity.this, WorkoutActivity.class);
-                startActivity(start);
+                startActivityForResult(start, WORKOUT_ACTIVITY_REQUEST_CODE);
+            }
+        });
+        scheduleRecyclerViewAdapter = new ScheduleRecyclerViewAdapter();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.createSchedule_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setAdapter(this.scheduleRecyclerViewAdapter);
+
+        ImageView confirm = (ImageView) findViewById(R.id.createschedule_confirm);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedAthlete == null){
+                    Toast.makeText(getApplicationContext(), "Non hai selezionato un atleta", Toast.LENGTH_SHORT).show();
+                } else if(dailyWorkoutArrayList.size() == 0){
+                    Toast.makeText(getApplicationContext(), "Devi prima aggiungere almeno un workout", Toast.LENGTH_SHORT).show();
+                } else {
+                    currentSchedule.setAthleteUserId(selectedAthlete.getId());
+                    currentSchedule.setTrainerUserId(trainerId);
+                    currentSchedule.setStartDate(new Date());
+                    ScheduleRepository scheduleRepository = ScheduleRepository.getInstance(getApplicationContext());
+                    //send schedule
+                    scheduleRepository.uploadSchedule(currentSchedule);
+
+                    finish();
+                }
             }
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == WORKOUT_ACTIVITY_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+               ScheduleDailyWorkout currentDailyWorkout = (ScheduleDailyWorkout) data.getExtras().getSerializable(WorkoutActivity.DAILY_WORKOUT_PARAM);
+               currentDailyWorkout.setOrder(dailyWorkoutArrayList.size());
+               dailyWorkoutArrayList.add(currentDailyWorkout);
+               currentSchedule.setScheduleDailyWorkoutList(dailyWorkoutArrayList);
+               this.scheduleRecyclerViewAdapter.setNewRecyclerViewItemList(dailyWorkoutArrayList);
+               this.scheduleRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        }
     }
     private void showNoUserMessage(){
         findViewById(R.id.createschedule_selectuser_button).setVisibility(View.GONE);
@@ -114,4 +168,5 @@ public class CreateNewScheduleActivity extends AppCompatActivity{
 
         }
     }
+    //TODO: resolve problem that when open the second time the list of exercise there aren't exercises
 }
