@@ -15,6 +15,7 @@ import com.google.gson.annotations.SerializedName;
 import com.train2gain.train2gain.model.enums.ScheduleStepType;
 import com.train2gain.train2gain.source.local.converter.ScheduleStepTypeConverter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(
@@ -30,7 +31,7 @@ import java.util.List;
 @TypeConverters({
     ScheduleStepTypeConverter.class
 })
-public class ScheduleStep {
+public class ScheduleStep implements Serializable{
 
     // Table and columns name definitions
     public static final String TABLE_NAME = "schedule_step";

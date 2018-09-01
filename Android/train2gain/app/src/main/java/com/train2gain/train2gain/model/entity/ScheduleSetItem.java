@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Entity(
     tableName = ScheduleSetItem.TABLE_NAME,
     foreignKeys = {
@@ -25,7 +27,7 @@ import com.google.gson.annotations.SerializedName;
         @Index(value = { ScheduleSetItem.COLUMN_EXERCISE_ID })
     }
 )
-public class ScheduleSetItem {
+public class ScheduleSetItem implements Serializable{
 
     // Table and columns name definitions
     public static final String TABLE_NAME = "schedule_set_item";

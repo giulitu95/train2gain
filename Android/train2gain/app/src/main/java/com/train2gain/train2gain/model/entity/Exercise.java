@@ -11,6 +11,8 @@ import com.google.gson.annotations.SerializedName;
 import com.train2gain.train2gain.model.enums.MuscleGroup;
 import com.train2gain.train2gain.source.local.converter.MuscleGroupConverter;
 
+import java.io.Serializable;
+
 @Entity(
     tableName = Exercise.TABLE_NAME,
     primaryKeys = { Exercise.COLUMN_ID }
@@ -18,7 +20,7 @@ import com.train2gain.train2gain.source.local.converter.MuscleGroupConverter;
 @TypeConverters({
     MuscleGroupConverter.class
 })
-public class Exercise {
+public class Exercise implements Serializable{
 
     // Table and columns name definitions
     public static final String TABLE_NAME = "exercise";

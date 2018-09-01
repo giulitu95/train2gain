@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(
@@ -24,7 +25,7 @@ import java.util.List;
         @Index(value = { ScheduleSet.COLUMN_SCHEDULE_STEP_ID })
     }
 )
-public class ScheduleSet {
+public class ScheduleSet implements Serializable{
 
     // Table and columns name definitions
     public static final String TABLE_NAME = "schedule_set";
