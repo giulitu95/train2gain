@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
      * Replaces the main activity content frame with a new fragment, given as input object
      * @param fragmentToBeInserted the fragment that will be inserted in the main activity frame
      */
-    private void replaceContentFrame(@NonNull final Fragment fragmentToBeInserted){
+    public void replaceContentFrame(@NonNull final Fragment fragmentToBeInserted){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragmentToBeInserted);
         fragmentTransaction.commit();
