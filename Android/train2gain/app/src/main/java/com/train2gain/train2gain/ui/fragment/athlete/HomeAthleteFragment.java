@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.repository.common.Resource;
+import com.train2gain.train2gain.ui.activity.MainActivity;
 import com.train2gain.train2gain.viewmodel.ScheduleDailyWorkoutViewModel;
 
 public class HomeAthleteFragment extends Fragment {
@@ -47,7 +48,7 @@ public class HomeAthleteFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
         ScheduleDailyWorkoutViewModel scheduleDailyWorkoutViewModel = ViewModelProviders.of(getActivity()).get(ScheduleDailyWorkoutViewModel.class);
-        scheduleDailyWorkoutViewModel.getScheduleDailyWorkoutOfTheDay(this.athleteUserId).observe(this, scheduleDailyWorkoutResource -> {
+        scheduleDailyWorkoutViewModel.getScheduleDailyWorkoutOfTheDayMinimal(this.athleteUserId).observe(this, scheduleDailyWorkoutResource -> {
             if(scheduleDailyWorkoutResource != null && scheduleDailyWorkoutResource.getStatus() == Resource.Status.SUCCESS && scheduleDailyWorkoutResource.getData() != null){
                 showAthleteHomeAvailableScheduleLayout();
             }
@@ -75,11 +76,10 @@ public class HomeAthleteFragment extends Fragment {
         goToScheduleDailyWorkoutCardView.setVisibility(View.VISIBLE);
         Button goToScheduleDailyWorkoutButton = getView().findViewById(R.id.home_athlete_btn_daily_workout);
         goToScheduleDailyWorkoutButton.setOnClickListener((onClickView) -> {
-            onGoToScheduleDailyWorkoutButtonClick();
+            if(((MainActivity) getActivity()) != null){
+                ((MainActivity) getActivity()).replaceContentFrame(DailyWorkoutFragment.newInstance(this.athleteUserId));
+            }
         });
     }
 
-    private void onGoToScheduleDailyWorkoutButtonClick(){
-        // TODO go to "Daily dailyworkout" fragment / activity
-    }
 }

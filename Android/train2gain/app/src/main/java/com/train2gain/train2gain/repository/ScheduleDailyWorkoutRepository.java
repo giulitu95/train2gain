@@ -71,4 +71,38 @@ public class ScheduleDailyWorkoutRepository {
         }.getAsLiveData();
     }
 
+    public LiveData<Resource<ScheduleDailyWorkout>> getScheduleDailyWorkoutOfTheDayByAthleteUserId(final long athleteUserId){
+        return new RetrieveHandler<ScheduleDailyWorkout, ScheduleDailyWorkout>() {
+            @NonNull @Override
+            protected LiveData<ScheduleDailyWorkout> loadFromDatabase() {
+                MutableLiveData<ScheduleDailyWorkout> scheduleDailyWorkoutOfTheDay = new MutableLiveData<ScheduleDailyWorkout>();
+                AsyncTask.execute(() -> {
+                    long scheduleId = scheduleHelperInstance.getCurrentScheduleIdByAthleteUserId(athleteUserId);
+                    scheduleDailyWorkoutOfTheDay.postValue(scheduleDailyWorkoutHelperInstance.getScheduleDailyWorkoutOfTheDayByScheduleId(scheduleId));
+                });
+                return scheduleDailyWorkoutOfTheDay;
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI() {
+                return false;
+            }
+
+            @Override
+            protected boolean saveAPIResponse(@NonNull APIData<ScheduleDailyWorkout> responseData) {
+                return true;
+            }
+
+            @NonNull @Override
+            protected LiveData<APIResponse<ScheduleDailyWorkout>> loadFromAPI() {
+                return new MutableLiveData<APIResponse<ScheduleDailyWorkout>>();
+            }
+
+            @Override
+            protected void onFetchFromAPIFailed() {
+                // Nothing to do
+            }
+        }.getAsLiveData();
+    }
+
 }

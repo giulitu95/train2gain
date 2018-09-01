@@ -43,4 +43,14 @@
     <string name="registration_start_image_upload">Sto elaborando l\'immagine</string>
     <string name="registration_upload_image">Sto caricando l\'immagine</string>
     <string name="registration_invalid_token">Inserisci un token valido</string>
+
+    <!-- Daily Workout -->
+    <string name="daily_workout_title">Allenamento del giorno</string>
+
+    <!-- Schedule step item (RecyclerView) -->
+    <string name="schedule_step_set_label">Serie:</string>
+    <string name="schedule_step_set_rest_time">Recupero:</string>
+    <string name="schedule_step_set_reps_format_string">%dx</string>
+    <string name="schedule_step_rest_time_format_string">%dsec</string>
+
 </resources>
