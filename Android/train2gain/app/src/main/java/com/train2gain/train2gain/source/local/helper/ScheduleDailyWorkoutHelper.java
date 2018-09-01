@@ -207,6 +207,32 @@ public class ScheduleDailyWorkoutHelper {
     }
 
     /**
+     * Retrieves the ScheduleDailyWorkout that was executed less recently.
+     * It retrieves also, for the ScheduleDailyWorkout, the related ScheduleStep list
+     * @param scheduleId for which schedule we want to retrieve the ScheduleDailyWorkout that was
+     *                   executed less recently
+     * @return the ScheduleDailyWorkout that was executed less recently, if some results has been
+     *         returned from the database, otherwise NULL
+     */
+    public ScheduleDailyWorkout getScheduleDailyWorkoutOfTheDayByScheduleId(long scheduleId){
+        this.localDatabase.beginTransaction();
+        ScheduleDailyWorkout scheduleDailyWorkout = this.scheduleDailyWorkoutDaoInstance
+                .getScheduleDailyWorkoutOfTheDayByScheduleId(scheduleId);
+        if(scheduleDailyWorkout != null){
+            List<ScheduleStep> scheduleStepList = this.scheduleStepHelperInstance
+                    .getScheduleStepListByScheduleDailyWorkoutId(scheduleDailyWorkout.getId());
+            if(scheduleStepList != null && !scheduleStepList.isEmpty()){
+                scheduleDailyWorkout.setScheduleStepList(scheduleStepList);
+            }else{
+                scheduleDailyWorkout = null;
+            }
+        }
+        this.localDatabase.setTransactionSuccessful();
+        this.localDatabase.endTransaction();
+        return scheduleDailyWorkout;
+    }
+
+    /**
      * Retrieves the ID of the ScheduleDailyWorkout that has the given schedule daily workout's
      * remote ID
      * @param scheduleDailyWorkoutRemoteId the remote ID of the schedule daily workout for which
