@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity(
@@ -27,7 +28,7 @@ import java.util.Date;
         @Index(value = { ScheduleNote.COLUMN_SYNCED_WITH_SERVER })
     }
 )
-public class ScheduleNote {
+public class ScheduleNote implements Serializable{
 
     // Table and columns name definitions
     public static final String TABLE_NAME = "schedule_note";

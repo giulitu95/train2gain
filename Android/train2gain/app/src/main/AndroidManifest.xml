@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.train2gain.train2gain" >
+    package="com.train2gain.train2gain">
 
     <!-- Internet permission and Network state -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +20,7 @@
         tools:replace="android:fullBackupContent">
 
         <!-- Activities -->
-        <activity android:name=".ui.activity.Splash" >
+        <activity android:name=".ui.activity.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +32,7 @@
             android:configChanges="orientation|keyboardHidden" />
         <activity
             android:name=".ui.activity.LoginActivity"
-            android:theme="@style/app_theme_dark"/>
+            android:theme="@style/app_theme_dark" />
         <activity
             android:name=".ui.activity.Registration"
             android:theme="@style/app_theme_dark" />
@@ -40,12 +40,18 @@
             android:name=".ui.activity.athlete.AddAthleteInfoActivity"
             android:theme="@style/app_theme_dark" />
         <activity android:name=".ui.activity.MainActivity" />
+        <activity android:name=".ui.activity.trainer.CreateNewScheduleActivity" />
 
-        <!-- Cloudinary API metadata-->
+        <!-- Cloudinary API metadata -->
         <meta-data
             android:name="CLOUDINARY_URL"
-            android:value="cloudinary://441194572561215:5ow_3BSvjWSLuAvDGFz8NpM2cDc@dmec6o2py"/>
+            android:value="cloudinary://441194572561215:5ow_3BSvjWSLuAvDGFz8NpM2cDc@dmec6o2py" />
 
+        <activity
+            android:name=".ui.activity.trainer.WorkoutActivity"
+            android:theme="@style/app_theme"/>
+        <activity android:name=".ui.activity.trainer.ScheduleStepActivity"/>
+        <activity android:name=".ui.activity.trainer.SearchExerciseActivity"/>
     </application>
 
 </manifest>

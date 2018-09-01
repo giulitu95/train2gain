@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.repository.common.Resource;
@@ -18,6 +19,8 @@ import com.train2gain.train2gain.source.remote.response.APIData;
 import com.train2gain.train2gain.source.remote.response.APIResponse;
 import com.train2gain.train2gain.source.remote.util.APIUtils;
 import com.train2gain.train2gain.util.NetworkUtil;
+
+import java.util.List;
 
 public class UserRepository {
 
@@ -70,6 +73,39 @@ public class UserRepository {
             @Override
             protected void onFetchFromAPIFailed() {
                 // TODO what to do here ? Will we show a message ?
+            }
+        }.getAsLiveData();
+    }
+    public LiveData<Resource<List<User>>> getTrainerUsers(final long trainerUserId, final long lastUpdate){
+        return new RetrieveHandler<List<User>, List<User>>() {
+            @NonNull @Override
+            protected LiveData<List<User>> loadFromDatabase() {
+                MutableLiveData<List<User>> userLiveData = new MutableLiveData<List<User>>();
+                AsyncTask.execute(() -> {
+                    userLiveData.postValue(userHelperInstance.getByTrainerUserId(trainerUserId));
+                });
+                return userLiveData;
+            }
+
+            @Override
+            protected boolean shouldFetchFromAPI() {
+                return NetworkUtil.isConnected();
+            }
+
+            @Override
+            protected boolean saveAPIResponse(@NonNull APIData<List<User>> responseData) {
+                return userHelperInstance.insertOrUpdateIfExists(responseData.getContent());
+            }
+
+            @NonNull @Override
+            protected LiveData<APIResponse<List<User>>> loadFromAPI() {
+                return APIUtils.callToLiveData(userAPIInstance.getUserList(trainerUserId, lastUpdate));
+            }
+
+            @Override
+            protected void onFetchFromAPIFailed() {
+                // TODO what to do here ? Will we show a message ?
+                Log.d("sdaf", "asdf");
             }
         }.getAsLiveData();
     }

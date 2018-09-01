@@ -1,5 +1,6 @@
 package com.train2gain.train2gain.ui.fragment.trainer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.train2gain.train2gain.R;
+import com.train2gain.train2gain.ui.activity.trainer.CreateNewScheduleActivity;
 
 public class HomeTrainerFragment extends Fragment {
 
@@ -49,7 +51,10 @@ public class HomeTrainerFragment extends Fragment {
         // Set listener
         Button goToCreateNewScheduleButton = (Button) view.findViewById(R.id.home_trainer_btn_new_schedule);
         goToCreateNewScheduleButton.setOnClickListener(onClickView -> {
-            // TODO open / switch to 'CreateNewSchedule' activity here
+            Intent createScheduleIntent =  new Intent(getContext(), CreateNewScheduleActivity.class);
+            createScheduleIntent.putExtra(CreateNewScheduleActivity.USER_PARAM_ID, trainerUserId);
+            startActivity(createScheduleIntent);
+
         });
         Button goToManageUserButton = (Button) view.findViewById(R.id.home_trainer_btn_manage_users);
         goToManageUserButton.setOnClickListener(onClickView -> {

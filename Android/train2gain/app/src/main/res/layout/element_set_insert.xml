@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/element_set_insert"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="100dp"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+
+        <TextView
+            android:textColor="@color/theme_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SERIE " />
+        <TextView
+            android:textColor="@color/theme_primary"
+            android:id="@+id/element_set_insert_setnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <EditText
+            android:id="@+id/elemente_set_insert_setnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="42"
+            android:inputType="number"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x"/>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/element_set_remove"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete_black_24dp"/>
+
+</LinearLayout>

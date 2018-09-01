@@ -37,11 +37,17 @@ public abstract class UserDao {
      * @return the list of users (athletes) sorted by name (in ascending order), if the query has
      *         returned some results, otherwise NULL
      */
-    @Query("SELECT " + User.TABLE_NAME +".* FROM " + User.TABLE_NAME + " " +
-           "INNER JOIN " + Athlete.TABLE_NAME + " " +
-           "ON " + User.TABLE_NAME +"." + User.COLUMN_ID + " = " + Athlete.TABLE_NAME + "." + Athlete.COLUMN_USER_ID + " " +
-           "WHERE " + Athlete.TABLE_NAME + "." + Athlete.COLUMN_TRAINER_USER_ID + " = :trainerUserId " + " " +
-           "ORDER BY " + User.TABLE_NAME + "." + User.COLUMN_DISPLAY_NAME + " ASC")
+    @Query("SELECT trainer_user_list.* " +
+           "FROM (" +
+                "SELECT " + User.TABLE_NAME + ".* FROM " + User.TABLE_NAME + " " +
+                "WHERE " + User.TABLE_NAME + "." + User.COLUMN_ID + " != :trainerUserId" + " " +
+                "UNION" + " " +
+                "SELECT " + User.TABLE_NAME + ".* FROM " + User.TABLE_NAME + " " +
+                "INNER JOIN " + Athlete.TABLE_NAME + " " +
+                "ON " + Athlete.TABLE_NAME + "." + Athlete.COLUMN_USER_ID + " = " + User.TABLE_NAME + "." + User.COLUMN_ID + " " +
+                "WHERE " + Athlete.TABLE_NAME + "." + Athlete.COLUMN_TRAINER_USER_ID + " = :trainerUserId" + " " +
+                ") AS trainer_user_list" + " " +
+           "ORDER BY trainer_user_list." + User.COLUMN_DISPLAY_NAME + " ASC")
     public abstract List<User> getByTrainerUserId(long trainerUserId);
 
 }
