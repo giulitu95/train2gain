@@ -1,6 +1,8 @@
 package com.train2gain.train2gain.ui.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,10 +22,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+import com.train2gain.train2gain.App;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
+import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.ui.fragment.athlete.DailyWorkoutFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
@@ -129,26 +134,33 @@ public class MainActivity extends AppCompatActivity {
         // Init spinner (user type chooser)
         Spinner menuHeaderSpinner = (Spinner) this.navDrawerHeaderView.findViewById(R.id.header_user_type);
         menuHeaderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            // Says if spinner listener is called during initialization or not
+            private boolean isInInitialization = true;
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                UserType userType = (UserType) parent.getItemAtPosition(pos);
-                MainActivity.this.currentSelectedUserType = userType;
-                switch(userType){
-                    case ATHLETE:
-                        MainActivity.this.fragmentToInsert = HomeAthleteFragment.newInstance(MainActivity.this.userId);
-                        break;
-                    case TRAINER:
-                        MainActivity.this.fragmentToInsert = HomeTrainerFragment.newInstance(MainActivity.this.userId);
-                        break;
+                if(isInInitialization != true){
+                    UserType userType = (UserType) parent.getItemAtPosition(pos);
+                    MainActivity.this.currentSelectedUserType = userType;
+                    switch(userType){
+                        case ATHLETE:
+                            MainActivity.this.fragmentToInsert = HomeAthleteFragment.newInstance(MainActivity.this.userId);
+                            break;
+                        case TRAINER:
+                            MainActivity.this.fragmentToInsert = HomeTrainerFragment.newInstance(MainActivity.this.userId);
+                            break;
+                    }
+                    drawerLayout.closeDrawer(Gravity.START);
+                    updateNavDrawerMenu(userType);
                 }
-                drawerLayout.closeDrawer(Gravity.START);
-                updateNavDrawerMenu(userType);
+                isInInitialization = false;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Nothing to do
             }
+
         });
 
         // Init view models
@@ -159,16 +171,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Init specific things base on userType
-        switch(this.currentSelectedUserType){
-            case ATHLETE:
-                replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
-                this.scheduleDailyWorkoutViewModel = ViewModelProviders.of(this).get(ScheduleDailyWorkoutViewModel.class);
-                break;
-            case TRAINER:
-                replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
-                break;
+        // Init for specific things base on userType (only first time fro HomeFragment)
+        if(this.currentSelectedUserType == UserType.ATHLETE){
+            this.scheduleDailyWorkoutViewModel = ViewModelProviders.of(this).get(ScheduleDailyWorkoutViewModel.class);
         }
+        if(savedInstanceState == null){
+            switch(this.currentSelectedUserType){
+                case ATHLETE:
+                    replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
+                    break;
+                case TRAINER:
+                    replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
+                    break;
+            }
+        }
+
+        // Update nav menu
         updateNavDrawerMenu(this.currentSelectedUserType);
     }
 
@@ -210,6 +228,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_daily_workout:
                 this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId);
                 break;
+            case R.id.menu_logout:
+                onLogOut();
+                return;
             default:
                 Toast.makeText(this, getString(R.string.app_no_yet_implemented), Toast.LENGTH_SHORT).show();
                 break;
@@ -226,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         switch(menuItemId){
             case R.id.menu_home:
             case R.id.menu_daily_workout:
+            case R.id.menu_logout:
                 MenuItem menuItem = this.navigationDrawerView.getMenu().findItem(menuItemId);
                 menuItem.setChecked(true);
                 break;
@@ -304,6 +326,27 @@ public class MainActivity extends AppCompatActivity {
             userType.setEnabled(false);
             userType.setBackground(null);
         }
+    }
+
+    /**
+     * Called when user want to log out
+     * It removes the user from the logged users and returns to Splash screen
+     */
+    private void onLogOut(){
+        // Clear user database (not big, we can go through..)
+        AsyncTask.execute(() -> {
+            LocalDatabase.getInstance(App.getContext()).clearAllTables();
+        });
+
+        // Log out user..
+        FirebaseAuth.getInstance().signOut();
+
+        // Return to Login Activity
+        Intent startSplashActivityIntent = new Intent(this, Splash.class);
+        startSplashActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startSplashActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startSplashActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(startSplashActivityIntent);
     }
 
 }
