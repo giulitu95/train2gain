@@ -17,14 +17,15 @@
         android:padding="10dp">
 
         <!-- Schedule step exercise image -->
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             tools:ignore="ContentDescription"
-            android:id="@+id/user_image"
-            android:layout_weight="1.8"
+            android:id="@+id/exerciselist_image"
+            android:layout_weight="2.5"
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:background="#ffff"
-            android:src="@drawable/image_home_trainer_new_schedule" />
+            android:scaleType="centerInside"
+            android:src="@drawable/workout_icon" />
 
         <!-- Schedule step & Exercise info -->
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,34 +37,38 @@
             android:paddingRight="10dp"
             android:gravity="center">
 
+            <!-- Exercise title -->
             <TextView
-                android:textColor="@color/theme_primary"
-                android:id="@+id/userlistitem_displayname"
-                android:layout_width="match_parent"
-                android:textSize="25dp"
+                android:id="@+id/daily_workout_day_name"
                 android:layout_height="wrap_content"
-                android:text="Name" />
-            <LinearLayout
                 android:layout_width="match_parent"
+                android:text="Day "
+                android:textSize="30sp"
+                android:textColor="@color/theme_text_dark"/>
+
+            <!-- Schedule step sets info -->
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:textColor="@color/theme_primary"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Registration date: " />
-                <TextView
-                    android:textColor="@color/theme_primary"
-                    android:id="@+id/userlistitem_registrationdate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:text="Categorie: "
+                    android:textColor="@color/theme_text_dark"
+                    android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/scheduleitem_categorylist"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/theme_text_dark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
-
-

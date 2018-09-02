@@ -48,8 +48,8 @@ public class SearchExerciseActivity extends AppCompatActivity{
         exerciseRecyclerView.setLayoutManager(layoutManager);
         //get list of athletes of trainer
         ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
-        exercisevm.getExercises(false).observe(this, exerciseListResource ->{
-
+        exercisevm.getExercises(true).observe(this, exerciseListResource ->{
+            //ERROR: resolve, the second
             exerciseList = exerciseListResource.getData();
             View.OnClickListener itemContainer = new View.OnClickListener() {
                 @Override

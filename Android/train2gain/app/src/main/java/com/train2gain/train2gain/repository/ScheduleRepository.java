@@ -5,10 +5,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.train2gain.train2gain.model.entity.Schedule;
 import com.train2gain.train2gain.repository.common.Resource;
 import com.train2gain.train2gain.repository.common.RetrieveHandler;
+import com.train2gain.train2gain.repository.common.SaveHandler;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.source.local.helper.ScheduleHelper;
 import com.train2gain.train2gain.source.remote.APIClient;
@@ -72,6 +74,45 @@ public class ScheduleRepository {
                 // TODO what to do here ? Will we show a message ?
             }
         }.getAsLiveData();
+    }
+
+    public void uploadSchedule(final Schedule schedule){
+        new SaveHandler<Schedule, Schedule>(schedule) {
+            @Override
+            protected boolean shouldUploadToAPI() {
+                return NetworkUtil.isConnected();
+            }
+
+            @Override
+            protected boolean shouldSaveAPIResponse() {
+                return true;
+            }
+
+            @Override
+            protected boolean saveDataObjectToDatabase(@NonNull Schedule objectToSave) {
+                return scheduleHelperInstance.insert(objectToSave);
+            }
+
+            @Override
+            protected boolean saveResponseDataToDatabase(@NonNull APIData<Schedule> responseData) {
+                return true;
+            }
+
+            @Override
+            protected LiveData<APIResponse<Schedule>> uploadToAPI(@NonNull Schedule dataToUpload) {
+                return APIUtils.callToLiveData(scheduleAPIInstance.uploadNewSchedule(dataToUpload));
+            }
+
+            @Override
+            protected void onAPIUploadFailed() {
+                // TODO what to do here ? Will we show a message ?
+            }
+
+            @Override
+            protected void onDatabaseSaveFailed() {
+                // TODO what to do here ? Will we show a message ?
+            }
+        };
     }
 
     public LiveData<Resource<Schedule>> updateScheduleByAthleteUserId(final long athleteUserId){

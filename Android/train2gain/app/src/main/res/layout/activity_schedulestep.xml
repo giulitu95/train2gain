@@ -1,188 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/schedule_step_exercisecontainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/frame_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
-                android:minHeight="?android:attr/actionBarSize"
                 android:background="@color/theme_primary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+                android:minHeight="?android:attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
             <ImageView
                 android:id="@+id/schedule_step_confirm"
-                android:src="@drawable/ic_done_black_24dp"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="?android:attr/actionBarSize"
-                android:layout_marginRight="20dp"/>
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/ic_done_black_24dp" />
+
             <ImageView
                 android:id="@+id/schedule_step_cancel"
-                android:src="@drawable/ic_clear_white_24dp"
-                android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="?android:attr/actionBarSize"
-                android:layout_marginLeft="20dp"/>
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_clear_white_24dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:text="Aggiungi Esercizio"
-                android:textSize="20dp"
-                android:layout_centerInParent="true"/>
+                android:textSize="20dp" />
         </RelativeLayout>
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <TextView
-                android:layout_marginTop ="20dp"
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/theme_primary"
-                android:text="Esercizi:"/>
-            <Button
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:text="Esercizi:"
+                android:textColor="@color/theme_primary" />
+
+            <RelativeLayout
                 android:id="@+id/schedule_step_addexercise_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/theme_secondary"
-                android:text="+" />
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:visibility="gone"
-                android:id="@+id/schedule_step_exercise_item"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:background="@color/theme_text"
-                android:layout_height="wrap_content">
+                android:background="@color/theme_secondary">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_add_white_24dp" />
+            </RelativeLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/schedule_step_exercise_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/theme_text"
-                android:gravity="center_vertical"
-                android:minHeight="100dp"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-            <!-- Schedule step exercise image -->
-                <ImageView
-                    android:id="@+id/schedule_step_exercise_image"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_weight="2.5"
-                    android:scaleType="centerInside"
-                    android:background="#ffff"
-                    android:src="@drawable/image_home_trainer_new_schedule"
-                    tools:ignore="ContentDescription" />
-
-                <!-- Schedule step & Exercise info -->
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
-
-                    <!-- Exercise title -->
-                    <TextView
-                        android:id="@+id/schedule_step_exercise_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Questo è un titolo molto lungo, molto molto lungo, forse si"
-                        android:textColor="@color/theme_text_dark"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <!-- Schedule step sets info -->
-                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Categoria: "
-                        android:textColor="@color/theme_text_dark"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/schedule_step_category_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/theme_text_dark"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                </LinearLayout>
-
-                <!-- Schedule step info button -->
-                <ImageView
-                    android:id="@+id/schedule_step_clear_button"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_clear_black_24dp"
-                    tools:ignore="ContentDescription" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/theme_secondary"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
-                <ImageView
-                    android:id="@+id/rlv2"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/shape_triangle"
-                    android:rotation="180" />
-
-                <LinearLayout
-                    android:id="@+id/addexercise_setList"
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:background="@color/theme_text"
+                    android:gravity="center_vertical"
+                    android:minHeight="100dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <!-- Schedule step exercise image -->
+                    <ImageView
+                        android:id="@+id/schedule_step_exercise_image"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="2.5"
+                        android:background="#ffff"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/image_home_trainer_new_schedule"
+                        tools:ignore="ContentDescription" />
+
+                    <!-- Schedule step & Exercise info -->
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp">
+
+                        <!-- Exercise title -->
+                        <TextView
+                            android:id="@+id/schedule_step_exercise_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Questo è un titolo molto lungo, molto molto lungo, forse si"
+                            android:textColor="@color/theme_text_dark"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <!-- Schedule step sets info -->
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Categoria: "
+                                android:textColor="@color/theme_text_dark"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/schedule_step_category_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/theme_text_dark"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Schedule step info button -->
+                    <ImageView
+                        android:id="@+id/schedule_step_clear_button"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_clear_black_24dp"
+                        tools:ignore="ContentDescription" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/theme_secondary"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/rlv2"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/shape_triangle"
+                        android:rotation="180" />
+
+                    <LinearLayout
+                        android:id="@+id/addexercise_setList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
 
                     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="70dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="20dp">
+                        android:paddingHorizontal="70dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -193,15 +213,15 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17dp"
-                                android:text="SERIE " />
+                                android:text="SERIE "
+                                android:textSize="17dp" />
 
                             <TextView
                                 android:id="@+id/schedule_step_last__setnumber"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="17dp"
-                                android:text="1" />
+                                android:text="1"
+                                android:textSize="17dp" />
                         </LinearLayout>
 
                         <ImageView
@@ -215,5 +235,42 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tempo di recupero"
+                android:textColor="@color/theme_primary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/schedule_step_rest_time_edittext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:hint="00" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="s"
+                    android:textColor="@color/theme_primary" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

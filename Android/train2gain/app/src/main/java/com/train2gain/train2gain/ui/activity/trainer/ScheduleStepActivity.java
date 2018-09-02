@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import com.train2gain.train2gain.model.entity.Exercise;
 import com.train2gain.train2gain.model.entity.ScheduleSet;
 import com.train2gain.train2gain.model.entity.ScheduleSetItem;
 import com.train2gain.train2gain.model.entity.ScheduleStep;
+import com.train2gain.train2gain.model.enums.ScheduleStepType;
 import com.train2gain.train2gain.viewmodel.ExerciseViewModel;
 
 import java.lang.reflect.Array;
@@ -34,7 +36,7 @@ public class ScheduleStepActivity extends AppCompatActivity{
 
     public static final String SCHEDULESTEP_PARAM = "SCHEDULESTEP_PARRAM";
     private List<Exercise> exerciseList;
-    private Button addExerciseButton;
+    private RelativeLayout addExerciseButton;
     private Exercise selectedExercise = null;
     private static final int SEARCH_EXERCISE_REQUEST_CODE = 1;
     private ArrayList<Item> addSetItemLIst;
@@ -48,10 +50,11 @@ public class ScheduleStepActivity extends AppCompatActivity{
         //import item from res
         setContentView(R.layout.activity_schedulestep);
         setListContainer = findViewById(R.id.addexercise_setList);
-        addExerciseButton = (Button)findViewById(R.id.schedule_step_addexercise_button);
+        addExerciseButton = (RelativeLayout)findViewById(R.id.schedule_step_addexercise_button);
         ImageView clearScheduleStep = findViewById(R.id.schedule_step_clear_button);
         ImageView addSetButton = (ImageView)findViewById(R.id.addexercise_addset_button);
         ImageView confirmButton = (ImageView)findViewById(R.id.schedule_step_confirm);
+        ImageView cancelButton = (ImageView)findViewById(R.id.schedule_step_cancel);
         //add listener to elemnts
         ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
         exercisevm.getExercises(true).observe(this, exerciseListResource ->{
@@ -86,15 +89,27 @@ public class ScheduleStepActivity extends AppCompatActivity{
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditText restTime = findViewById(R.id.schedule_step_rest_time_edittext);
                 Intent intent = new Intent();
                 ScheduleStep scheduleStep = createScheduleStep();
-                if (scheduleStep == null){
+                if(restTime.getText().toString().equals("")){
+                    Toast.makeText(getApplicationContext(), "Specifica un tempo di recupero", Toast.LENGTH_SHORT).show();
+                } else if(selectedExercise == null){
+                    Toast.makeText(getApplicationContext(), "Devi scegliere un esercizio", Toast.LENGTH_SHORT).show();
+                } else if (scheduleStep == null){
                     Toast.makeText(getApplicationContext(), "Non hai inserito tutte le ripetizioni", Toast.LENGTH_SHORT).show();
                 } else {
+                    scheduleStep.setRestTime(Integer.parseInt(restTime.getText().toString()));
                     intent.putExtra(SCHEDULESTEP_PARAM, scheduleStep);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -129,6 +144,9 @@ public class ScheduleStepActivity extends AppCompatActivity{
     }
 
     private ScheduleStep createScheduleStep(){
+
+        if(addSetItemLIst.size() == 0)
+            return null;
         ScheduleStep scheduleStep =  new ScheduleStep();
         ArrayList<ScheduleSet> scheduleSetList = new ArrayList<ScheduleSet>();
         Iterator<Item> it = addSetItemLIst.iterator();
@@ -140,6 +158,7 @@ public class ScheduleStepActivity extends AppCompatActivity{
             } else {
                 ScheduleSetItem setItem = new ScheduleSetItem();
                 setItem.setOrder(0);
+                setItem.setExerciseId(selectedExercise.getId());
                 setItem.setExercise(selectedExercise);
                 setItem.setReps(numberOfReps);
 
@@ -156,7 +175,7 @@ public class ScheduleStepActivity extends AppCompatActivity{
 
         }
         scheduleStep.setScheduleSetList(scheduleSetList);
-        scheduleStep.setRestTime(60);
+        scheduleStep.setType(ScheduleStepType.STANDARD_SET);
         return scheduleStep;
     }
 
