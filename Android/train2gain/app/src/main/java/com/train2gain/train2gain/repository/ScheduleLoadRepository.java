@@ -43,13 +43,13 @@ public class ScheduleLoadRepository {
         return instance;
     }
 
-    public LiveData<Resource<List<ScheduleLoad>>> getUpdatedScheduleLoadsList(final long scheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
+    public LiveData<Resource<List<ScheduleLoad>>> getUpdatedScheduleLoadsList(final long localScheduleId, final long remoteScheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
         return new RetrieveHandler<List<ScheduleLoad>, List<ScheduleLoad>>() {
             @NonNull @Override
             protected LiveData<List<ScheduleLoad>> loadFromDatabase() {
                 MutableLiveData<List<ScheduleLoad>> scheduleLoadsListLiveData = new MutableLiveData<List<ScheduleLoad>>();
                 AsyncTask.execute(() -> {
-                    scheduleLoadsListLiveData.postValue(scheduleLoadHelperInstance.getScheduleLoadListByScheduleId(scheduleId));
+                    scheduleLoadsListLiveData.postValue(scheduleLoadHelperInstance.getScheduleLoadListByScheduleId(localScheduleId));
                 });
                 return scheduleLoadsListLiveData;
             }
@@ -66,7 +66,7 @@ public class ScheduleLoadRepository {
 
             @NonNull @Override
             protected LiveData<APIResponse<List<ScheduleLoad>>> loadFromAPI() {
-                return APIUtils.callToLiveData(scheduleLoadAPIInstance.getScheduleLoads(athleteUserId, scheduleId, lastUpdate.getTime()));
+                return APIUtils.callToLiveData(scheduleLoadAPIInstance.getScheduleLoads(athleteUserId, remoteScheduleId, lastUpdate.getTime()));
             }
 
             @Override
@@ -76,8 +76,8 @@ public class ScheduleLoadRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<ScheduleLoad>>> updatedScheduleLoads(final long scheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
-        return getUpdatedScheduleLoadsList(scheduleId, athleteUserId, lastUpdate);
+    public LiveData<Resource<List<ScheduleLoad>>> updatedScheduleLoads(final long localScheduleId, final long remoteScheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
+        return getUpdatedScheduleLoadsList(localScheduleId, remoteScheduleId, athleteUserId, lastUpdate);
     }
 
 }

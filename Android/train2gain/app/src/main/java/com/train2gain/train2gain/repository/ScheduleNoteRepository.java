@@ -43,13 +43,13 @@ public class ScheduleNoteRepository {
         return instance;
     }
 
-    public LiveData<Resource<List<ScheduleNote>>> getUpdatedScheduleNotesList(final long scheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
+    public LiveData<Resource<List<ScheduleNote>>> getUpdatedScheduleNotesList(final long localScheduleId, final long remoteScheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
         return new RetrieveHandler<List<ScheduleNote>, List<ScheduleNote>>() {
             @NonNull @Override
             protected LiveData<List<ScheduleNote>> loadFromDatabase() {
                 MutableLiveData<List<ScheduleNote>> scheduleNotesListLiveData = new MutableLiveData<List<ScheduleNote>>();
                 AsyncTask.execute(() -> {
-                    scheduleNotesListLiveData.postValue(scheduleNoteHelperInstance.getScheduleNoteListByScheduleId(scheduleId));
+                    scheduleNotesListLiveData.postValue(scheduleNoteHelperInstance.getScheduleNoteListByScheduleId(remoteScheduleId));
                 });
                 return scheduleNotesListLiveData;
             }
@@ -66,7 +66,7 @@ public class ScheduleNoteRepository {
 
             @NonNull @Override
             protected LiveData<APIResponse<List<ScheduleNote>>> loadFromAPI() {
-                return APIUtils.callToLiveData(scheduleNoteAPIInstance.getScheduleNotes(athleteUserId, scheduleId, lastUpdate.getTime()));
+                return APIUtils.callToLiveData(scheduleNoteAPIInstance.getScheduleNotes(athleteUserId, remoteScheduleId, lastUpdate.getTime()));
             }
 
             @Override
@@ -76,8 +76,8 @@ public class ScheduleNoteRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<ScheduleNote>>> updateScheduleNotes(final long scheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
-        return getUpdatedScheduleNotesList(scheduleId, athleteUserId, lastUpdate);
+    public LiveData<Resource<List<ScheduleNote>>> updateScheduleNotes(final long localScheduleId, final long remoteScheduleId, final long athleteUserId, @NonNull final Date lastUpdate){
+        return getUpdatedScheduleNotesList(localScheduleId, remoteScheduleId, athleteUserId, lastUpdate);
     }
 
 }

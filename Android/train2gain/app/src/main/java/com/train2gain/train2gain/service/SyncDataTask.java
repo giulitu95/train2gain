@@ -148,16 +148,17 @@ public class SyncDataTask extends AsyncTask<Long, Void, Map<String, Object>> {
             return true;
         }
 
-        long scheduleId = scheduleLiveDataResource.getValue().getData().getId();
+        long localScheduleId = scheduleLiveDataResource.getValue().getData().getId();
+        long remoteScheduleId = scheduleLiveDataResource.getValue().getData().getRemoteId();
 
         // Sync schedule loads
-        LiveData<Resource<List<ScheduleLoad>>> scheduleLoadsListLiveDataResource = this.scheduleLoadRepository.updatedScheduleLoads(scheduleId, athleteId, new Date(0));
+        LiveData<Resource<List<ScheduleLoad>>> scheduleLoadsListLiveDataResource = this.scheduleLoadRepository.updatedScheduleLoads(localScheduleId, remoteScheduleId, athleteId, new Date(0));
         if(!genericDataSync(scheduleLoadsListLiveDataResource)){
             return false;
         }
 
         // Sync schedule notes
-        LiveData<Resource<List<ScheduleNote>>> scheduleNotesListLiveDataResource = this.scheduleNoteRepository.updateScheduleNotes(scheduleId, athleteId, new Date(0));
+        LiveData<Resource<List<ScheduleNote>>> scheduleNotesListLiveDataResource = this.scheduleNoteRepository.updateScheduleNotes(localScheduleId, remoteScheduleId, athleteId, new Date(0));
         if(!genericDataSync(scheduleNotesListLiveDataResource)){
             return false;
         }
