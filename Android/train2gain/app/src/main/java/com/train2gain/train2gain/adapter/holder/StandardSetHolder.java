@@ -1,10 +1,12 @@
 package com.train2gain.train2gain.adapter.holder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.App;
@@ -33,6 +35,10 @@ public class StandardSetHolder extends RecyclerView.ViewHolder implements View.O
         this.scheduleSetsTextView = (TextView) itemView.findViewById(R.id.schedule_step_sets_txt);
         this.scheduleStepRestTimeTextView = (TextView) itemView.findViewById(R.id.schedule_step_rest_time_txt);
         this.exerciseInfoImageView = (ImageView) itemView.findViewById(R.id.schedule_step_exercise_info_btn);
+        this.exerciseInfoImageView.setOnClickListener(view -> {
+            Context context = App.getContext();
+            Toast.makeText(context, context.getResources().getString(R.string.app_no_yet_implemented), Toast.LENGTH_SHORT).show();
+        });
     }
 
     public void bindData(@NonNull final RecyclerViewItem<ScheduleStep> scheduleStepRecyclerViewItem) {
