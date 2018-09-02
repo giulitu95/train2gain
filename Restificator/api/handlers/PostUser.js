@@ -29,7 +29,7 @@ module.exports = class PostUser extends ApplicationHandlerSkeleton{
         var self = this;
         userHelper.insert([[attributes.id, attributes.email, attributes.displayName, attributes.userType, new Date(attributes.registrationDate), attributes.profileImageUrl]]).then(function(){
             if(attributes.userType == 1){
-                 return trainerHelper.insert([[attributes.id, "ciaociao"]])
+                 return trainerHelper.insert([[attributes.id, new Date().getTime().toString()]])
             } else {
                 return Promise.resolve();
             }

@@ -75,7 +75,6 @@ public class Registration extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        MediaManager.init(Registration.this);
         // Import View element from res
         this.emailText = findViewById(R.id.registration_email_txt);
         this.passwordText = findViewById(R.id.registration_password_txt);
@@ -139,6 +138,13 @@ public class Registration extends AppCompatActivity {
                 Thread thread = new TokenTrainerThread();
                 thread.start();
 
+            }
+        });
+        Button cancelButton = (Button)findViewById(R.id.registration_cancel_btn);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

@@ -50,11 +50,6 @@ public class CreateNewScheduleActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
-        exercisevm.getExercises(true).observe(this, exerciseListResource ->{
-
-            exerciseListResource.getData();
-
-        });
         setContentView(R.layout.activity_createschedule);
         trainerId = getIntent().getLongExtra(USER_PARAM_ID, 1);
         currentSchedule = new Schedule();
@@ -72,6 +67,13 @@ public class CreateNewScheduleActivity extends AppCompatActivity{
                 showChooseAthleteButton();
             }
 
+        });
+        ImageView backButton = (ImageView) findViewById(R.id.createschedule_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
         });
         ImageView removeUserButton = (ImageView) findViewById(R.id.createschedule_removeuser_button);
         removeUserButton.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +120,7 @@ public class CreateNewScheduleActivity extends AppCompatActivity{
                     //send schedule
                     scheduleRepository.uploadSchedule(currentSchedule);
 
-                    finish();
+                        finish();
                 }
             }
         });

@@ -255,16 +255,19 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:textSize="40dp"
                     android:id="@+id/schedule_step_rest_time_edittext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:inputType="number"
                     android:hint="00" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
+                    android:textSize="40dp"
                     android:text="s"
                     android:textColor="@color/theme_primary" />
 

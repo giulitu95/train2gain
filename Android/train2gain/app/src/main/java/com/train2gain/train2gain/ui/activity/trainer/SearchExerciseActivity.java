@@ -12,6 +12,7 @@ import android.view.View;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.Exercise;
 import com.train2gain.train2gain.model.enums.MuscleGroup;
+import com.train2gain.train2gain.repository.common.Resource;
 import com.train2gain.train2gain.viewmodel.ExerciseViewModel;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 
@@ -28,15 +29,6 @@ public class SearchExerciseActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searchexercise);
-
-        exerciseList = new ArrayList<Exercise>();
-        Exercise a = new Exercise();
-        a.setId(1); a.setName("esercizio1"); a.setDescription("description"); a.setMuscleGroup(MuscleGroup.CHEST);
-
-        exerciseList.add(a);
-        Exercise b = new Exercise();
-        b.setId(2); b.setName("exercizio2"); a.setDescription("description"); a.setMuscleGroup(MuscleGroup.CALF);
-        exerciseList.add(b);
         exerciseRecyclerView = (RecyclerView) findViewById(R.id.exerxises_reciclerview);
 
         // use this setting to improve performance if you know that changes
@@ -50,20 +42,21 @@ public class SearchExerciseActivity extends AppCompatActivity{
         ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
         exercisevm.getExercises(true).observe(this, exerciseListResource ->{
             //ERROR: resolve, the second
-            exerciseList = exerciseListResource.getData();
-            View.OnClickListener itemContainer = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int itemPosition = exerciseRecyclerView.getChildAdapterPosition(view);
-                    Intent intent = new Intent();
-                    intent.putExtra(SELECTED_EXERCISE_PARAM, itemPosition);
-                    setResult(RESULT_OK, intent);
-                    finish();
+            if(exerciseListResource != null &&exerciseListResource.getData() != null ){
+                exerciseList = exerciseListResource.getData();
+                View.OnClickListener itemContainer = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent();
+                        intent.putExtra(SELECTED_EXERCISE_PARAM, exerciseList.get(exerciseRecyclerView.getChildAdapterPosition(view)));
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                };
+                if(exerciseList != null) {
+                    exercisesAdapter = new ExercisesAdapter(exerciseList, itemContainer);
+                    exerciseRecyclerView.setAdapter(exercisesAdapter);
                 }
-            };
-            if(exerciseList != null) {
-                exercisesAdapter = new ExercisesAdapter(exerciseList, itemContainer);
-                exerciseRecyclerView.setAdapter(exercisesAdapter);
             }
 
         });

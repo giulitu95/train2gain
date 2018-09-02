@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cloudinary.android.MediaManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,14 +20,17 @@ import com.train2gain.train2gain.R;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth authManager;
+    private EditText emailText;
+    private EditText passwordText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        EditText emailText = findViewById(R.id.email_text);
-        EditText passwordText = findViewById(R.id.password_text);
+        MediaManager.init(getApplicationContext());
+        emailText = findViewById(R.id.email_text);
+        passwordText = findViewById(R.id.password_text);
 
         Button loginButton = findViewById(R.id.login_button);
         Button registrationButton = findViewById(R.id.registration_button);
@@ -46,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = emailText.getText().toString();
                 String password = passwordText.getText().toString();
-                if(!email.equals("") || !password.equals("")){
+                if(!email.equals("") && !password.equals("")){
                     authManager.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

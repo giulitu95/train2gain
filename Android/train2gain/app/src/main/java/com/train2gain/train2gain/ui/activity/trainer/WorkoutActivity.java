@@ -110,6 +110,11 @@ public class WorkoutActivity extends AppCompatActivity {
                 RecyclerViewItem recyclerViewitem = new RecyclerViewItem(RecyclerViewItem.ItemType.CREATION_STANDARD_SET, selectedScheduleStep);
                 this.dailyWorkoutRecyclerViewAdapter.setNewRecyclerViewItemList(convertToRecyclerViewItems(scheduleStepList));
                 this.dailyWorkoutRecyclerViewAdapter.notifyDataSetChanged();
+                if(scheduleStepList.size() == 0){
+                    findViewById(R.id.addworkout_noexerciseselected_text).setVisibility(View.VISIBLE);
+                } else{
+                    findViewById(R.id.addworkout_noexerciseselected_text).setVisibility(View.GONE);
+                }
             }
         }
     }
