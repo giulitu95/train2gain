@@ -55,12 +55,12 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Categoria: "
+                    android:text="Categorie: "
                     android:textColor="@color/theme_text_dark"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/exerciselist_category_text"
+                    android:id="@+id/scheduleitem_categorylist"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textColor="@color/theme_text_dark"

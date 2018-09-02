@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.adapter.DailyWorkoutRecyclerViewAdapter;
@@ -24,17 +25,21 @@ import com.train2gain.train2gain.model.enums.MuscleGroup;
 import com.train2gain.train2gain.viewmodel.ExerciseViewModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class WorkoutActivity extends AppCompatActivity {
 
     public static final int SCHEDULE_STEP_ACTIVITY_REQUEST_CODE = 1;
     public static final String DAILY_WORKOUT_PARAM = "DAILY_WORKOUT_PARAM";
+    public static final String CATEGORY_SET_PARAM = "CATEGORY_SET_PARAM";
     private ArrayList<ScheduleStep> scheduleStepList;
     private ArrayList<RecyclerViewItem> recyclerViewItemList;
     private final DailyWorkoutRecyclerViewAdapter dailyWorkoutRecyclerViewAdapter;
     private ScheduleDailyWorkout currentDailyWorkout;
-
+    private HashSet<String> categorySet;
     public WorkoutActivity(){
         this.dailyWorkoutRecyclerViewAdapter = new DailyWorkoutRecyclerViewAdapter();
     }
@@ -43,15 +48,16 @@ public class WorkoutActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addworkout);
+        categorySet = new HashSet<String>();
         currentDailyWorkout = new ScheduleDailyWorkout();
         scheduleStepList = new ArrayList<ScheduleStep>();
         recyclerViewItemList = new ArrayList<RecyclerViewItem>();
-        ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
+      /*  ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
         exercisevm.getExercises(true).observe(this, exerciseListResource ->{
 
             exerciseListResource.getData();
 
-        });
+        });*/
         FloatingActionButton addScheduleStep = (FloatingActionButton)findViewById(R.id.addworkout_addschedulestep_button);
         addScheduleStep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,9 +73,22 @@ public class WorkoutActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(DAILY_WORKOUT_PARAM, currentDailyWorkout);
-                setResult(RESULT_OK, intent);
+                if(scheduleStepList == null || scheduleStepList.size() == 0){
+                    Toast.makeText(getApplicationContext(), "Devi prima aggiungere almeno un esercizioo", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra(DAILY_WORKOUT_PARAM, currentDailyWorkout);
+                    intent.putExtra(CATEGORY_SET_PARAM, categorySet);
+                    setResult(RESULT_OK, intent);
+
+                    finish();
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 finish();
             }
         });
@@ -99,6 +118,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private List<RecyclerViewItem> convertToRecyclerViewItems(@NonNull final List<ScheduleStep> scheduleStepList){
         List<RecyclerViewItem> recyclerViewRecyclerViewItems = new ArrayList<RecyclerViewItem>();
 
+        categorySet = new HashSet<String>();
         // Init Recycler view items list
         MuscleGroup muscleGroup = null;
         for(ScheduleStep scheduleStep : scheduleStepList){
@@ -106,6 +126,7 @@ public class WorkoutActivity extends AppCompatActivity {
             if(muscleGroup == null || muscleGroupTemp.getKey() != muscleGroup.getKey()){
                 muscleGroup = muscleGroupTemp;
                 recyclerViewRecyclerViewItems.add(new RecyclerViewItem<String>(RecyclerViewItem.ItemType.HEADER, muscleGroup.toString()));
+                categorySet.add(muscleGroup.toString());
             }
             recyclerViewRecyclerViewItems.add(new RecyclerViewItem<ScheduleStep>(RecyclerViewItem.ItemType.CREATION_STANDARD_SET, scheduleStep));
         }
