@@ -2,6 +2,8 @@
 <resources>
     <!-- App misc -->
     <string name="app_name">Train2Gain</string>
+    <string name="app_default_font">sans-serif-light</string>
+    <string name="app_no_yet_implemented">Funzionalità non implementata</string>
 
     <!-- Navigation drawer (main activity) -->
     <string name="menu_home">Home</string>
@@ -51,6 +53,6 @@
     <string name="schedule_step_set_label">Serie:</string>
     <string name="schedule_step_set_rest_time">Recupero:</string>
     <string name="schedule_step_set_reps_format_string">%dx</string>
-    <string name="schedule_step_rest_time_format_string">%dsec</string>
+    <string name="schedule_step_rest_time_format_string">%dsecs</string>
 
 </resources>
