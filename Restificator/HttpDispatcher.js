@@ -118,6 +118,7 @@ app.get('/api/userProfileList/trainerId/:trainerId/lastUpdate/:lastUpdate', func
 
 
 app.post('/api/schedule', function(req, res){
+    console.log(JSON.stringify(req.body, null, 4));
     var postScheduleHandler = new PostScheduleHandler();
     postScheduleHandler.dispatch(req, res);
 });

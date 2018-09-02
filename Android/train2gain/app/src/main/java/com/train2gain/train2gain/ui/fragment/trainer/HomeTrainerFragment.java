@@ -55,11 +55,11 @@ public class HomeTrainerFragment extends Fragment {
             createScheduleIntent.putExtra(CreateNewScheduleActivity.USER_PARAM_ID, trainerUserId);
             startActivity(createScheduleIntent);
 
-        });
+        });/*
         Button goToManageUserButton = (Button) view.findViewById(R.id.home_trainer_btn_manage_users);
         goToManageUserButton.setOnClickListener(onClickView -> {
             // TODO open / switch to 'ManageUsers' activity here
-        });
+        });*/
     }
 
 }

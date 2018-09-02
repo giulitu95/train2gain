@@ -39,7 +39,7 @@
         android:layout_marginTop="15dp"
         app:cardCornerRadius="5dp"
         app:cardElevation="10dp" >
-
+        <!--
         <Button
             android:id="@+id/home_trainer_btn_manage_users"
             android:layout_width="match_parent"
@@ -55,7 +55,7 @@
             android:textAllCaps="false"
             android:textSize="35sp"
             android:lineSpacingExtra="5dp"
-            android:gravity="start|center_vertical" />
+            android:gravity="start|center_vertical" />-->
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

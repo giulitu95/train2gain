@@ -16,6 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_add_white_24dp"
         android:layout_margin="16dp" />
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,6 +53,15 @@
                 android:textSize="20dp"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
+
+        <TextView
+            android:textColor="@color/theme_primary"
+            android:id="@+id/addworkout_noexerciseselected_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingLeft="10dp"
+            android:text="Nessun esercizio selezionato"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/addworkout_recyclerview"
             android:layout_width="match_parent"

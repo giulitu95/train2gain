@@ -24,6 +24,7 @@ import com.train2gain.train2gain.model.entity.ScheduleSet;
 import com.train2gain.train2gain.model.entity.ScheduleSetItem;
 import com.train2gain.train2gain.model.entity.ScheduleStep;
 import com.train2gain.train2gain.model.enums.ScheduleStepType;
+import com.train2gain.train2gain.repository.common.Resource;
 import com.train2gain.train2gain.viewmodel.ExerciseViewModel;
 
 import java.lang.reflect.Array;
@@ -35,7 +36,6 @@ public class ScheduleStepActivity extends AppCompatActivity{
 
 
     public static final String SCHEDULESTEP_PARAM = "SCHEDULESTEP_PARRAM";
-    private List<Exercise> exerciseList;
     private RelativeLayout addExerciseButton;
     private Exercise selectedExercise = null;
     private static final int SEARCH_EXERCISE_REQUEST_CODE = 1;
@@ -57,10 +57,6 @@ public class ScheduleStepActivity extends AppCompatActivity{
         ImageView cancelButton = (ImageView)findViewById(R.id.schedule_step_cancel);
         //add listener to elemnts
         ExerciseViewModel exercisevm = ViewModelProviders.of(this).get(ExerciseViewModel.class);
-        exercisevm.getExercises(true).observe(this, exerciseListResource ->{
-
-            exerciseList = exerciseListResource.getData();
-        });
         addExerciseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -122,7 +118,7 @@ public class ScheduleStepActivity extends AppCompatActivity{
         if (requestCode == SEARCH_EXERCISE_REQUEST_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                selectedExercise = exerciseList.get(data.getIntExtra(SearchExerciseActivity.SELECTED_EXERCISE_PARAM, 1));
+                selectedExercise = (Exercise) data.getExtras().getSerializable(SearchExerciseActivity.SELECTED_EXERCISE_PARAM);
                 addExerciseButton.setVisibility(View.GONE);
                 findViewById(R.id.schedule_step_exercise_item).setVisibility(View.VISIBLE);
                 TextView category = findViewById(R.id.schedule_step_category_text);
