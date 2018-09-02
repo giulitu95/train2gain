@@ -11,19 +11,23 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
+import com.train2gain.train2gain.ui.fragment.athlete.DailyWorkoutFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
+import com.train2gain.train2gain.viewmodel.ScheduleDailyWorkoutViewModel;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     // Activity User details
     private UserType currentSelectedUserType = null;
     private UserViewModel profileViewModel = null;
+    private ScheduleDailyWorkoutViewModel scheduleDailyWorkoutViewModel = null;
     private long userId = -1;
 
     @Override
@@ -113,10 +118,9 @@ public class MainActivity extends AppCompatActivity {
         // Init navigation drawer
         this.navigationDrawerView = (NavigationView) findViewById(R.id.nav_view);
         this.navigationDrawerView.setNavigationItemSelectedListener(menuItem -> {
-            menuItem.setChecked(true);
             onNavigationDrawerItemSelected(menuItem, MainActivity.this.currentSelectedUserType);
             this.drawerLayout.closeDrawer(Gravity.START);
-            return true;
+            return false;
         });
 
         // Init navigation drawer header
@@ -159,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         switch(this.currentSelectedUserType){
             case ATHLETE:
                 replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
+                this.scheduleDailyWorkoutViewModel = ViewModelProviders.of(this).get(ScheduleDailyWorkoutViewModel.class);
                 break;
             case TRAINER:
                 replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
@@ -202,7 +207,30 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 break;
+            case R.id.menu_daily_workout:
+                this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId);
+                break;
+            default:
+                Toast.makeText(this, getString(R.string.app_no_yet_implemented), Toast.LENGTH_SHORT).show();
+                break;
             // TODO add other code to change 'fragmentToInsert' base on selected menu item
+        }
+        setActivityMenuItemChecked(menuItem.getItemId());
+    }
+
+    /**
+     * Called to set to 'checked' a specific item in the navigation drawer view
+     * @param menuItemId the ID of the navigation drawer menu's item
+     */
+    public void setActivityMenuItemChecked(final int menuItemId){
+        switch(menuItemId){
+            case R.id.menu_home:
+            case R.id.menu_daily_workout:
+                MenuItem menuItem = this.navigationDrawerView.getMenu().findItem(menuItemId);
+                menuItem.setChecked(true);
+                break;
+            default:
+                break;
         }
     }
 
@@ -225,6 +253,13 @@ public class MainActivity extends AppCompatActivity {
         switch(currentUserType){
             case ATHLETE:
                 navigationDrawerView.inflateMenu(R.menu.activity_main_menu_athlete);
+                this.scheduleDailyWorkoutViewModel.getScheduleDailyWorkoutOfTheDayMinimal(this.userId).observe(this,scheduleDailyWorkoutResource -> {
+                    if(scheduleDailyWorkoutResource != null && scheduleDailyWorkoutResource.getData() != null){
+                        Menu navigationDrawerMenu = this.navigationDrawerView.getMenu();
+                        MenuItem dailyWorkoutMenuItem = navigationDrawerMenu.findItem(R.id.menu_daily_workout);
+                        dailyWorkoutMenuItem.setVisible(true);
+                    }
+                });
                 break;
             case TRAINER:
                 navigationDrawerView.inflateMenu(R.menu.activity_main_menu_trainer);

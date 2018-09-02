@@ -78,6 +78,7 @@ public class HomeAthleteFragment extends Fragment {
         goToScheduleDailyWorkoutButton.setOnClickListener((onClickView) -> {
             if(((MainActivity) getActivity()) != null){
                 ((MainActivity) getActivity()).replaceContentFrame(DailyWorkoutFragment.newInstance(this.athleteUserId));
+                ((MainActivity) getActivity()).setActivityMenuItemChecked(R.id.menu_daily_workout);
             }
         });
     }
