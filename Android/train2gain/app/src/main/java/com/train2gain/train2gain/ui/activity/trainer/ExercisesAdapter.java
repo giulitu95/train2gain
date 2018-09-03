@@ -37,6 +37,10 @@ public class ExercisesAdapter extends RecyclerView.Adapter<ExercisesAdapter.Exer
         this.context = context;
     }
 
+    public void  updateExerciseList(List<Exercise> exercisesList){
+        this.exerciseList = exercisesList;
+    }
+
     // Create new views (invoked by the layout manager)
     @Override
     public ExercisesAdapter.ExercisesHolder onCreateViewHolder(ViewGroup parent, int viewType) {

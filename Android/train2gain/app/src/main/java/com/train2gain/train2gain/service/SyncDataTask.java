@@ -23,8 +23,10 @@ import com.train2gain.train2gain.repository.TrainerRepository;
 import com.train2gain.train2gain.repository.UserRepository;
 import com.train2gain.train2gain.repository.common.Resource;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -181,6 +183,18 @@ public class SyncDataTask extends AsyncTask<Long, Void, Map<String, Object>> {
         LiveData<Resource<Trainer>> trainerLiveDataResource = this.trainerRepository.updateTrainer(trainerUserId);
         if(!genericDataSync(trainerLiveDataResource)){
             return false;
+        }
+        LiveData<Resource<List<User>>> trainerUserListResource =this.userRepository.getTrainerUsers(trainerUserId, 0);
+        if(!genericDataSync(trainerUserListResource)){
+            return false;
+        }
+        Iterator<User> userListiterator = trainerUserListResource.getValue().getData().iterator();
+        while (userListiterator.hasNext()){
+            User currentUser = userListiterator.next();
+            LiveData<Resource<Athlete>> athleteResource = this.athleteRepository.getAthlete(currentUser.getId());
+            if(!genericDataSync(athleteResource)){
+                return false;
+            }
         }
 
         // TODO Sync all the uploads
