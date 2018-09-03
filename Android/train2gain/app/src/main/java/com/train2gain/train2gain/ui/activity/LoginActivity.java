@@ -27,8 +27,6 @@ public class LoginActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        MediaManager.init(getApplicationContext());
         emailText = findViewById(R.id.email_text);
         passwordText = findViewById(R.id.password_text);
 

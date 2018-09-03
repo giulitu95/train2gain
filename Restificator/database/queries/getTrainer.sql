@@ -1,6 +1,7 @@
 SELECT 
 trainer.id AS trainer_id,
 trainer.gym_id AS trainer_gymId,
+trainer.token AS trainer_token,
 gym.id AS gym_id,
 gym.name AS gym_name,
 gym.logo_url as gym_logoUrl 

@@ -28,7 +28,7 @@ module.exports = class User extends Loadable{
             if(result[0].gym_id != null){
                 gym = new GymEntity(result[0].gym_id, result[0].gym_name, result[0].gym_logoUrl);
             } 
-            var trainer = new TrainerEntity(result[0].trainer_id, result[0].trainer_gymId, gym);
+            var trainer = new TrainerEntity(result[0].trainer_id, result[0].trainer_gymId, gym, result[0].trainer_token);
             return trainer;
         }
     }
@@ -217,7 +217,7 @@ module.exports = class User extends Loadable{
                                         resolve(null);
                                     } else {
                                         var user = new UserEntity(result[0].user_id, result[0].user_email, null, result[0].user_displayName, result[0].user_type, new Date(result[0].user_registrationDate).getTime(), result[0].user_profileImageUrl);
-                                        var trainer = new TrainerEntity(result[0].user_id, 1, new GymEntity(1, "ASD Sarnonico", "https://res.cloudinary.com/dmec6o2py/image/upload/v1535187477/Logo/logo_palestra.jpg"))
+                                        var trainer = new TrainerEntity(result[0].user_id, 1, new GymEntity(1, "ASD Sarnonico", "https://res.cloudinary.com/dmec6o2py/image/upload/v1535187477/Logo/logo_palestra.jpg"), result[0].trainer_token)
                                         user.trainer = trainer;
                                         connection.release();
                                         resolve(user);
