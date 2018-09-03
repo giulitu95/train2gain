@@ -31,7 +31,9 @@ import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.ui.fragment.athlete.DailyWorkoutFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
+import com.train2gain.train2gain.ui.fragment.athlete.ProfileAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
+import com.train2gain.train2gain.ui.fragment.trainer.ProfileTrainerFragment;
 import com.train2gain.train2gain.viewmodel.ScheduleDailyWorkoutViewModel;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 
@@ -228,6 +230,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_daily_workout:
                 this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId);
                 break;
+            case R.id.menu_profile:
+                switch (currentUserType){
+                    case ATHLETE:
+                        this.fragmentToInsert = ProfileAthleteFragment.newInstance(this.userId);
+                        break;
+                    case TRAINER:
+                        this.fragmentToInsert = ProfileTrainerFragment.newInstance(this.userId);
+                        break;
+                }
+                break;
             case R.id.menu_logout:
                 onLogOut();
                 return;
@@ -248,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_home:
             case R.id.menu_daily_workout:
             case R.id.menu_logout:
+            case R.id.menu_profile:
                 MenuItem menuItem = this.navigationDrawerView.getMenu().findItem(menuItemId);
                 menuItem.setChecked(true);
                 break;
