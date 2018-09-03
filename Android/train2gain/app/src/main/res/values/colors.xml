@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="theme_primary">#424242</color>
+    <color name="theme_primary_dark">#1B1B1B</color>
+    <color name="theme_secondary">#757575</color>
+    <color name="theme_text">#FFFFFF</color>
+    <color name="theme_text_dark">#000000</color>
+    <color name="theme_background">#E1E2E1</color>
+    <color name="theme_background_exercise_image">#FFFFFF</color>
+    <color name="theme_progress_bar">#E1E2E1</color>
+</resources>

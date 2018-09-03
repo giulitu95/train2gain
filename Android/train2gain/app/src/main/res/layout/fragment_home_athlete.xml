@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp" >
+
+    <!-- Layout for "No schedule available" -->
+    <LinearLayout
+        android:id="@+id/home_athlete_no_schedule_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_no_schedule_info"
+            android:textColor="@color/theme_text_dark"
+            android:textSize="23sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/home_no_schedule_info_2"
+            android:textColor="@color/theme_text_dark"
+            android:textSize="23sp" />
+    </LinearLayout>
+
+    <!-- Layout for "Go to DailyWorkout" button -->
+    <android.support.v7.widget.CardView
+        android:id="@+id/home_athlete_btn_daily_workout_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="10dp">
+
+        <Button
+            android:id="@+id/home_athlete_btn_daily_workout"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="10dp"
+            android:background="@drawable/image_home_athlete_daily_workout"
+            android:drawableEnd="@drawable/image_home_arrow_right"
+            android:backgroundTint="@android:color/darker_gray"
+            android:backgroundTintMode="multiply"
+            android:text="@string/home_daily_workout"
+            android:textColor="@color/theme_text"
+            android:textAllCaps="false"
+            android:textSize="35sp"
+            android:lineSpacingExtra="5dp"
+            android:gravity="start|center_vertical" />
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

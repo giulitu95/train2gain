@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
+    android:padding="10dp" >
+
+    <!-- Schedule step exercise type -->
+    <TextView
+        android:id="@+id/schedule_step_exercise_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/theme_text_dark"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+    
+</LinearLayout>

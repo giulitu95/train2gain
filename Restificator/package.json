@@ -1,0 +1,21 @@
+{
+  "name": "restificator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "HttpDispatcher.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "enumify": "^1.0.4",
+    "express": "^4.16.3",
+    "jsonschema": "^1.2.4",
+    "md5": "^2.2.1",
+    "multer": "^1.3.1",
+    "mysql": "^2.15.0",
+    "path": "^0.12.7"
+  }
+}

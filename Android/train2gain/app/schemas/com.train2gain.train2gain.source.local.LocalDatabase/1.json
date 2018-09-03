@@ -1,0 +1,1006 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "ae3ece7aa3e43f53af3acdf3a813bb77",
+    "entities": [
+      {
+        "tableName": "athlete",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `weight` INTEGER NOT NULL, `height` INTEGER NOT NULL, `first_workout_date` INTEGER, `trainer_user_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, PRIMARY KEY(`user_id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstWorkoutDate",
+            "columnName": "first_workout_date",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "trainerUserId",
+            "columnName": "trainer_user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "user_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_athlete_trainer_user_id",
+            "unique": false,
+            "columnNames": [
+              "trainer_user_id"
+            ],
+            "createSql": "CREATE  INDEX `index_athlete_trainer_user_id` ON `${TABLE_NAME}` (`trainer_user_id`)"
+          },
+          {
+            "name": "index_athlete_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_athlete_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "NO ACTION",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "exercise",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `image_url` TEXT NOT NULL, `muscle_group` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "image_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "muscleGroup",
+            "columnName": "muscle_group",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "gym",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `logo_url` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "logoUrl",
+            "columnName": "logo_url",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "schedule",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `start_date` INTEGER NOT NULL, `athlete_user_id` INTEGER NOT NULL, `trainer_user_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, FOREIGN KEY(`athlete_user_id`) REFERENCES `athlete`(`user_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`trainer_user_id`) REFERENCES `trainer`(`user_id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startDate",
+            "columnName": "start_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "athleteUserId",
+            "columnName": "athlete_user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trainerUserId",
+            "columnName": "trainer_user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_athlete_user_id",
+            "unique": false,
+            "columnNames": [
+              "athlete_user_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_athlete_user_id` ON `${TABLE_NAME}` (`athlete_user_id`)"
+          },
+          {
+            "name": "index_schedule_trainer_user_id",
+            "unique": false,
+            "columnNames": [
+              "trainer_user_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_trainer_user_id` ON `${TABLE_NAME}` (`trainer_user_id`)"
+          },
+          {
+            "name": "index_schedule_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "athlete",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "athlete_user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "trainer",
+            "onDelete": "SET NULL",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "trainer_user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "schedule_daily_workout",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `order` INTEGER NOT NULL, `last_execution_date` INTEGER, `schedule_id` INTEGER NOT NULL, `remote_schedule_id` INTEGER NOT NULL, FOREIGN KEY(`schedule_id`) REFERENCES `schedule`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastExecutionDate",
+            "columnName": "last_execution_date",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "scheduleId",
+            "columnName": "schedule_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteScheduleId",
+            "columnName": "remote_schedule_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_daily_workout_schedule_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_daily_workout_schedule_id` ON `${TABLE_NAME}` (`schedule_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "schedule",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "schedule_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "schedule_load",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `load` INTEGER NOT NULL, `insert_date` INTEGER NOT NULL, `schedule_set_item_id` INTEGER NOT NULL, `remote_schedule_set_item_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, FOREIGN KEY(`schedule_set_item_id`) REFERENCES `schedule_set_item`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "load",
+            "columnName": "load",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "insertDate",
+            "columnName": "insert_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduleSetItemId",
+            "columnName": "schedule_set_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteScheduleSetItemId",
+            "columnName": "remote_schedule_set_item_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_load_schedule_set_item_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_set_item_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_load_schedule_set_item_id` ON `${TABLE_NAME}` (`schedule_set_item_id`)"
+          },
+          {
+            "name": "index_schedule_load_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_load_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "schedule_set_item",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "schedule_set_item_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "schedule_note",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `content` TEXT NOT NULL, `creation_date` INTEGER NOT NULL, `schedule_step_id` INTEGER NOT NULL, `remote_schedule_step_id` INTEGER NOT NULL, `author_user_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, FOREIGN KEY(`schedule_step_id`) REFERENCES `schedule_step`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`author_user_id`) REFERENCES `user`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creation_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduleStepId",
+            "columnName": "schedule_step_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteScheduleStepId",
+            "columnName": "remote_schedule_step_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorUserId",
+            "columnName": "author_user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_note_schedule_step_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_step_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_note_schedule_step_id` ON `${TABLE_NAME}` (`schedule_step_id`)"
+          },
+          {
+            "name": "index_schedule_note_author_user_id",
+            "unique": false,
+            "columnNames": [
+              "author_user_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_note_author_user_id` ON `${TABLE_NAME}` (`author_user_id`)"
+          },
+          {
+            "name": "index_schedule_note_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_note_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "schedule_step",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "schedule_step_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "user",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "author_user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "schedule_set",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `order` INTEGER NOT NULL, `schedule_step_id` INTEGER NOT NULL, `remote_schedule_step_id` INTEGER NOT NULL, FOREIGN KEY(`schedule_step_id`) REFERENCES `schedule_step`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduleStepId",
+            "columnName": "schedule_step_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteScheduleStepId",
+            "columnName": "remote_schedule_step_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_set_schedule_step_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_step_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_set_schedule_step_id` ON `${TABLE_NAME}` (`schedule_step_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "schedule_step",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "schedule_step_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "schedule_set_item",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `order` INTEGER NOT NULL, `reps` INTEGER NOT NULL, `schedule_set_id` INTEGER NOT NULL, `remote_schedule_set_id` INTEGER NOT NULL, `exercise_id` INTEGER NOT NULL, FOREIGN KEY(`schedule_set_id`) REFERENCES `schedule_set`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`exercise_id`) REFERENCES `exercise`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reps",
+            "columnName": "reps",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduleSetId",
+            "columnName": "schedule_set_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteScheduleSetId",
+            "columnName": "remote_schedule_set_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exerciseId",
+            "columnName": "exercise_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_set_item_schedule_set_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_set_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_set_item_schedule_set_id` ON `${TABLE_NAME}` (`schedule_set_id`)"
+          },
+          {
+            "name": "index_schedule_set_item_exercise_id",
+            "unique": false,
+            "columnNames": [
+              "exercise_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_set_item_exercise_id` ON `${TABLE_NAME}` (`exercise_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "schedule_set",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "schedule_set_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "exercise",
+            "onDelete": "NO ACTION",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "exercise_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "schedule_step",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `order` INTEGER NOT NULL, `type` INTEGER NOT NULL, `rest_time` INTEGER NOT NULL, `schedule_daily_workout_id` INTEGER NOT NULL, `remote_schedule_daily_workout_id` INTEGER NOT NULL, FOREIGN KEY(`schedule_daily_workout_id`) REFERENCES `schedule_daily_workout`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "restTime",
+            "columnName": "rest_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scheduleDailyWorkoutId",
+            "columnName": "schedule_daily_workout_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteScheduleDailyWorkoutId",
+            "columnName": "remote_schedule_daily_workout_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_schedule_step_schedule_daily_workout_id",
+            "unique": false,
+            "columnNames": [
+              "schedule_daily_workout_id"
+            ],
+            "createSql": "CREATE  INDEX `index_schedule_step_schedule_daily_workout_id` ON `${TABLE_NAME}` (`schedule_daily_workout_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "schedule_daily_workout",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "schedule_daily_workout_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "trainer",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `gym_id` INTEGER NOT NULL, `token` TEXT NOT NULL, `synced_with_server` INTEGER NOT NULL, PRIMARY KEY(`user_id`), FOREIGN KEY(`user_id`) REFERENCES `user`(`id`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gymId",
+            "columnName": "gym_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "user_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_trainer_gym_id",
+            "unique": false,
+            "columnNames": [
+              "gym_id"
+            ],
+            "createSql": "CREATE  INDEX `index_trainer_gym_id` ON `${TABLE_NAME}` (`gym_id`)"
+          },
+          {
+            "name": "index_trainer_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_trainer_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "user",
+            "onDelete": "NO ACTION",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "training_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `remote_id` INTEGER NOT NULL, `training_date` INTEGER NOT NULL, `athlete_user_id` INTEGER NOT NULL, `daily_workout_id` INTEGER NOT NULL, `remote_daily_workout_id` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, FOREIGN KEY(`athlete_user_id`) REFERENCES `athlete`(`user_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`daily_workout_id`) REFERENCES `schedule_daily_workout`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteId",
+            "columnName": "remote_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trainingDate",
+            "columnName": "training_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "athleteUserId",
+            "columnName": "athlete_user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dailyWorkoutId",
+            "columnName": "daily_workout_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteDailyWorkoutId",
+            "columnName": "remote_daily_workout_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_training_history_athlete_user_id",
+            "unique": false,
+            "columnNames": [
+              "athlete_user_id"
+            ],
+            "createSql": "CREATE  INDEX `index_training_history_athlete_user_id` ON `${TABLE_NAME}` (`athlete_user_id`)"
+          },
+          {
+            "name": "index_training_history_daily_workout_id",
+            "unique": false,
+            "columnNames": [
+              "daily_workout_id"
+            ],
+            "createSql": "CREATE  INDEX `index_training_history_daily_workout_id` ON `${TABLE_NAME}` (`daily_workout_id`)"
+          },
+          {
+            "name": "index_training_history_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_training_history_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "athlete",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "athlete_user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "schedule_daily_workout",
+            "onDelete": "SET NULL",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "daily_workout_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "user",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `display_name` TEXT NOT NULL, `email` TEXT NOT NULL, `photo_url` TEXT, `registration_date` INTEGER NOT NULL, `synced_with_server` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photoUrl",
+            "columnName": "photo_url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "registrationDate",
+            "columnName": "registration_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncedWithServer",
+            "columnName": "synced_with_server",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_user_synced_with_server",
+            "unique": false,
+            "columnNames": [
+              "synced_with_server"
+            ],
+            "createSql": "CREATE  INDEX `index_user_synced_with_server` ON `${TABLE_NAME}` (`synced_with_server`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ae3ece7aa3e43f53af3acdf3a813bb77\")"
+    ]
+  }
+}

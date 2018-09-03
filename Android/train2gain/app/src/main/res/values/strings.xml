@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App misc -->
+    <string name="app_name">Train2Gain</string>
+    <string name="app_default_font">sans-serif-light</string>
+    <string name="app_no_yet_implemented">Funzionalità non implementata</string>
+
+    <!-- Navigation drawer (main activity) -->
+    <string name="menu_home">Home</string>
+    <string name="menu_new_schedule">Crea nuova schedina</string>
+    <string name="menu_daily_workout">Allenamento del giorno</string>
+    <string name="menu_scheduled_trainings">Allenamenti programmati</string>
+    <string name="menu_scheduled_daily_workout">Giorno %1$s</string>
+    <string name="menu_manage_users">Gestisci utenti</string>
+    <string name="menu_settings">Impostazioni</string>
+    <string name="menu_profile">Profilo</string>
+    <string name="menu_logout">Esci</string>
+
+    <!-- Home -->
+    <string name="home_title">Home</string>
+    <string name="home_daily_workout">Passa all\'allenamento di oggi</string>
+    <string name="home_new_schedule">Crea un nuovo programma</string>
+    <string name="home_manage_users">Gestisci utenti</string>
+    <string name="home_no_schedule_info">Al momento non sono presenti schedine.</string>
+    <string name="home_no_schedule_info_2">Per averne una, rivolgiti al tuo allenatore.</string>
+
+    <!-- Sync Data Splash -->
+    <string name="sync_data_splash_info">Aggiornamento dei dati in corso</string>
+    <string name="sync_data_splash_info_2">Attendi qualche istante</string>
+    <string name="sync_data_splash_error">Errore durante l\'aggiornamento dei dati</string>
+    <string name="sync_data_splash_btn_try_again">Riprova</string>
+    
+    <!-- Registration -->
+    <string name="registration_no_trainer_token">Non ho trovato trainer con questo token</string>
+    <string name="registration_trainer_token_error">Ups c\'è stato qualche errore</string>
+    <string name="registration_emptyName_error">Non hai inserito il tuo nome</string>
+    <string name="registration_emptyLastName_error">Non hai inserito il cognome</string>
+    <string name="registration_emptyEmail_error">Non hai inserito la tua email</string>
+    <string name="registration_emptyPassword_error">Devi inserire una password</string>
+    <string name="registration_emptyConfirmPassword_error">Devi confermare la password</string>
+    <string name="registration_confirmPassword_error">Le password inseritesono diverse</string>
+    <string name="registration_emptyUserType">Non hai selezionato la tipologia di utente</string>
+    <string name="registration_dbUploading">Sto elaborando le tue informazioni</string>
+    <string name="registration_dbUploading_error">Ups, c\'è stato qualche errore</string>
+    <string name="registration_start_image_upload">Sto elaborando l\'immagine</string>
+    <string name="registration_upload_image">Sto caricando l\'immagine</string>
+    <string name="registration_invalid_token">Inserisci un token valido</string>
+
+    <!-- Daily Workout -->
+    <string name="daily_workout_title">Allenamento del giorno</string>
+    <string name="daily_workout_alert_title">Esecuzione dell\'allenamento</string>
+    <string name="daily_workout_alert_message">Vuoi registrare il tuo allenamento di oggi ?</string>
+    <string name="daily_workout_alert_positive">Si</string>
+    <string name="daily_workout_alert_nagative">No</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profilo</string>
+    <string name="profile_display_name_label">Nome e cognome</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_user_type_label">Tipo di utente</string>
+    <string name="profile_registration_date_label">Data di registrazione</string>
+    <string name="profile_token_label">Token</string>
+    <string name="profile_height_label">Altezza</string>
+    <string name="profile_height_format_string">%d cm</string>
+    <string name="profile_weight_label">Peso</string>
+    <string name="profile_weight_format_string">%d kg</string>
+    <string name="profile_first_workout_label">Data del primo allenamento</string>
+    <string name="profile_default_value">Non disponibile</string>
+
+    <!-- Schedule step item (RecyclerView) -->
+    <string name="schedule_step_set_label">Serie:</string>
+    <string name="schedule_step_set_rest_time">Recupero:</string>
+    <string name="schedule_step_set_reps_format_string">%dx</string>
+    <string name="schedule_step_rest_time_format_string">%dsecs</string>
+
+</resources>

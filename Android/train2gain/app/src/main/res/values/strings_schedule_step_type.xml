@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="schedule_step_type_standard_set">Standard</string>
+    <string name="schedule_step_type_super_set">Superserie</string>
+    <string name="schedule_step_type_stripping_set">Stripping</string>
+</resources>

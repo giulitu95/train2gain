@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="110dp"
+                android:id="@+id/gym_logo"
+                android:src="@drawable/image_app_logo"/>
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="... Hai quasi finito"/>
+            <EditText
+                android:layout_marginTop="20dp"
+                android:inputType="number"
+                android:id="@+id/addathleteinfo_weight_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Peso corporeo" />
+            <EditText
+                android:inputType="number"
+                android:id="@+id/addathleteinfo_height_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Altezza" />
+            <EditText
+                android:id="@+id/addathleteinfo_firstworkoutdate_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="Data primo allenamento"/>
+            <Button
+                android:layout_marginTop="20dp"
+                android:id="@+id/addathleteinfo_confirm_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="confirm"/>
+        </LinearLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>
