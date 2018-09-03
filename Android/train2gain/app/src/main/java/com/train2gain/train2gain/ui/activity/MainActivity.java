@@ -36,6 +36,7 @@ import com.train2gain.train2gain.ui.fragment.athlete.ProfileAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.ProfileTrainerFragment;
 import com.train2gain.train2gain.viewmodel.ScheduleDailyWorkoutViewModel;
+import com.train2gain.train2gain.viewmodel.ScheduleViewModel;
 import com.train2gain.train2gain.viewmodel.UserViewModel;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private UserType currentSelectedUserType = null;
     private UserViewModel profileViewModel = null;
     private ScheduleDailyWorkoutViewModel scheduleDailyWorkoutViewModel = null;
+    private long athleteScheduleId = -1;
     private long userId = -1;
 
     @Override
@@ -171,6 +173,14 @@ public class MainActivity extends AppCompatActivity {
         // Init for specific things base on userType (only first time fro HomeFragment)
         if(this.currentSelectedUserType == UserType.ATHLETE){
             this.scheduleDailyWorkoutViewModel = ViewModelProviders.of(this).get(ScheduleDailyWorkoutViewModel.class);
+
+            // Get schedule ID
+            ScheduleViewModel scheduleViewModel = ViewModelProviders.of(this).get(ScheduleViewModel.class);
+            scheduleViewModel.getScheduleByAthleteUserId(this.userId).observe(this, scheduleResource -> {
+                if(scheduleResource != null && scheduleResource.getData() != null){
+                    this.athleteScheduleId =scheduleResource.getData().getId();
+                }
+            });
         }
         if(savedInstanceState == null){
             initHome(this.currentSelectedUserType);
@@ -193,11 +203,18 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(this.drawerLayout != null && this.drawerLayout.isDrawerOpen(Gravity.START)){
             this.drawerLayout.closeDrawer(Gravity.START);
-        }else if(this.currentFragment != null && !(this.currentFragment instanceof HomeAthleteFragment) && !(this.currentFragment instanceof HomeTrainerFragment)){
-            initHome(this.currentSelectedUserType);
-        }else{
-            super.onBackPressed();
+            return;
         }
+        if(this.currentFragment != null && currentFragment instanceof DailyWorkoutFragment){
+            ((DailyWorkoutFragment)this.currentFragment).onBackPressed();
+            initHome(this.currentSelectedUserType);
+            return;
+        }
+        if(this.currentFragment != null && !(this.currentFragment instanceof HomeAthleteFragment) && !(this.currentFragment instanceof HomeTrainerFragment)){
+            initHome(this.currentSelectedUserType);
+            return;
+        }
+        super.onBackPressed();
     }
 
     /**
@@ -218,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.menu_daily_workout:
-                this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId);
+                this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId, this.athleteScheduleId);
                 break;
             case R.id.menu_new_schedule:
                 Intent startNewScheduleActivityIntent = new Intent(this, CreateNewScheduleActivity.class);

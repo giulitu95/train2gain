@@ -214,10 +214,10 @@ public class ScheduleDailyWorkoutHelper {
      * @return the ScheduleDailyWorkout that was executed less recently, if some results has been
      *         returned from the database, otherwise NULL
      */
-    public ScheduleDailyWorkout getScheduleDailyWorkoutOfTheDayByScheduleId(long scheduleId){
+    public ScheduleDailyWorkout getScheduleDailyWorkoutOfTheDayByScheduleId(long scheduleId, long dailyWorkoutOrderNumber){
         this.localDatabase.beginTransaction();
         ScheduleDailyWorkout scheduleDailyWorkout = this.scheduleDailyWorkoutDaoInstance
-                .getScheduleDailyWorkoutOfTheDayByScheduleId(scheduleId);
+                .getScheduleDailyWorkoutOfTheDayByScheduleIdAndOrderNumber(scheduleId, dailyWorkoutOrderNumber);
         if(scheduleDailyWorkout != null){
             List<ScheduleStep> scheduleStepList = this.scheduleStepHelperInstance
                     .getScheduleStepListByScheduleDailyWorkoutId(scheduleDailyWorkout.getId());

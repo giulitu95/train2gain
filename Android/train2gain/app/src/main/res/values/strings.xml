@@ -48,6 +48,10 @@
 
     <!-- Daily Workout -->
     <string name="daily_workout_title">Allenamento del giorno</string>
+    <string name="daily_workout_alert_title">Esecuzione dell\'allenamento</string>
+    <string name="daily_workout_alert_message">Vuoi registrare il tuo allenamento di oggi ?</string>
+    <string name="daily_workout_alert_positive">Si</string>
+    <string name="daily_workout_alert_nagative">No</string>
 
     <!-- Profile -->
     <string name="profile_title">Profilo</string>
