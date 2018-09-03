@@ -29,6 +29,7 @@ import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.source.local.LocalDatabase;
+import com.train2gain.train2gain.ui.activity.trainer.CreateNewScheduleActivity;
 import com.train2gain.train2gain.ui.fragment.athlete.DailyWorkoutFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.ProfileAthleteFragment;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationDrawerView = null;
     private View navDrawerHeaderView = null;
     private Fragment fragmentToInsert = null;
+    private Fragment currentFragment = null;
 
     // Activity User details
     private UserType currentSelectedUserType = null;
@@ -144,14 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 if(isInInitialization != true){
                     UserType userType = (UserType) parent.getItemAtPosition(pos);
                     MainActivity.this.currentSelectedUserType = userType;
-                    switch(userType){
-                        case ATHLETE:
-                            MainActivity.this.fragmentToInsert = HomeAthleteFragment.newInstance(MainActivity.this.userId);
-                            break;
-                        case TRAINER:
-                            MainActivity.this.fragmentToInsert = HomeTrainerFragment.newInstance(MainActivity.this.userId);
-                            break;
-                    }
+                    initHome(MainActivity.this.currentSelectedUserType);
                     drawerLayout.closeDrawer(Gravity.START);
                     updateNavDrawerMenu(userType);
                 }
@@ -178,14 +173,7 @@ public class MainActivity extends AppCompatActivity {
             this.scheduleDailyWorkoutViewModel = ViewModelProviders.of(this).get(ScheduleDailyWorkoutViewModel.class);
         }
         if(savedInstanceState == null){
-            switch(this.currentSelectedUserType){
-                case ATHLETE:
-                    replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
-                    break;
-                case TRAINER:
-                    replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
-                    break;
-            }
+            initHome(this.currentSelectedUserType);
         }
 
         // Update nav menu
@@ -205,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(this.drawerLayout != null && this.drawerLayout.isDrawerOpen(Gravity.START)){
             this.drawerLayout.closeDrawer(Gravity.START);
+        }else if(this.currentFragment != null && !(this.currentFragment instanceof HomeAthleteFragment) && !(this.currentFragment instanceof HomeTrainerFragment)){
+            initHome(this.currentSelectedUserType);
         }else{
             super.onBackPressed();
         }
@@ -230,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_daily_workout:
                 this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId);
                 break;
+            case R.id.menu_new_schedule:
+                Intent startNewScheduleActivityIntent = new Intent(this, CreateNewScheduleActivity.class);
+                startNewScheduleActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startNewScheduleActivityIntent.putExtra(CreateNewScheduleActivity.USER_PARAM_ID, this.userId);
+                startActivity(startNewScheduleActivityIntent);
+                return;
             case R.id.menu_profile:
                 switch (currentUserType){
                     case ATHLETE:
@@ -270,10 +266,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Used to init Home fragment in the activity
+     * @param userType used to set the right Home base on it
+     */
+    private void initHome(final UserType userType){
+        switch(this.currentSelectedUserType){
+            case ATHLETE:
+                replaceContentFrame(HomeAthleteFragment.newInstance(this.userId));
+                break;
+            case TRAINER:
+                replaceContentFrame(HomeTrainerFragment.newInstance(this.userId));
+                break;
+        }
+    }
+
+    /**
      * Replaces the main activity content frame with a new fragment, given as input object
      * @param fragmentToBeInserted the fragment that will be inserted in the main activity frame
      */
     public void replaceContentFrame(@NonNull final Fragment fragmentToBeInserted){
+        this.currentFragment = fragmentToBeInserted;
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragmentToBeInserted);
         fragmentTransaction.commit();
