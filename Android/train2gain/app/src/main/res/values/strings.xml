@@ -56,6 +56,11 @@
     <string name="profile_user_type_label">Tipo di utente</string>
     <string name="profile_registration_date_label">Data di registrazione</string>
     <string name="profile_token_label">Token</string>
+    <string name="profile_height_label">Altezza</string>
+    <string name="profile_height_format_string">%d cm</string>
+    <string name="profile_weight_label">Peso</string>
+    <string name="profile_weight_format_string">%d kg</string>
+    <string name="profile_first_workout_label">Data del primo allenamento</string>
     <string name="profile_default_value">Non disponibile</string>
 
     <!-- Schedule step item (RecyclerView) -->

@@ -31,6 +31,7 @@ import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.source.local.LocalDatabase;
 import com.train2gain.train2gain.ui.fragment.athlete.DailyWorkoutFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
+import com.train2gain.train2gain.ui.fragment.athlete.ProfileAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.HomeTrainerFragment;
 import com.train2gain.train2gain.ui.fragment.trainer.ProfileTrainerFragment;
 import com.train2gain.train2gain.viewmodel.ScheduleDailyWorkoutViewModel;
@@ -231,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.menu_profile:
                 switch (currentUserType){
+                    case ATHLETE:
+                        this.fragmentToInsert = ProfileAthleteFragment.newInstance(this.userId);
+                        break;
                     case TRAINER:
                         this.fragmentToInsert = ProfileTrainerFragment.newInstance(this.userId);
                         break;
