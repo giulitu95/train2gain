@@ -29,6 +29,7 @@ public class Trainer {
     public static final String TABLE_NAME = "trainer";
     public static final String COLUMN_USER_ID = "user_id";
     public static final String COLUMN_GYM_ID = "gym_id";
+    public static final String COLUMN_TOKEN = "token";
     public static final String COLUMN_SYNCED_WITH_SERVER = "synced_with_server";
 
     @NonNull
@@ -40,6 +41,11 @@ public class Trainer {
     @ColumnInfo(name = COLUMN_GYM_ID)
     @Expose @SerializedName("gymId")
     private long gymId = 0;
+
+    @NonNull
+    @ColumnInfo(name = COLUMN_TOKEN)
+    @Expose @SerializedName("token")
+    private String token = "";
 
     @NonNull
     @ColumnInfo(name = COLUMN_SYNCED_WITH_SERVER)
@@ -56,15 +62,19 @@ public class Trainer {
         return userId;
     }
 
-    @NonNull public long getGymId() {
+    @Nullable public long getGymId() {
         return gymId;
+    }
+
+    @NonNull public String getToken() {
+        return token;
     }
 
     @NonNull public boolean isSyncedWithServer() {
         return syncedWithServer;
     }
 
-    @NonNull public Gym getGym() {
+    @Nullable public Gym getGym() {
         return gym;
     }
 
@@ -75,15 +85,19 @@ public class Trainer {
         this.userId = userId;
     }
 
-    public void setGymId(@NonNull long gymId) {
+    public void setGymId(@Nullable long gymId) {
         this.gymId = gymId;
+    }
+
+    public void setToken(@NonNull String token) {
+        this.token = token;
     }
 
     public void setSyncedWithServer(@NonNull boolean syncedWithServer) {
         this.syncedWithServer = syncedWithServer;
     }
 
-    public void setGym(@NonNull Gym gym) {
+    public void setGym(@Nullable Gym gym) {
         this.gym = gym;
     }
 
