@@ -29,6 +29,7 @@ import com.train2gain.train2gain.R;
 import com.train2gain.train2gain.model.entity.User;
 import com.train2gain.train2gain.model.enums.UserType;
 import com.train2gain.train2gain.source.local.LocalDatabase;
+import com.train2gain.train2gain.ui.activity.trainer.CreateNewScheduleActivity;
 import com.train2gain.train2gain.ui.fragment.athlete.DailyWorkoutFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.HomeAthleteFragment;
 import com.train2gain.train2gain.ui.fragment.athlete.ProfileAthleteFragment;
@@ -219,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_daily_workout:
                 this.fragmentToInsert = DailyWorkoutFragment.newInstance(this.userId);
                 break;
+            case R.id.menu_new_schedule:
+                Intent startNewScheduleActivityIntent = new Intent(this, CreateNewScheduleActivity.class);
+                startNewScheduleActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startNewScheduleActivityIntent.putExtra(CreateNewScheduleActivity.USER_PARAM_ID, this.userId);
+                startActivity(startNewScheduleActivityIntent);
+                return;
             case R.id.menu_profile:
                 switch (currentUserType){
                     case ATHLETE:
