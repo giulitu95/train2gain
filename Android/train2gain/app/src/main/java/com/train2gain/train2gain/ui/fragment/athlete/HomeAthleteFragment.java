@@ -19,6 +19,7 @@ public class HomeAthleteFragment extends Fragment {
 
     private final static String ATHLETE_USER_ID_KEY = "ATHLETE_USER_ID_KEY";
     private long athleteUserId = -1;
+    private long athleteScheduleId = -1;
 
     public static HomeAthleteFragment newInstance(final long athleteUserId){
         HomeAthleteFragment homeAthleteFragment = new HomeAthleteFragment();
@@ -50,6 +51,7 @@ public class HomeAthleteFragment extends Fragment {
         ScheduleDailyWorkoutViewModel scheduleDailyWorkoutViewModel = ViewModelProviders.of(getActivity()).get(ScheduleDailyWorkoutViewModel.class);
         scheduleDailyWorkoutViewModel.getScheduleDailyWorkoutOfTheDayMinimal(this.athleteUserId).observe(this, scheduleDailyWorkoutResource -> {
             if(scheduleDailyWorkoutResource != null && scheduleDailyWorkoutResource.getStatus() == Resource.Status.SUCCESS && scheduleDailyWorkoutResource.getData() != null){
+                this.athleteScheduleId = scheduleDailyWorkoutResource.getData().getScheduleId();
                 showAthleteHomeAvailableScheduleLayout();
             }
         });
@@ -77,7 +79,7 @@ public class HomeAthleteFragment extends Fragment {
         Button goToScheduleDailyWorkoutButton = getView().findViewById(R.id.home_athlete_btn_daily_workout);
         goToScheduleDailyWorkoutButton.setOnClickListener((onClickView) -> {
             if(((MainActivity) getActivity()) != null){
-                ((MainActivity) getActivity()).replaceContentFrame(DailyWorkoutFragment.newInstance(this.athleteUserId));
+                ((MainActivity) getActivity()).replaceContentFrame(DailyWorkoutFragment.newInstance(this.athleteUserId, this.athleteScheduleId));
                 ((MainActivity) getActivity()).setActivityMenuItemChecked(R.id.menu_daily_workout);
             }
         });

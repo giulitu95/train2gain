@@ -25,9 +25,9 @@ public class ScheduleDailyWorkoutViewModel extends ViewModel {
         return scheduleDailyWorkoutOfTheDayMinimal;
     }
 
-    public LiveData<Resource<ScheduleDailyWorkout>> getScheduleDailyWorkoutOfTheDay(final long athleteUserId) {
+    public LiveData<Resource<ScheduleDailyWorkout>> getScheduleDailyWorkoutOfTheDay(final long athleteUserId, final long dailyWorkoutOrderNumber) {
         if(scheduleDailyWorkoutOfTheDay == null){
-            this.scheduleDailyWorkoutOfTheDay = this.scheduleDailyWorkoutRepository.getScheduleDailyWorkoutOfTheDayByAthleteUserId(athleteUserId);
+            this.scheduleDailyWorkoutOfTheDay = this.scheduleDailyWorkoutRepository.getScheduleDailyWorkoutOfTheDayByAthleteUserId(athleteUserId, dailyWorkoutOrderNumber);
         }
         return scheduleDailyWorkoutOfTheDay;
     }

@@ -71,14 +71,14 @@ public class ScheduleDailyWorkoutRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<ScheduleDailyWorkout>> getScheduleDailyWorkoutOfTheDayByAthleteUserId(final long athleteUserId){
+    public LiveData<Resource<ScheduleDailyWorkout>> getScheduleDailyWorkoutOfTheDayByAthleteUserId(final long athleteUserId, final long dailyWorkoutOrderNumber){
         return new RetrieveHandler<ScheduleDailyWorkout, ScheduleDailyWorkout>() {
             @NonNull @Override
             protected LiveData<ScheduleDailyWorkout> loadFromDatabase() {
                 MutableLiveData<ScheduleDailyWorkout> scheduleDailyWorkoutOfTheDay = new MutableLiveData<ScheduleDailyWorkout>();
                 AsyncTask.execute(() -> {
                     long scheduleId = scheduleHelperInstance.getCurrentScheduleIdByAthleteUserId(athleteUserId);
-                    scheduleDailyWorkoutOfTheDay.postValue(scheduleDailyWorkoutHelperInstance.getScheduleDailyWorkoutOfTheDayByScheduleId(scheduleId));
+                    scheduleDailyWorkoutOfTheDay.postValue(scheduleDailyWorkoutHelperInstance.getScheduleDailyWorkoutOfTheDayByScheduleId(scheduleId, dailyWorkoutOrderNumber));
                 });
                 return scheduleDailyWorkoutOfTheDay;
             }

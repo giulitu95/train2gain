@@ -77,7 +77,6 @@ public abstract class ScheduleDailyWorkoutDao {
            "LIMIT 1")
     public abstract ScheduleDailyWorkout getScheduleDailyWorkoutOfTheDayByScheduleId(long scheduleId);
 
-
     /**
      * Retrieves the ID of the ScheduleDailyWorkout that has the given schedule daily workout's
      * remote ID
@@ -90,6 +89,16 @@ public abstract class ScheduleDailyWorkoutDao {
             "FROM " + ScheduleDailyWorkout.TABLE_NAME + " " +
             "WHERE " + ScheduleDailyWorkout.COLUMN_REMOTE_ID + " = :scheduleDailyWorkoutRemoteId")
     public abstract long getIdByRemoteId(long scheduleDailyWorkoutRemoteId);
+
+    // Similar to getScheduleDailyWorkoutOfTheDayByScheduleId
+    @Query("SELECT * FROM " + ScheduleDailyWorkout.TABLE_NAME + " " +
+           "WHERE " + ScheduleDailyWorkout.COLUMN_SCHEDULE_ID + " = :scheduleId " +
+           "AND `" + ScheduleDailyWorkout.COLUMN_ORDER + "` = :dailyWorkoutOrderNumber % ( " +
+                "SELECT COUNT(*) FROM " + ScheduleDailyWorkout.TABLE_NAME + " " +
+                "WHERE " + ScheduleDailyWorkout.COLUMN_SCHEDULE_ID + " = :scheduleId " +
+            ")")
+    public abstract ScheduleDailyWorkout getScheduleDailyWorkoutOfTheDayByScheduleIdAndOrderNumber(long scheduleId, long dailyWorkoutOrderNumber);
+
 
 }
 
